@@ -6,3 +6,10 @@ __pycache__/
 # to serialize concurrent sprint_lifecycle.py invocations, never meant to
 # be committed.
 docs/sprints/.locks/
+
+# Next.js app (Sprint 1)
+node_modules/
+.next/
+.env*.local
+.vercel
+*.tsbuildinfo

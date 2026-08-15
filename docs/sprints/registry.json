@@ -1,0 +1,17 @@
+{
+  "next_id": 3,
+  "sprints": {
+    "1": {
+      "title": "Next.js on Vercel, deployed from main",
+      "epic": "Deployment Lifecycle",
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-1_next-js-on-vercel-deployed-from-main.md"
+    },
+    "2": {
+      "title": "Supabase project, schema, and migrations in CI",
+      "epic": "Deployment Lifecycle",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-2_supabase-project-schema-and-migrations-in-ci.md"
+    }
+  }
+}
