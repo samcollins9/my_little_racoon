@@ -1,0 +1,2 @@
+-- No seed data yet. Sprint 2 ships an empty, RLS-enabled `readings` table;
+-- seed rows arrive with the sprints that read/write it (S9, S10).
