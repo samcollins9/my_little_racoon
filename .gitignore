@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.DS_Store
+
+# Always ignored, template or real project: transient OS file locks used
+# to serialize concurrent sprint_lifecycle.py invocations, never meant to
+# be committed.
+docs/sprints/.locks/
