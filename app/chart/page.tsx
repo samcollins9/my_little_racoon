@@ -7,6 +7,7 @@ import {
   computePositions,
   type PlanetPosition,
 } from "@/lib/ephemeris/adapter";
+import { saveReading } from "./actions";
 
 function dateOnly(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -15,13 +16,13 @@ function dateOnly(date: Date): string {
 export default async function ChartPage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; error?: string }>;
 }) {
-  const { date: dateParam } = await searchParams;
+  const { date: dateParam, error: saveError } = await searchParams;
 
   let positions: PlanetPosition[] | null = null;
   let instant: Date | null = null;
-  let error: string | null = null;
+  let error: string | null = saveError ?? null;
 
   if (dateParam) {
     try {
@@ -36,8 +37,8 @@ export default async function ChartPage({
     <main>
       <h1>Planetary positions</h1>
       <p>
-        Geocentric planetary positions for a past date. No account, nothing
-        saved — enter a date to see where the planets were.
+        Geocentric planetary positions for a past date. No account required
+        to view them — save one and anyone with the link can open it.
       </p>
 
       <form method="get">
@@ -88,6 +89,11 @@ export default async function ChartPage({
               ))}
             </tbody>
           </table>
+
+          <form action={saveReading}>
+            <input type="hidden" name="date" value={dateParam} />
+            <button type="submit">Save this reading</button>
+          </form>
         </>
       ) : null}
     </main>
