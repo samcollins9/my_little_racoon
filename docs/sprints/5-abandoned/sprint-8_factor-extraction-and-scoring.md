@@ -2,7 +2,7 @@
 id: 8
 title: "Factor extraction and scoring"
 epic: "Thin Vertical Slice"
-status: todo
+status: abandoned
 created: 2026-08-15T20:07:45+00:00
 ---
 

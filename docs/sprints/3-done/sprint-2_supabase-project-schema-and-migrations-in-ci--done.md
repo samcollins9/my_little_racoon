@@ -2,7 +2,7 @@
 id: 2
 title: "Supabase project, schema, and migrations in CI"
 epic: "Deployment Lifecycle"
-status: in_progress
+status: done
 created: 2026-08-15T20:04:43+00:00
 ---
 

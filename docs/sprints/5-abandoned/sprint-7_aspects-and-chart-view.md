@@ -2,7 +2,7 @@
 id: 7
 title: "Aspects and chart view"
 epic: "Thin Vertical Slice"
-status: todo
+status: abandoned
 created: 2026-08-15T20:07:45+00:00
 ---
 

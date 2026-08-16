@@ -1,5 +1,5 @@
 {
-  "next_id": 11,
+  "next_id": 14,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -10,56 +10,74 @@
     "2": {
       "title": "Supabase project, schema, and migrations in CI",
       "epic": "Deployment Lifecycle",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-2_supabase-project-schema-and-migrations-in-ci.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-2_supabase-project-schema-and-migrations-in-ci--done.md"
     },
     "3": {
       "title": "Supabase Auth with per-environment redirects",
       "epic": "Deployment Lifecycle",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-3_supabase-auth-with-per-environment-redirects.md"
+      "status": "abandoned",
+      "file": "docs/sprints/5-abandoned/sprint-3_supabase-auth-with-per-environment-redirects.md"
     },
     "4": {
       "title": "RLS policies proven by test",
       "epic": "Deployment Lifecycle",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-4_rls-policies-proven-by-test.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-4_rls-policies-proven-by-test--done.md"
     },
     "5": {
       "title": "Preview environments and rehearsed rollback",
       "epic": "Deployment Lifecycle",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-5_preview-environments-and-rehearsed-rollback.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-5_preview-environments-and-rehearsed-rollback--done.md"
     },
     "6": {
       "title": "Chart casting from date and place",
       "epic": "Thin Vertical Slice",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-6_chart-casting-from-date-and-place.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-6_chart-casting-from-date-and-place--done.md"
     },
     "7": {
       "title": "Aspects and chart view",
       "epic": "Thin Vertical Slice",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-7_aspects-and-chart-view.md"
+      "status": "abandoned",
+      "file": "docs/sprints/5-abandoned/sprint-7_aspects-and-chart-view.md"
     },
     "8": {
       "title": "Factor extraction and scoring",
       "epic": "Thin Vertical Slice",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-8_factor-extraction-and-scoring.md"
+      "status": "abandoned",
+      "file": "docs/sprints/5-abandoned/sprint-8_factor-extraction-and-scoring.md"
     },
     "9": {
       "title": "Evidence sheet with pin and dismiss",
       "epic": "Thin Vertical Slice",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-9_evidence-sheet-with-pin-and-dismiss.md"
+      "status": "abandoned",
+      "file": "docs/sprints/5-abandoned/sprint-9_evidence-sheet-with-pin-and-dismiss.md"
     },
     "10": {
       "title": "Save and retrieve a reading",
       "epic": "Thin Vertical Slice",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-10_save-and-retrieve-a-reading--done.md"
+    },
+    "11": {
+      "title": "Root redirect and deployment observable",
+      "epic": "Design Pass",
       "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-10_save-and-retrieve-a-reading.md"
+      "file": "docs/sprints/1-todo/sprint-11_root-redirect-and-deployment-observable.md"
+    },
+    "12": {
+      "title": "Aspect engine",
+      "epic": "Design Pass",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-12_aspect-engine.md"
+    },
+    "13": {
+      "title": "Aspect Constellation chart UI",
+      "epic": "Design Pass",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-13_aspect-constellation-chart-ui.md"
     }
   }
 }

@@ -44,6 +44,8 @@ procedure. Once is a lucky run. Twice is a lifecycle.
 | Data, auth | Supabase (Postgres, Auth) | User, 15 Aug 2026 |
 | Stack | Next.js + TypeScript, end to end | Follows from Vercel + Supabase |
 | Ephemeris | `astronomy-engine` (MIT, TypeScript) | **Reverses** the earlier Swiss Ephemeris AGPL decision |
+| Authentication | **None.** Public site, no accounts | User, 16 Aug 2026 — exercise only; `docs/PRD_v1.md` keeps its single-practitioner intent for a later build |
+| Persistence | Anonymous readings, retrievable by unguessable id | User, 16 Aug 2026 — keeps Supabase genuinely exercised |
 | Repo | App lives in this repo, beside the workflow tooling | User, 15 Aug 2026 |
 
 ### On the reversed ephemeris decision
@@ -101,43 +103,45 @@ into the open, and is done when that problem is solved and proven.
 - **S2 — Supabase project, schema, and migrations in CI.** Migration files in
   version control, applied by CI and never by hand, with a working local
   development story. One real table.
-- **S3 — Supabase Auth with per-environment redirects.** Email and password, single
-  practitioner. Redirect URLs that differ between preview and production — the
-  classic breakage, and the reason this is its own sprint rather than a bullet.
-- **S4 — RLS policies, proven by test.** Enabled on every table, policies asserted
-  by automated test, including one that proves a signed-out client sees nothing.
-  Supabase's sharpest footgun is a table that is public because nobody enabled RLS;
-  an assertion in a test file is the only durable defence.
-- **S5 — Preview environments and rehearsed rollback.** Decide and implement which
-  database preview deployments point at. Guarantee that migrations land before the
-  code depending on them serves traffic — the race deferred from S2. Adopt
-  expand-then-contract as a standing migration rule, so an app rollback cannot break
-  against newer schema. Rehearse a production rollback and write the runbook.
-  Acceptance requires the rollback to have actually been performed, not documented.
+- **S3 — ABORTED 16 Aug 2026.** Was Supabase Auth with per-environment redirects.
+  Authentication was cut from the exercise: the app is a public tool, anyone picks a
+  past date and gets a reading. Its committed code (session proxy, sign-in page,
+  `user_id` on `readings`) is removed as part of S4.
+- **S4 — RLS policies, proven by test.** Re-scoped for anonymous, link-addressed
+  readings: insert permitted, select by explicit id only, no unfiltered listing,
+  update and delete denied. Removing accounts makes RLS *more* load-bearing, not
+  less — a public app ships the anon key in the client bundle by design, so policies
+  are the only thing between a visitor's devtools and the whole table. Includes the
+  catalogue-driven test that fails if any future table ships without RLS enabled.
+- **S5 — Migration ordering and rehearsed rollback.** Guarantee migrations land
+  before the code depending on them serves traffic — the race deferred from S2 —
+  enforced by a guardrail test that fails if the main-only gate is widened. Adopt
+  expand-then-contract as a standing rule. Rehearse a production rollback; acceptance
+  requires it to have been performed, not documented. **Preview environments dropped
+  16 Aug 2026**: a pushed branch produced no preview, and the production deploy path
+  that closes the S2 race (`deploymentEnabled.main = false` plus a deploy hook) is in
+  tension with automatic previews. Migration ordering was kept, previews given up.
+  The project therefore has no pre-production environment — acceptable only because
+  the app has no users.
 
 ## Epic B — Thin Vertical Slice
 
-Enough real product that the pipeline meets genuine dependencies, real build
-times, and non-trivial data.
+**Trimmed 16 Aug 2026 from five sprints to two.** The goal is a deployment proof
+with simple persistence, and the codebase then goes through a design pass. Chart
+mathematics served neither. Sprints 7, 8, and 9 are aborted.
 
-- **S6 — Chart casting: date, place, positions.** `astronomy-engine` behind an
-  adapter. Geocoding to lat/long and timezone. Planetary positions. Houses limited
-  to Whole Sign, derived from the Ascendant — one of the two systems §7.2 says
-  actually matter, and by far the cheapest to get right. The nullable
-  houses-and-angles contract lands here.
-- **S7 — Aspects and chart view.** Five Ptolemaic aspects, applying vs. separating
-  with exact date of perfection, configurable orbs. A readable chart display
-  showing which house system and zodiac produced it.
-- **S8 — Factor extraction and scoring.** Factor model with stable IDs (`F-07`),
-  extraction from the chart, and a deliberately reduced scoring pass — orb
-  tightness, application, and retrogradation only, not the full §7.3 input set.
-  The no-event-text constraint binds here.
-- **S9 — Evidence sheet with pin and dismiss.** Ranked factors, score components
-  shown, minimum curation surface. No manual factor addition, no significations.
-- **S10 — Save and retrieve a reading.** Persistence through Supabase under the
-  RLS policies from S4, plus a library list. This sprint closes the loop: a reading
-  created, stored, and retrieved on production, by an authenticated user, through
-  the whole stack.
+- **S6 — Public reading page.** A past date in, geocentric planetary positions out,
+  on a page with no account. Place and geocoding dropped — positions depend only on
+  the moment, not the observer — which removes the project's last external API.
+  Houses and angles dropped with them, since those are the part that needs a
+  location, which retires the time-unknown suppression contract entirely.
+- **S10 — Save and retrieve by link.** A reading persisted anonymously and rendered
+  at an unguessable URL, under S4's policies. The link is the access control, so the
+  sprint rests on unguessable ids and on there being no way to list what exists.
+
+- **S7, S8, S9 — ABORTED.** Aspects and chart view; factor extraction and scoring;
+  evidence sheet with pin and dismiss. All real product work, none of it needed to
+  prove a deployment lifecycle or to give a design pass something to work on.
 
 ---
 

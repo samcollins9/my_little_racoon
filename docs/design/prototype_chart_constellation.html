@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: oklch(0.12 0.012 285); color: oklch(0.92 0.012 85); }
+  a { color: oklch(0.70 0.13 145); text-decoration: none; }
+  a:hover { color: oklch(0.80 0.10 145); }
+  input[type="date"], input[type="time"] { color-scheme: dark; }
+  @keyframes om-breathe { 0%, 100% { opacity: 0.34; } 50% { opacity: 0.85; } }
+  @keyframes om-twinkle { 0%, 100% { opacity: 0.18; } 50% { opacity: 0.62; } }
+  @keyframes om-halo { 0%, 100% { opacity: 0.09; transform: scale(1); } 50% { opacity: 0.26; transform: scale(1.14); } }
+  @keyframes om-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes om-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; height: 18px; }
+  input[type="range"]::-webkit-slider-runnable-track { height: 1px; background: oklch(0.34 0.02 285); }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%; background: oklch(0.70 0.13 145); margin-top: -5px; cursor: ew-resize; }
+</style>
+</helmet>
+
+<section style="display: flex; flex-direction: column; gap: 44px; padding: 56px 64px 110px; font-family: 'Cormorant Garamond', Georgia, serif; background: radial-gradient(130% 70% at 50% -10%, oklch(0.185 0.022 288) 0%, oklch(0.115 0.012 285) 68%); min-height: 100vh;">
+
+  <div style="display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; max-width: 1240px;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.12 0.012 285); background: oklch(0.70 0.13 145); padding: 4px 9px; border-radius: 2px;">1a</span>
+    <h1 style="margin: 0; font-size: 33px; font-weight: 400; letter-spacing: 0.01em; color: oklch(0.94 0.012 85);">Retroactive Horoscope — <span style="font-style: italic; color: oklch(0.70 0.13 145);">/chart</span></h1>
+    <p style="margin: 0; max-width: 660px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; line-height: 1.75; color: oklch(0.60 0.015 285);">Aspect constellation. The ten bodies are plotted as a star field — angle is true geocentric ecliptic longitude, depth is orbital order. Angular relationships within orb are wired between them and the figure redraws as you scrub the date. Positions are computed live, not mocked.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 44px; align-items: flex-start;">
+
+    <div style="width: 480px; border: 1px solid oklch(0.29 0.02 288); background: oklch(0.142 0.014 286); box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid oklch(0.23 0.018 288); background: oklch(0.112 0.012 285);">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="margin-left: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.50 0.015 285); letter-spacing: 0.03em;">my-little-racoon.vercel.app/chart</span>
+      </div>
+      <div style="padding: 58px 46px 50px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <svg viewBox="0 0 200 200" width="168" height="168" style="display: block; margin-bottom: 32px; animation: om-drift 12s ease-in-out infinite;">
+          <circle cx="100" cy="100" r="94" fill="none" stroke="oklch(0.25 0.02 288)" stroke-width="1" stroke-dasharray="1 10"></circle>
+          <g style="transform-origin: 100px 100px; animation: om-turn 260s linear infinite;">
+            <circle cx="100" cy="32" r="1.6" fill="oklch(0.62 0.02 288)"></circle>
+            <circle cx="152" cy="118" r="1.3" fill="oklch(0.55 0.02 288)"></circle>
+            <circle cx="62" cy="140" r="1.5" fill="oklch(0.58 0.02 288)"></circle>
+            <circle cx="42" cy="72" r="1.1" fill="oklch(0.50 0.02 288)"></circle>
+            <path d="M100 32 L152 118 L62 140 Z" fill="none" stroke="oklch(0.32 0.03 288)" stroke-width="0.7"></path>
+            <path d="M42 72 L100 32" fill="none" stroke="oklch(0.30 0.03 288)" stroke-width="0.7"></path>
+          </g>
+          <circle cx="100" cy="100" r="2.5" fill="oklch(0.40 0.03 288)"></circle>
+        </svg>
+        <h2 style="margin: 0 0 15px; font-size: 31px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.24;">The sky keeps its<br><span style="font-style: italic; color: oklch(0.70 0.13 145);">old positions</span></h2>
+        <p style="margin: 0 0 32px; font-size: 17px; line-height: 1.6; color: oklch(0.65 0.015 285); max-width: 306px; text-wrap: pretty;">Name a moment that has already passed. The planets will be put back where they stood.</p>
+        <div style="display: flex; flex-direction: column; gap: 9px; width: 100%; align-items: stretch;">
+          <label style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.50 0.015 285); text-align: left;">Date past</label>
+          <div style="border: 1px solid oklch(0.27 0.02 288); background: oklch(0.105 0.012 285); padding: 15px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: oklch(0.38 0.015 285); text-align: left; letter-spacing: 0.09em; border-radius: 2px;">yyyy — mm — dd</div>
+          <button style="margin-top: 10px; background: transparent; border: 1px solid oklch(0.33 0.02 288); color: oklch(0.58 0.015 285); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; padding: 14px; border-radius: 2px; cursor: not-allowed;">Compute the sky</button>
+        </div>
+        <p style="margin: 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 10px; line-height: 1.85; color: oklch(0.42 0.015 285);">No account. No place of birth. No houses.<br>Nothing kept but what you choose to seal.</p>
+      </div>
+    </div>
+
+    <div style="width: 1320px; border: 1px solid oklch(0.29 0.02 288); background: oklch(0.142 0.014 286); box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid oklch(0.23 0.018 288); background: oklch(0.112 0.012 285);">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.33 0.02 288);"></span>
+        <span style="margin-left: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.50 0.015 285); letter-spacing: 0.03em;">my-little-racoon.vercel.app/chart</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 700px 1fr; align-items: stretch;">
+
+        <div style="display: flex; flex-direction: column; justify-content: center; border-right: 1px solid oklch(0.21 0.018 288);">
+          <div style="position: relative; padding: 22px 30px 6px;">
+            <svg viewBox="0 0 640 640" width="640" height="640" style="display: block;">
+              <defs>
+                <radialGradient id="omField" cx="50%" cy="46%" r="56%">
+                  <stop offset="0%" stop-color="oklch(0.205 0.03 288)"></stop>
+                  <stop offset="62%" stop-color="oklch(0.145 0.016 286)"></stop>
+                  <stop offset="100%" stop-color="oklch(0.112 0.012 285)"></stop>
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="640" height="640" fill="url(#omField)"></rect>
+
+              <sc-for list="{{ stars }}" as="s" hint-placeholder-count="90">
+                <circle cx="{{ s.x }}" cy="{{ s.y }}" r="{{ s.r }}" fill="oklch(0.80 0.02 288)" opacity="{{ s.o }}" style="{{ s.anim }}"></circle>
+              </sc-for>
+
+              <circle cx="320" cy="320" r="288" fill="none" stroke="oklch(0.235 0.02 288)" stroke-width="1"></circle>
+              <circle cx="320" cy="320" r="60" fill="none" stroke="oklch(0.20 0.018 288)" stroke-width="1"></circle>
+
+              <sc-for list="{{ sectors }}" as="c" hint-placeholder-count="12">
+                <g>
+                  <line x1="{{ c.lx1 }}" y1="{{ c.ly1 }}" x2="{{ c.lx2 }}" y2="{{ c.ly2 }}" stroke="oklch(0.22 0.018 288)" stroke-width="1"></line>
+                  <text x="{{ c.gx }}" y="{{ c.gy }}" text-anchor="middle" dominant-baseline="central" font-size="17" fill="{{ c.fill }}" font-family="'IBM Plex Mono', monospace">{{ c.glyph }}</text>
+                </g>
+              </sc-for>
+
+              <sc-for list="{{ threads }}" as="t" hint-placeholder-count="14">
+                <line x1="{{ t.x1 }}" y1="{{ t.y1 }}" x2="{{ t.x2 }}" y2="{{ t.y2 }}" stroke="{{ t.color }}" stroke-width="{{ t.w }}" stroke-dasharray="{{ t.dash }}" stroke-linecap="round" opacity="{{ t.opacity }}" style="{{ t.anim }}"></line>
+              </sc-for>
+
+              <sc-for list="{{ bodies }}" as="p" hint-placeholder-count="10">
+                <g>
+                  <circle cx="{{ p.x }}" cy="{{ p.y }}" r="18" fill="{{ p.color }}" opacity="0.1" style="animation: om-halo 8s ease-in-out infinite;"></circle>
+                  <circle cx="{{ p.x }}" cy="{{ p.y }}" r="{{ p.dot }}" fill="{{ p.color }}"></circle>
+                  <text x="{{ p.gx }}" y="{{ p.gy }}" text-anchor="middle" dominant-baseline="central" font-size="15" fill="{{ p.color }}" font-family="'IBM Plex Mono', monospace">{{ p.glyph }}</text>
+                  <text x="{{ p.lx }}" y="{{ p.ly }}" text-anchor="{{ p.anchor }}" dominant-baseline="central" font-size="9.5" fill="oklch(0.60 0.015 285)" font-family="'IBM Plex Mono', monospace" letter-spacing="0.05em">{{ p.label }}</text>
+                </g>
+              </sc-for>
+
+              <text x="320" y="304" text-anchor="middle" font-size="12" fill="oklch(0.54 0.015 285)" font-family="'IBM Plex Mono', monospace" letter-spacing="0.24em">{{ dateLabel }}</text>
+              <text x="320" y="326" text-anchor="middle" font-size="11" fill="oklch(0.40 0.015 285)" font-family="'IBM Plex Mono', monospace" letter-spacing="0.24em">{{ timeLabel }} UT</text>
+              <circle cx="320" cy="354" r="11" fill="none" stroke="oklch(0.36 0.02 288)" stroke-width="1"></circle>
+              <path d="{{ moonPath }}" fill="oklch(0.86 0.05 85)"></path>
+              <text x="320" y="380" text-anchor="middle" font-size="9" fill="oklch(0.52 0.015 285)" font-family="'IBM Plex Mono', monospace" letter-spacing="0.16em">{{ moonName }}</text>
+            </svg>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 4px 34px 26px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.48 0.015 285);">Scrub the moment</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.68 0.10 145); letter-spacing: 0.08em;">{{ offsetLabel }}</span>
+            </div>
+            <input type="range" min="-400" max="400" step="1" value="{{ offset }}" onChange="{{ onScrub }}" onInput="{{ onScrub }}" style="width: 100%;">
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+
+          <div style="display: flex; align-items: flex-end; gap: 20px; padding: 26px 32px 22px; border-bottom: 1px solid oklch(0.21 0.018 288);">
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <label style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.50 0.015 285);">Date past</label>
+              <input type="date" value="{{ baseDate }}" onChange="{{ onDate }}" max="2026-08-16" style="background: oklch(0.105 0.012 285); border: 1px solid oklch(0.29 0.02 288); color: oklch(0.92 0.012 85); font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 9px 11px; outline: none; border-radius: 2px;" style-focus="border-color: oklch(0.70 0.13 145);">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <label style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.50 0.015 285);">Time UT</label>
+              <input type="time" value="{{ time }}" onChange="{{ onTime }}" style="background: oklch(0.105 0.012 285); border: 1px solid oklch(0.29 0.02 288); color: oklch(0.92 0.012 85); font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 9px 11px; outline: none; border-radius: 2px;" style-focus="border-color: oklch(0.70 0.13 145);">
+            </div>
+            <span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: oklch(0.46 0.015 285); letter-spacing: 0.08em; text-align: right; line-height: 1.7;">JD {{ jdLabel }}<br>geocentric · apparent</span>
+          </div>
+
+          <div style="padding: 22px 32px 4px; display: flex; align-items: baseline; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 24px; font-weight: 400; letter-spacing: 0.02em;">Aspects within orb</h2>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: oklch(0.48 0.015 285); letter-spacing: 0.1em;">{{ aspectCount }} exact-ish</span>
+          </div>
+
+          <div style="padding: 10px 32px 0; max-height: 420px; overflow: auto;">
+            <div style="display: grid; grid-template-columns: 1fr 26px 1fr 74px 1fr; gap: 0 10px; padding-bottom: 8px; border-bottom: 1px solid oklch(0.23 0.018 288); font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.46 0.015 285);">
+              <span>Body</span><span></span><span>Body</span><span>Orb</span><span>Aspect</span>
+            </div>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+              <div onMouseEnter="{{ r.enter }}" onMouseLeave="{{ r.leave }}" style="display: grid; grid-template-columns: 1fr 26px 1fr 74px 1fr; gap: 0 10px; align-items: center; padding: 8px 6px; margin: 0 -6px; border-bottom: 1px solid oklch(0.185 0.014 286); cursor: default; background: {{ r.bg }};">
+                <span style="font-size: 17px; color: oklch(0.90 0.012 85);">{{ r.aGlyph }} {{ r.aName }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: {{ r.color }}; text-align: center;">{{ r.symbol }}</span>
+                <span style="font-size: 17px; color: oklch(0.90 0.012 85);">{{ r.bGlyph }} {{ r.bName }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: oklch(0.82 0.012 85);">{{ r.orb }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: {{ r.color }};">{{ r.kind }}{{ r.applying }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 26px; border-top: 1px solid oklch(0.21 0.018 288);">
+            <div style="padding: 22px 32px; border-right: 1px solid oklch(0.21 0.018 288);">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.46 0.015 285); margin-bottom: 14px;">Elements</div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ elements }}" as="e" hint-placeholder-count="4">
+                  <div style="display: grid; grid-template-columns: 58px 1fr 20px; align-items: center; gap: 10px;">
+                    <span style="font-size: 17px; color: oklch(0.86 0.012 85);">{{ e.name }}</span>
+                    <span style="height: 3px; background: oklch(0.23 0.018 288); display: block; position: relative;"><span style="position: absolute; left: 0; top: 0; bottom: 0; background: oklch(0.70 0.13 145); width: {{ e.pct }};"></span></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.62 0.015 285); text-align: right;">{{ e.n }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding: 22px 32px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: oklch(0.46 0.015 285); margin-bottom: 14px;">Modalities</div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ modalities }}" as="m" hint-placeholder-count="3">
+                  <div style="display: grid; grid-template-columns: 66px 1fr 20px; align-items: center; gap: 10px;">
+                    <span style="font-size: 17px; color: oklch(0.86 0.012 85);">{{ m.name }}</span>
+                    <span style="height: 3px; background: oklch(0.23 0.018 288); display: block; position: relative;"><span style="position: absolute; left: 0; top: 0; bottom: 0; background: oklch(0.68 0.13 25); width: {{ m.pct }};"></span></span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: oklch(0.62 0.015 285); text-align: right;">{{ m.n }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: auto; display: flex; align-items: center; gap: 18px; padding: 22px 32px; border-top: 1px solid oklch(0.21 0.018 288); background: oklch(0.122 0.014 286);">
+            <button style="background: oklch(0.70 0.13 145); border: none; color: oklch(0.12 0.012 285); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; padding: 13px 22px; cursor: pointer; border-radius: 2px;" style-hover="background: oklch(0.79 0.12 145);">Seal this reading</button>
+            <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 10px; line-height: 1.75; color: oklch(0.48 0.015 285); max-width: 380px;">No place, no houses, no angles — see Sprint 6. Saved anonymously; the returned link is the only way back in.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const D = Math.PI / 180;
+const norm = (x) => ((x % 360) + 360) % 360;
+
+const ELEM = {
+  Mercury: [0.38709927,0.20563593,7.00497902,252.25032350,77.45779628,48.33076593,0.00000037,0.00001906,-0.00594749,149472.67411175,0.16047689,-0.12534081],
+  Venus:   [0.72333566,0.00677672,3.39467605,181.97909950,131.60246718,76.67984255,0.00000390,-0.00004107,-0.00078890,58517.81538729,0.00268329,-0.27769418],
+  Earth:   [1.00000261,0.01671123,-0.00001531,100.46457166,102.93768193,0.0,0.00000562,-0.00004392,-0.01294668,35999.37244981,0.32327364,0.0],
+  Mars:    [1.52371034,0.09339410,1.84969142,-4.55343205,-23.94362959,49.55953891,0.00001847,0.00007882,-0.00813131,19140.30268499,0.44441088,-0.29257343],
+  Jupiter: [5.20288700,0.04838624,1.30439695,34.39644051,14.72847983,100.47390909,-0.00011607,-0.00013253,-0.00183714,3034.74612775,0.21252668,0.20469106],
+  Saturn:  [9.53667594,0.05386179,2.48599187,49.95424423,92.59887831,113.66242448,-0.00125060,-0.00050991,0.00193609,1222.49362201,-0.41897216,-0.28867794],
+  Uranus:  [19.18916464,0.04725744,0.77263783,313.23810451,170.95427630,74.01692503,-0.00196176,-0.00004397,-0.00242939,428.48202785,0.40805281,0.04240589],
+  Neptune: [30.06992276,0.00859048,1.77004347,-55.12002969,44.96476227,131.78422574,0.00026291,0.00005105,0.00035372,218.45945325,-0.32241464,-0.00508664],
+  Pluto:   [39.48211675,0.24882730,17.14001206,238.92903833,224.06891629,110.30393684,-0.00031596,0.00005170,0.00004818,145.20780515,-0.04062942,-0.01183482]
+};
+
+function helio(name, T) {
+  const e0 = ELEM[name];
+  const a = e0[0] + e0[6] * T, e = e0[1] + e0[7] * T, I = e0[2] + e0[8] * T;
+  const L = e0[3] + e0[9] * T, w = e0[4] + e0[10] * T, O = e0[5] + e0[11] * T;
+  let M = norm(L - w); if (M > 180) M -= 360;
+  const es = e * 180 / Math.PI;
+  let E = M + es * Math.sin(M * D);
+  for (let i = 0; i < 12; i++) {
+    const dM = M - (E - es * Math.sin(E * D));
+    E += dM / (1 - e * Math.cos(E * D));
+  }
+  const xp = a * (Math.cos(E * D) - e);
+  const yp = a * Math.sqrt(1 - e * e) * Math.sin(E * D);
+  const wr = (w - O) * D, Ir = I * D, Or = O * D;
+  const cw = Math.cos(wr), sw = Math.sin(wr), cI = Math.cos(Ir), sI = Math.sin(Ir), cO = Math.cos(Or), sO = Math.sin(Or);
+  return {
+    x: (cw * cO - sw * sO * cI) * xp + (-sw * cO - cw * sO * cI) * yp,
+    y: (cw * sO + sw * cO * cI) * xp + (-sw * sO + cw * cO * cI) * yp,
+    z: (sw * sI) * xp + (cw * sI) * yp
+  };
+}
+
+function moonLon(jd) {
+  const d = jd - 2451545.0;
+  const Lp = 218.316 + 13.176396 * d, M = 134.963 + 13.064993 * d;
+  const Dm = 297.8502 + 12.19074912 * d, Ms = 357.5291 + 0.98560028 * d;
+  const s = (x) => Math.sin(x * D);
+  return norm(Lp + 6.289 * s(M) - 1.274 * s(M - 2 * Dm) + 0.658 * s(2 * Dm) - 0.186 * s(Ms)
+    - 0.059 * s(2 * M - 2 * Dm) - 0.057 * s(M - 2 * Dm + Ms) + 0.053 * s(M + 2 * Dm)
+    + 0.046 * s(2 * Dm - Ms) + 0.041 * s(M - Ms) - 0.035 * s(Dm) - 0.031 * s(M + Ms));
+}
+
+const BODIES = [
+  { key: 'Moon',    name: 'Moon',    glyph: '\u263D', ring: 0 },
+  { key: 'Sun',     name: 'Sun',     glyph: '\u2609', ring: 1 },
+  { key: 'Mercury', name: 'Mercury', glyph: '\u263F', ring: 2 },
+  { key: 'Venus',   name: 'Venus',   glyph: '\u2640', ring: 3 },
+  { key: 'Mars',    name: 'Mars',    glyph: '\u2642', ring: 4 },
+  { key: 'Jupiter', name: 'Jupiter', glyph: '\u2643', ring: 5 },
+  { key: 'Saturn',  name: 'Saturn',  glyph: '\u2644', ring: 6 },
+  { key: 'Uranus',  name: 'Uranus',  glyph: '\u2645', ring: 7 },
+  { key: 'Neptune', name: 'Neptune', glyph: '\u2646', ring: 8 },
+  { key: 'Pluto',   name: 'Pluto',   glyph: '\u2647', ring: 9 }
+];
+
+const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D','\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+const ELEMENTS = ['Fire','Earth','Air','Water'];
+const MODALITIES = ['Cardinal','Fixed','Mutable'];
+
+const ASPECTS = [
+  { kind: 'Conjunction', symbol: '\u260C', angle: 0,   orb: 8, color: 'oklch(0.84 0.07 85)',  dash: '0', w: 1.6 },
+  { kind: 'Opposition',  symbol: '\u260D', angle: 180, orb: 8, color: 'oklch(0.68 0.13 25)',  dash: '0', w: 1.4 },
+  { kind: 'Trine',       symbol: '\u25B3', angle: 120, orb: 7, color: 'oklch(0.70 0.13 145)', dash: '0', w: 1.2 },
+  { kind: 'Square',      symbol: '\u25A1', angle: 90,  orb: 7, color: 'oklch(0.68 0.13 25)',  dash: '5 4', w: 1.2 },
+  { kind: 'Sextile',     symbol: '\u26B9', angle: 60,  orb: 4, color: 'oklch(0.70 0.13 145)', dash: '2 5', w: 1 }
+];
+
+function lonAt(jd) {
+  const T = (jd - 2451545.0) / 36525.0;
+  const earth = helio('Earth', T);
+  const out = {};
+  out.Sun = norm(Math.atan2(-earth.y, -earth.x) / D);
+  out.Moon = moonLon(jd);
+  ['Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'].forEach((n) => {
+    const p = helio(n, T);
+    out[n] = norm(Math.atan2(p.y - earth.y, p.x - earth.x) / D);
+  });
+  return out;
+}
+
+const dms = (lon) => {
+  const within = lon % 30;
+  const deg = Math.floor(within);
+  const min = Math.floor((within - deg) * 60);
+  return String(deg).padStart(2, '0') + '\u00B0' + String(min).padStart(2, '0') + "'";
+};
+
+const CX = 320, CY = 320;
+const STARS = (() => {
+  let s = 20260816, out = [];
+  const rnd = () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
+  for (let i = 0; i < 110; i++) {
+    const a = rnd() * 360, r = 40 + rnd() * 268;
+    out.push({
+      x: (CX + r * Math.cos(a * D)).toFixed(1),
+      y: (CY + r * Math.sin(a * D)).toFixed(1),
+      r: (0.4 + rnd() * 1.2).toFixed(2),
+      o: (0.12 + rnd() * 0.4).toFixed(2),
+      anim: 'animation: om-twinkle ' + (5 + rnd() * 9).toFixed(1) + 's ease-in-out ' + (rnd() * 6).toFixed(1) + 's infinite;'
+    });
+  }
+  return out;
+})();
+
+class Component extends DCLogic {
+  state = { baseDate: '1986-04-26', time: '01:23', offset: 0, hover: null };
+
+  renderVals() {
+    const st = this.state;
+    const [y, m, d] = st.baseDate.split('-').map(Number);
+    const [hh, mm] = st.time.split(':').map(Number);
+    const ms = Date.UTC(y, m - 1, d, hh, mm) + st.offset * 86400000;
+    const when = new Date(ms);
+    const jd = ms / 86400000 + 2440587.5;
+
+    const now = lonAt(jd), soon = lonAt(jd + 1);
+
+    const bodies = BODIES.map((b) => {
+      const lon = now[b.key];
+      const si = Math.floor(lon / 30);
+      let sp = soon[b.key] - lon; if (sp > 180) sp -= 360; if (sp < -180) sp += 360;
+      const r = 78 + b.ring * 22;
+      const ang = (180 - lon) * D;
+      const x = CX + r * Math.cos(ang), yy = CY + r * Math.sin(ang);
+      const out = 16, ox = CX + (r + out) * Math.cos(ang), oy = CY + (r + out) * Math.sin(ang);
+      return {
+        key: b.key, name: b.name, glyph: b.glyph, lon, sp,
+        sign: SIGNS[si], signGlyph: SIGN_GLYPHS[si],
+        element: ELEMENTS[si % 4], modality: MODALITIES[si % 3],
+        dms: dms(lon), rx: sp < 0,
+        x: x.toFixed(1), y: yy.toFixed(1),
+        dot: b.ring < 2 ? 3.6 : 2.6,
+        gx: (CX + (r - 15) * Math.cos(ang)).toFixed(1),
+        gy: (CY + (r - 15) * Math.sin(ang)).toFixed(1),
+        lx: ox.toFixed(1), ly: oy.toFixed(1),
+        anchor: Math.cos(ang) < 0 ? 'end' : 'start',
+        label: dms(lon) + ' ' + SIGN_GLYPHS[si] + (sp < 0 ? '  \u211E' : ''),
+        color: b.ring < 2 ? 'oklch(0.88 0.06 85)' : (sp < 0 ? 'oklch(0.74 0.11 25)' : 'oklch(0.80 0.05 145)')
+      };
+    });
+
+    const byKey = {};
+    bodies.forEach((b) => { byKey[b.key] = b; });
+
+    const found = [];
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = i + 1; j < bodies.length; j++) {
+        let sep = Math.abs(bodies[i].lon - bodies[j].lon);
+        if (sep > 180) sep = 360 - sep;
+        for (const a of ASPECTS) {
+          const orb = Math.abs(sep - a.angle);
+          if (orb <= a.orb) {
+            let sepSoon = Math.abs(soon[bodies[i].key] - soon[bodies[j].key]);
+            if (sepSoon > 180) sepSoon = 360 - sepSoon;
+            found.push({
+              a: bodies[i], b: bodies[j], def: a, orb,
+              applying: Math.abs(sepSoon - a.angle) < orb
+            });
+            break;
+          }
+        }
+      }
+    }
+    found.sort((p, q) => p.orb - q.orb);
+
+    const hover = st.hover;
+    const threads = found.map((f, i) => {
+      const tight = 1 - f.orb / f.def.orb;
+      const on = hover === null || hover === i;
+      return {
+        x1: f.a.x, y1: f.a.y, x2: f.b.x, y2: f.b.y,
+        color: f.def.color, dash: f.def.dash,
+        w: (f.def.w * (0.5 + tight) * (hover === i ? 2.2 : 1)).toFixed(2),
+        opacity: on ? (hover === i ? 0.95 : (0.22 + tight * 0.5).toFixed(2)) : 0.07,
+        anim: hover === null ? 'animation: om-breathe ' + (7 + (i % 5) * 1.7).toFixed(1) + 's ease-in-out ' + (i * 0.4).toFixed(1) + 's infinite;' : ''
+      };
+    });
+
+    const rows = found.map((f, i) => ({
+      aGlyph: f.a.glyph, aName: f.a.name, bGlyph: f.b.glyph, bName: f.b.name,
+      symbol: f.def.symbol, kind: f.def.kind, color: f.def.color,
+      orb: f.orb.toFixed(2) + '\u00B0',
+      applying: f.applying ? ' \u00B7 A' : ' \u00B7 S',
+      bg: hover === i ? 'oklch(0.19 0.02 288)' : 'transparent',
+      enter: () => this.setState({ hover: i }),
+      leave: () => this.setState({ hover: null })
+    }));
+
+    const count = (list, field) => list.map((nm) => {
+      const n = bodies.filter((b) => b[field] === nm).length;
+      return { name: nm, n, pct: Math.round((n / 10) * 100) + '%' };
+    });
+
+    const sectors = SIGNS.map((s, i) => {
+      const start = (180 - i * 30) * D, mid = (180 - (i * 30 + 15)) * D;
+      return {
+        lx1: (CX + 60 * Math.cos(start)).toFixed(1), ly1: (CY + 60 * Math.sin(start)).toFixed(1),
+        lx2: (CX + 288 * Math.cos(start)).toFixed(1), ly2: (CY + 288 * Math.sin(start)).toFixed(1),
+        gx: (CX + 306 * Math.cos(mid)).toFixed(1), gy: (CY + 306 * Math.sin(mid)).toFixed(1),
+        glyph: SIGN_GLYPHS[i],
+        fill: bodies.some((b) => b.sign === s) ? 'oklch(0.72 0.09 145)' : 'oklch(0.34 0.02 288)'
+      };
+    });
+
+    const elong = norm(now.Moon - now.Sun);
+    const mr = 11, mcx = 320, mcy = 354;
+    const k = Math.cos(elong * D);
+    const waxing = elong < 180, gibbous = k < 0;
+    const outerSweep = waxing ? 1 : 0;
+    const retSweep = waxing ? (gibbous ? 1 : 0) : (gibbous ? 0 : 1);
+    const moonPath = 'M ' + mcx + ' ' + (mcy - mr) + ' A ' + mr + ' ' + mr + ' 0 0 ' + outerSweep
+      + ' ' + mcx + ' ' + (mcy + mr) + ' A ' + (Math.abs(k) * mr).toFixed(2) + ' ' + mr + ' 0 0 '
+      + retSweep + ' ' + mcx + ' ' + (mcy - mr) + ' Z';
+    const moonName = (() => {
+      const e = norm(elong);
+      if (e < 10 || e >= 350) return 'New';
+      if (e < 80) return 'Waxing crescent';
+      if (e < 100) return 'First quarter';
+      if (e < 170) return 'Waxing gibbous';
+      if (e < 190) return 'Full';
+      if (e < 260) return 'Waning gibbous';
+      if (e < 280) return 'Last quarter';
+      return 'Waning crescent';
+    })();
+
+    return {
+      bodies, threads, rows, sectors, stars: STARS,
+      elements: count(ELEMENTS, 'element'),
+      modalities: count(MODALITIES, 'modality'),
+      aspectCount: found.length,
+      moonPath, moonName,
+      baseDate: st.baseDate, time: st.time, offset: st.offset,
+      offsetLabel: st.offset === 0 ? 'as entered' : (st.offset > 0 ? '+' : '') + st.offset + ' d',
+      dateLabel: when.toISOString().slice(0, 10).replace(/-/g, ' \u00B7 '),
+      timeLabel: when.toISOString().slice(11, 16),
+      jdLabel: jd.toFixed(4),
+      onDate: (e) => this.setState({ baseDate: e.target.value, offset: 0 }),
+      onTime: (e) => this.setState({ time: e.target.value }),
+      onScrub: (e) => this.setState({ offset: Number(e.target.value) })
+    };
+  }
+}
+</script>
+</body>
+</html>

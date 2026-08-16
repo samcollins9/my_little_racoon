@@ -2,13 +2,19 @@
 id: 9
 title: "Evidence sheet with pin and dismiss"
 epic: "Thin Vertical Slice"
-status: todo
+status: abandoned
 created: 2026-08-15T20:07:45+00:00
 ---
 
 # Master Controller Sprint Definition — Sprint 9
 
 **Epic:** Thin Vertical Slice
+
+> **Amendment pending — 16 Aug 2026.** Authentication was cut from the exercise on
+> this date. This sprint's requirements still assume a signed-in user and a
+> server-side session check. It will be rewritten for anonymous, link-addressed
+> readings before it is assigned. Do not build against it as written.
+
 **Sprint Objective:** Present ranked factors as an evidence sheet the astrologer curates, showing why each factor scored as it did, with pin and dismiss over the set.
 
 ### Context

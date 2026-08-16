@@ -2,7 +2,7 @@
 id: 3
 title: "Supabase Auth with per-environment redirects"
 epic: "Deployment Lifecycle"
-status: todo
+status: abandoned
 created: 2026-08-15T20:07:45+00:00
 ---
 
@@ -41,6 +41,12 @@ and proving that works is worth more than the column is.
    applied through the Sprint 2 pipeline like every other schema change.
 7. `.env.example` and `README.md` updated: new variables, how to create the
    practitioner account, and how redirect URLs are configured per environment.
+8. The sign-in page maps error states to a fixed set of codes rather than reflecting
+   `searchParams` into the page. **Added 16 Aug 2026 from QA1 round 1 note 3.** React
+   escapes the value so this is not XSS, but it lets anyone craft a `/sign-in?error=…`
+   link showing the practitioner arbitrary text on a genuine sign-in page, moments
+   before they type a password. This is a defect in code this sprint wrote, on this
+   sprint's own auth surface — it is a fix to the deliverable, not new scope.
 
 ### Acceptance Criteria
 
@@ -71,6 +77,20 @@ and proving that works is worth more than the column is.
   visited directly by URL.
 - The session survives a full page reload. **This is the sprint's actual proof** —
   a session that only exists in memory looks identical until the first refresh.
+- **Carried from Sprint 2's GroundTruth PASS (16 Aug 2026).** A request to the
+  `readings` REST endpoint carrying a valid anon key, unauthenticated, returns zero
+  rows. Sprint 2 shipped `readings` with full CRUD granted to the `anon` and
+  `authenticated` roles at the grant level, protected by RLS alone, and GroundTruth
+  could not verify deny-all live because it had no anon key. That assumption is
+  fine while the table is empty and nothing touches it — but this sprint introduces
+  real sessions against it, so the check moves here rather than waiting for Sprint 4
+  to own it. It is a ten-second check. The anon key is readable in the Supabase
+  dashboard under Settings → API; it is marked Sensitive in Vercel and cannot be
+  read back from there.
+- **Added 16 Aug 2026 from QA1 round 1.** An unauthenticated `POST /auth/v1/signup`
+  carrying the anon key is refused. `config.toml` disabling sign-up governs the local
+  stack; only this check proves the hosted project agrees. The failure is silent and
+  it inverts the repository's own claim, so it is verified rather than assumed.
 
 ### Out of Scope
 
@@ -92,7 +112,12 @@ and proving that works is worth more than the column is.
 - **Blocked by:** Sprint 2. Needs the migration pipeline and the Supabase project.
 - **External:** The practitioner account must be created in the Supabase dashboard,
   since sign-up is disabled by design. Redirect URLs must be saved in Supabase's
-  auth settings. Both are account-level actions the user performs.
+  auth settings. **Public sign-up must be disabled on the hosted project**, which is
+  a separate dashboard setting from `config.toml` — that file governs the local
+  stack only, and nothing syncs the two. Added 16 Aug 2026 after QA1 round 1 noted
+  its absence here: R1 passes on the repository while production could still accept
+  public registration, and the repo would be asserting the opposite. All three are
+  account-level actions the user performs.
 
 ### Risks & Mitigations
 
