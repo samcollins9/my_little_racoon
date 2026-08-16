@@ -3,16 +3,22 @@
 A Next.js + TypeScript app deployed on Vercel, with a Supabase database
 migrated by CI, row level security policies proven by an automated test
 suite, and migrations guaranteed to land before the code depending on
-them serves traffic. This repository is currently the deployment-lifecycle
-walking skeleton (Sprints 1–6) — see `docs/ROADMAP_v1.md` for the full
-plan and `docs/RUNBOOK.md` for rollback and incident procedures.
+them serves traffic. This repository is the full deployment-lifecycle
+exercise (Sprints 1–10) — see `docs/ROADMAP_v1.md` for the plan and
+`docs/RUNBOOK.md` for rollback and incident procedures.
 
-`/chart` is the first real page: enter a past date, get geocentric
-planetary positions for it, computed by an adapter around
-`astronomy-engine` (`lib/ephemeris/`) with no place/houses/angles input —
-see the Sprint 6 file for why. Everything else is still deliberately
-minimal; the point so far has been a proven, rehearsed deployment
-pipeline, not product depth.
+`/chart` enters a past date and computes geocentric planetary positions
+for it, via an adapter around `astronomy-engine` (`lib/ephemeris/`) with
+no place/houses/angles input — see the Sprint 6 file for why. Saving a
+reading there stores it anonymously and returns a `/reading/[id]` link —
+that link is the only access control (Sprint 10); there's no listing
+route and no way to enumerate what's been saved.
+
+`readings.place_name`/`latitude`/`longitude`/`timezone` are vestigial:
+Sprint 2 added them before Sprint 6 dropped place and geocoding entirely.
+They're nullable rather than dropped (Sprint 10 relaxed rather than
+removed them — see that migration), knowingly left behind rather than
+forgotten. Nothing in this app populates them.
 
 There is no authentication in this app. It's a fully public, anonymous
 tool — the Supabase anon key ships in the client bundle by design, and RLS
