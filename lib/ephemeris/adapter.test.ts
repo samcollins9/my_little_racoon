@@ -7,6 +7,7 @@ import {
   InvalidDateFormatError,
   calculationInstantForDate,
   computePositions,
+  instantFromDateAndTime,
 } from "./adapter";
 
 /**
@@ -133,5 +134,39 @@ describe("calculationInstantForDate", () => {
 
   it("rejects a syntactically valid but nonexistent calendar date", () => {
     expect(() => calculationInstantForDate("2024-02-30")).toThrow(InvalidDateFormatError);
+  });
+});
+
+describe("instantFromDateAndTime", () => {
+  it("combines date and time into the exact UTC instant", () => {
+    expect(instantFromDateAndTime("2024-03-20", "05:30").toISOString()).toBe(
+      "2024-03-20T05:30:00.000Z"
+    );
+  });
+
+  it("a different time on the same date changes the instant", () => {
+    const morning = instantFromDateAndTime("2024-03-20", "00:00");
+    const evening = instantFromDateAndTime("2024-03-20", "23:59");
+    expect(evening.getTime() - morning.getTime()).toBe((23 * 60 + 59) * 60 * 1000);
+  });
+
+  it("rejects a malformed time string", () => {
+    expect(() => instantFromDateAndTime("2024-03-20", "5:30")).toThrow(InvalidDateFormatError);
+    expect(() => instantFromDateAndTime("2024-03-20", "not-a-time")).toThrow(
+      InvalidDateFormatError
+    );
+  });
+
+  it("rejects an outright invalid time (parses to Invalid Date)", () => {
+    expect(() => instantFromDateAndTime("2024-03-20", "25:00")).toThrow(InvalidDateFormatError);
+    expect(() => instantFromDateAndTime("2024-03-20", "23:61")).toThrow(InvalidDateFormatError);
+  });
+
+  it("rejects 24:00, which JS silently rolls to the next day", () => {
+    expect(() => instantFromDateAndTime("2024-03-20", "24:00")).toThrow(InvalidDateFormatError);
+  });
+
+  it("still rejects a malformed date", () => {
+    expect(() => instantFromDateAndTime("03/20/2024", "05:30")).toThrow(InvalidDateFormatError);
   });
 });

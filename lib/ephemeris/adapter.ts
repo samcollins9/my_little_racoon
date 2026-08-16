@@ -83,6 +83,48 @@ export function calculationInstantForDate(isoDate: string): Date {
   return instant;
 }
 
+const TIME_ONLY_PATTERN = /^\d{2}:\d{2}$/;
+
+/**
+ * Sprint 12, R8: positions accept an arbitrary instant -- date and time --
+ * not just calculationInstantForDate's fixed noon-UTC convention. Time
+ * materially moves the Moon (roughly 13 degrees/day), so this isn't a
+ * decorative extension: a time input changes real output.
+ *
+ * Same round-trip validation as calculationInstantForDate, extended to
+ * hours and minutes. Most invalid times (25:00, 23:61) parse to an
+ * outright Invalid Date, already caught below -- but "24:00" is valid
+ * ISO 8601 for midnight at the end of the day, and JS's Date parser
+ * silently rolls it to 00:00 the *next* day rather than rejecting it.
+ * The round trip catches that too, since the date it reads back no
+ * longer matches what was typed in.
+ */
+export function instantFromDateAndTime(isoDate: string, isoTime: string): Date {
+  if (!DATE_ONLY_PATTERN.test(isoDate)) {
+    throw new InvalidDateFormatError(`"${isoDate}" is not a date in YYYY-MM-DD form.`);
+  }
+  if (!TIME_ONLY_PATTERN.test(isoTime)) {
+    throw new InvalidDateFormatError(`"${isoTime}" is not a time in HH:MM form.`);
+  }
+
+  const instant = new Date(`${isoDate}T${isoTime}:00Z`);
+
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const [hour, minute] = isoTime.split(":").map(Number);
+  const roundTrips =
+    instant.getUTCFullYear() === year &&
+    instant.getUTCMonth() + 1 === month &&
+    instant.getUTCDate() === day &&
+    instant.getUTCHours() === hour &&
+    instant.getUTCMinutes() === minute;
+
+  if (Number.isNaN(instant.getTime()) || !roundTrips) {
+    throw new InvalidDateFormatError(`"${isoDate} ${isoTime}" is not a valid date and time.`);
+  }
+
+  return instant;
+}
+
 function eclipticLongitude(body: Astronomy.Body, date: Date): number {
   const vector = Astronomy.GeoVector(body, date, true);
   return Astronomy.Ecliptic(vector).elon;
