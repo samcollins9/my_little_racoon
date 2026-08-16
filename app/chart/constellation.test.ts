@@ -52,9 +52,9 @@ describe("computeBodies", () => {
       position({ body: "Venus", retrograde: false }),
       position({ body: "Moon" }),
     ]);
-    expect(mercuryRetro.color).toBe("oklch(0.68 0.13 25)");
-    expect(mercuryDirect.color).toBe("oklch(0.70 0.13 145)");
-    expect(moon.color).toBe("oklch(0.84 0.07 85)");
+    expect(mercuryRetro.color).toBe("oklch(0.74 0.11 25)");
+    expect(mercuryDirect.color).toBe("oklch(0.80 0.05 145)");
+    expect(moon.color).toBe("oklch(0.88 0.06 85)");
   });
 
   it("formats the degree/minute label and appends the retrograde glyph", () => {
