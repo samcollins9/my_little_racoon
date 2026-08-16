@@ -1,0 +1,548 @@
+/* Design tokens from docs/design/HANDOFF_chart_constellation.md */
+.root {
+  --ink: oklch(0.115 0.012 285);
+  --ink-raised: oklch(0.122 0.014 286);
+  --surface: oklch(0.142 0.014 286);
+  --surface-inset: oklch(0.105 0.012 285);
+  --border: oklch(0.29 0.02 288);
+  --border-soft: oklch(0.21 0.018 288);
+  --rule: oklch(0.185 0.014 286);
+  --text: oklch(0.92 0.012 85);
+  --text-strong: oklch(0.94 0.012 85);
+  --text-muted: oklch(0.65 0.015 285);
+  --text-faint: oklch(0.46 0.015 285);
+  --accent: oklch(0.7 0.13 145);
+  --accent-hover: oklch(0.79 0.12 145);
+  --warn: oklch(0.68 0.13 25);
+  --gold: oklch(0.84 0.07 85);
+
+  min-height: 100vh;
+  color: var(--text);
+  background: radial-gradient(130% 70% at 50% -10%, oklch(0.185 0.022 288), var(--ink) 68%);
+  padding: 56px 64px 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);
+}
+
+/* ---- Empty state ---- */
+
+.emptyCard {
+  composes: card;
+  width: 480px;
+  padding: 58px 46px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ornament {
+  display: block;
+  margin-bottom: 32px;
+  animation: driftAnim 12s ease-in-out infinite;
+}
+
+.ornamentStars {
+  transform-origin: 100px 100px;
+  animation: turnAnim 260s linear infinite;
+}
+
+.headline {
+  margin: 0 0 15px;
+  font-size: 31px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.24;
+}
+
+.headlineAccent {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.subhead {
+  margin: 0 0 32px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 306px;
+  text-wrap: pretty;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.fieldLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+}
+
+.dateInput {
+  width: 100%;
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 15px 16px;
+  font-family: var(--font-mono), monospace;
+  font-size: 15px;
+  letter-spacing: 0.09em;
+  color: var(--text);
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.submit {
+  margin-top: 10px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid oklch(0.33 0.02 288);
+  color: var(--text-strong);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  cursor: not-allowed;
+  color: oklch(0.58 0.015 285);
+  border-color: oklch(0.33 0.02 288);
+}
+
+.submit:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.footnote {
+  margin: 24px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  line-height: 1.85;
+  color: var(--text-faint);
+}
+
+/* ---- Results state ---- */
+
+.resultsCard {
+  composes: card;
+  width: 1320px;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: 700px 1fr;
+  align-items: stretch;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--border-soft);
+}
+
+.svgWrap {
+  padding: 22px 30px 6px;
+}
+
+.scrubBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 34px 26px;
+}
+
+.scrubHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.mono9 {
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.scrubOffset {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.range {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 18px;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 1px;
+  background: oklch(0.34 0.02 285);
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+
+.range::-moz-range-track {
+  height: 1px;
+  background: oklch(0.34 0.02 285);
+}
+
+.range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: ew-resize;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputsRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 26px 32px 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.smallInput {
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  padding: 9px 11px;
+  border-radius: 2px;
+}
+
+.smallInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.meta {
+  margin-left: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  text-align: right;
+  line-height: 1.7;
+}
+
+.sectionHead {
+  padding: 22px 32px 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.aspectCountLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+.tableWrap {
+  padding: 10px 32px 0;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1fr 26px 1fr 74px 1fr;
+  gap: 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid oklch(0.23 0.018 288);
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1fr 26px 1fr 74px 1fr;
+  gap: 0 10px;
+  align-items: center;
+  padding: 8px 6px;
+  margin: 0 -6px;
+  border-bottom: 1px solid var(--rule);
+  cursor: default;
+}
+
+.bodyCell {
+  font-size: 17px;
+  color: var(--text);
+}
+
+.symbolCell {
+  font-family: var(--font-mono), monospace;
+  font-size: 15px;
+  text-align: center;
+}
+
+.orbCell {
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  color: var(--text);
+}
+
+.aspectNameCell {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.balanceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 26px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.balanceCell {
+  padding: 22px 32px;
+}
+
+.balanceCellBordered {
+  composes: balanceCell;
+  border-right: 1px solid var(--border-soft);
+}
+
+.balanceHeader {
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 14px;
+}
+
+.balanceRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.balanceRowElement {
+  display: grid;
+  grid-template-columns: 58px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.balanceRowModality {
+  display: grid;
+  grid-template-columns: 66px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.balanceName {
+  font-size: 17px;
+  color: oklch(0.86 0.012 85);
+}
+
+.balanceTrack {
+  height: 3px;
+  background: var(--border-soft);
+  display: block;
+  position: relative;
+}
+
+.balanceFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.balanceCount {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 32px;
+  border-top: 1px solid var(--border-soft);
+  background: var(--ink-raised);
+}
+
+.sealButton {
+  background: var(--accent);
+  border: none;
+  color: oklch(0.12 0.012 285);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 13px 22px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.sealButton:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.sealButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.footerNote {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  line-height: 1.75;
+  color: var(--text-faint);
+  max-width: 380px;
+}
+
+.errorText {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  color: var(--warn);
+}
+
+/* ---- Animations ---- */
+
+@keyframes breatheAnim {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes twinkleAnim {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes haloAnim {
+  0%,
+  100% {
+    opacity: 0.09;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.26;
+    transform: scale(1.14);
+  }
+}
+
+@keyframes driftAnim {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes turnAnim {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animBreathe {
+  animation: breatheAnim var(--dur, 10s) ease-in-out var(--delay, 0s) infinite;
+}
+
+.animTwinkle {
+  animation: twinkleAnim var(--dur, 10s) ease-in-out var(--delay, 0s) infinite;
+}
+
+.animHalo {
+  animation: haloAnim 8s ease-in-out infinite;
+}
+
+/* Every ambient loop above is purely decorative -- the chart is fully
+   legible with all of them switched off, so reduced motion just turns
+   them off rather than needing an alternate static design. */
+@media (prefers-reduced-motion: reduce) {
+  .ornament,
+  .ornamentStars,
+  .animBreathe,
+  .animTwinkle,
+  .animHalo {
+    animation: none !important;
+  }
+}
