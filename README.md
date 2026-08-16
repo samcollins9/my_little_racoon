@@ -4,10 +4,15 @@ A Next.js + TypeScript app deployed on Vercel, with a Supabase database
 migrated by CI, row level security policies proven by an automated test
 suite, and migrations guaranteed to land before the code depending on
 them serves traffic. This repository is currently the deployment-lifecycle
-walking skeleton (Sprints 1–5) — see `docs/ROADMAP_v1.md` for the full
-plan and `docs/RUNBOOK.md` for rollback and incident procedures. The app
-itself is intentionally minimal right now: the point of these sprints is a
-proven, rehearsed deployment pipeline, not product functionality.
+walking skeleton (Sprints 1–6) — see `docs/ROADMAP_v1.md` for the full
+plan and `docs/RUNBOOK.md` for rollback and incident procedures.
+
+`/chart` is the first real page: enter a past date, get geocentric
+planetary positions for it, computed by an adapter around
+`astronomy-engine` (`lib/ephemeris/`) with no place/houses/angles input —
+see the Sprint 6 file for why. Everything else is still deliberately
+minimal; the point so far has been a proven, rehearsed deployment
+pipeline, not product depth.
 
 There is no authentication in this app. It's a fully public, anonymous
 tool — the Supabase anon key ships in the client bundle by design, and RLS
