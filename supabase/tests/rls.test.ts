@@ -19,6 +19,9 @@ function validReading(overrides: Partial<Record<string, unknown>> = {}) {
     latitude: 64.1466,
     longitude: -21.9426,
     timezone: "Atlantic/Reykjavik",
+    positions: [
+      { body: "Sun", eclipticLongitude: 12.34, sign: "Aries", degreeInSign: 12.34, retrograde: false },
+    ],
     ...overrides,
   };
 }
