@@ -30,6 +30,40 @@ jobs:
       - name: Build
         run: npm run build
 
+  rls-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Applies every migration in supabase/migrations/ to a fresh local
+      # stack. This is what actually proves the RLS policies work, not
+      # just that the migration's SQL is well-formed -- runs on every push
+      # and PR (not gated to main), since it needs no production secrets.
+      - name: Start local Supabase stack
+        run: supabase start
+
+      - name: Export local stack URL/anon key
+        run: |
+          supabase status -o env \
+            --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
+            --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
+            >> "$GITHUB_ENV"
+
+      - name: Run RLS policy tests
+        run: npm run test:rls
+
   migrate:
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
