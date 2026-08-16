@@ -1,5 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
+import { getDeployedCommit } from "@/lib/deployed-commit";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Never statically optimized -- this must hit the database on every
@@ -14,6 +15,13 @@ export const dynamic = "force-dynamic";
 const SCHEMA_MISSING_CODES = new Set(["42P01", "PGRST205"]);
 
 export async function GET() {
+  // Sprint 11: this is the deployed-commit observable now that `/`
+  // redirects straight to `/chart` and no longer renders it. Included in
+  // every branch below, not just the healthy one -- which build is live
+  // is exactly what you need to know when the database check is failing,
+  // not only when it's passing.
+  const commit = getDeployedCommit();
+
   let admin;
   try {
     admin = createAdminClient();
@@ -24,6 +32,7 @@ export async function GET() {
         connected: false,
         migrationVersion: null,
         error: (error as Error).message,
+        commit,
       },
       { status: 503 }
     );
@@ -47,6 +56,7 @@ export async function GET() {
         connected: schemaMissing,
         migrationVersion: null,
         error: error.message,
+        commit,
       },
       { status: 503 }
     );
@@ -56,5 +66,6 @@ export async function GET() {
     status: "ok",
     connected: true,
     migrationVersion: data?.version ?? null,
+    commit,
   });
 }
