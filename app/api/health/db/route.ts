@@ -6,7 +6,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // request, not report a build-time snapshot.
 export const dynamic = "force-dynamic";
 
-const RELATION_DOES_NOT_EXIST = "42P01";
+// 42P01 is Postgres's own undefined_table SQLSTATE, reachable if this ever
+// queries Postgres directly. PGRST205 is what PostgREST actually returns
+// for a table absent from its schema cache -- the path this route is on
+// today, since supabase-js talks to PostgREST, not Postgres, and passes
+// its error code through unchanged.
+const SCHEMA_MISSING_CODES = new Set(["42P01", "PGRST205"]);
 
 export async function GET() {
   let admin;
@@ -27,12 +32,12 @@ export async function GET() {
   const { data, error } = await admin
     .from("schema_migrations")
     .select("version")
-    .order("applied_at", { ascending: false })
+    .order("version", { ascending: false })
     .limit(1)
     .maybeSingle();
 
   if (error) {
-    const schemaMissing = error.code === RELATION_DOES_NOT_EXIST;
+    const schemaMissing = SCHEMA_MISSING_CODES.has(error.code);
     return NextResponse.json(
       {
         // A missing relation still means we reached the database -- the
