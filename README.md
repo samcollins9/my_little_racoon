@@ -137,7 +137,9 @@ npm run build        # next build — the same command Vercel runs
 7. A separate `rls-tests` CI job runs on every push and pull request (not
    gated to `main`, since it needs no production secrets): it starts a
    fresh local Supabase stack, applies every migration to it, and runs the
-   RLS policy test suite against it. It fails the build the same way
-   lint/typecheck/test do — a change that weakens a policy never reaches
-   `main` in the first place, rather than being caught after the fact
-   against production.
+   RLS policy test suite against it. `migrate` depends on it
+   (`needs: [build, rls-tests]`), so a red `rls-tests` run blocks the
+   migration from ever reaching production — it does not block the code
+   itself from landing on `main`, which would need branch protection
+   configured on the GitHub repository, not something this workflow file
+   can enforce on its own.
