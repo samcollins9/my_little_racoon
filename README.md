@@ -34,8 +34,9 @@ npm install
 npm run dev    # http://localhost:3000
 ```
 
-The page at `/` needs no environment variables — see `.env.example` for the
-one variable it reads and why it's fine to leave unset locally.
+`/` redirects straight to `/chart` (Sprint 11) — there's no page of its
+own. `/chart` itself needs no environment variables to render the date
+form; saving a reading does, same as `/reading/[id]` — see `.env.example`.
 
 `/api/health/db` does need Supabase configured. For local development:
 
@@ -146,12 +147,20 @@ npm run build        # next build — the same command Vercel runs
    this closes the race named in Sprint 2 and left open through Sprint 4:
    code could reach production before, or without, its migration.
 5. Vercel builds using the same Node version and build command as CI.
-6. The production page reads `VERCEL_GIT_COMMIT_SHA`, set automatically by
-   Vercel, and displays it — that's how you confirm which commit is live.
-7. `/api/health/db` on production reports connectivity and the latest
-   applied migration version, read from `public.schema_migrations` — that's
-   how you confirm which migration is live, the same way the homepage's
-   commit SHA confirms which code is live.
+6. `/api/health/db` on production reports connectivity, the latest applied
+   migration version (from `public.schema_migrations`), and the deployed
+   commit SHA (full and short) read from `VERCEL_GIT_COMMIT_SHA` via
+   `lib/deployed-commit.ts` — that's how you confirm which commit and
+   which migration are live.
+
+**The deployed-commit observable lives at `/api/health/db`, not on any
+page.** It used to be `/`'s own content (Sprint 1), but Sprint 11 sends
+`/` straight to `/chart` (see below), and a page nobody renders can't
+display anything. Moving the SHA into the health endpoint — already
+GroundTruth's other observable, and not a design surface — means a future
+UI change can't silently take the observable down with it the way
+redirecting `/` almost did the first time. `lib/deployed-commit.ts` itself
+didn't move; only what reads it did.
 
 ### One-time setup for the deploy hook (external, dashboard)
 

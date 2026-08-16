@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone design prototype/handoff material, not application
+    // source -- not meant to be held to this app's lint rules.
+    "docs/design/**",
   ]),
 ]);
 
