@@ -1,12 +1,13 @@
 # Retroactive Horoscope
 
 A Next.js + TypeScript app deployed on Vercel, with a Supabase database
-migrated by CI and row level security policies proven by an automated
-test suite. This repository is currently the deployment-lifecycle walking
-skeleton (Sprints 1–4) — see `docs/ROADMAP_v1.md` for the full plan. The
-app itself is intentionally minimal right now: the point of these sprints
-is a proven path from a push to `main` to a live, secured production
-database, not product functionality.
+migrated by CI, row level security policies proven by an automated test
+suite, and migrations guaranteed to land before the code depending on
+them serves traffic. This repository is currently the deployment-lifecycle
+walking skeleton (Sprints 1–5) — see `docs/ROADMAP_v1.md` for the full
+plan and `docs/RUNBOOK.md` for rollback and incident procedures. The app
+itself is intentionally minimal right now: the point of these sprints is a
+proven, rehearsed deployment pipeline, not product functionality.
 
 There is no authentication in this app. It's a fully public, anonymous
 tool — the Supabase anon key ships in the client bundle by design, and RLS
@@ -114,32 +115,99 @@ npm run build        # next build — the same command Vercel runs
 ## Path to production
 
 1. Push (or merge a PR) to `main`.
-2. GitHub Actions runs install, lint, typecheck, test, and build on every
-   push and pull request. A red run blocks confidence in the deploy, though
-   it does not itself gate the Vercel deployment.
-3. Vercel is connected to this repository's `main` branch and deploys to
-   production automatically on push, using the same Node version and build
-   command as CI.
-4. The production page reads `VERCEL_GIT_COMMIT_SHA`, set automatically by
+2. GitHub Actions runs install, lint, typecheck, test, and build (`build`
+   job) on every push and pull request. A separate `rls-tests` job does
+   the same for the RLS policy suite (see above) — also on every push and
+   PR, not just `main`, since it needs no production secrets.
+3. **Only on push to `main`**, and only after both `build` and `rls-tests`
+   pass (`needs: [build, rls-tests]`), the `migrate` job runs: links to
+   the production Supabase project, runs `supabase db push` (applies any
+   migration in `supabase/migrations/` not yet applied there — a failing
+   migration fails the job), then a schema drift check (fails the job if
+   the remote schema no longer matches what the migrations describe,
+   which usually means someone edited the Supabase dashboard directly
+   instead of writing a migration).
+4. **Only after that succeeds**, `migrate`'s last step calls a Vercel
+   Deploy Hook, which is what actually starts the production build and
+   deployment. Vercel's own automatic git-triggered deploy is disabled for
+   `main` (`vercel.json`'s `git.deploymentEnabled.main: false`) precisely
+   so this is the *only* path a production deployment can start from —
+   this closes the race named in Sprint 2 and left open through Sprint 4:
+   code could reach production before, or without, its migration.
+5. Vercel builds using the same Node version and build command as CI.
+6. The production page reads `VERCEL_GIT_COMMIT_SHA`, set automatically by
    Vercel, and displays it — that's how you confirm which commit is live.
-5. On push to `main` only (never on a pull request), a separate `migrate`
-   CI job links to the production Supabase project and runs
-   `supabase db push`, which applies any migration in
-   `supabase/migrations/` not yet applied there. A failing migration fails
-   this job. It then runs a schema drift check that fails the job if the
-   remote schema no longer matches what the migrations describe — the
-   usual cause is a change made directly in the Supabase dashboard instead
-   of through a migration file.
-6. `/api/health/db` on production reports connectivity and the latest
+7. `/api/health/db` on production reports connectivity and the latest
    applied migration version, read from `public.schema_migrations` — that's
    how you confirm which migration is live, the same way the homepage's
    commit SHA confirms which code is live.
-7. A separate `rls-tests` CI job runs on every push and pull request (not
-   gated to `main`, since it needs no production secrets): it starts a
-   fresh local Supabase stack, applies every migration to it, and runs the
-   RLS policy test suite against it. `migrate` depends on it
-   (`needs: [build, rls-tests]`), so a red `rls-tests` run blocks the
-   migration from ever reaching production — it does not block the code
-   itself from landing on `main`, which would need branch protection
-   configured on the GitHub repository, not something this workflow file
-   can enforce on its own.
+
+### One-time setup for the deploy hook (external, dashboard)
+
+`migrate`'s last step reads `secrets.VERCEL_DEPLOY_HOOK_URL`, which has to
+be created once in the Vercel dashboard: Project Settings → Git → Deploy
+Hooks, create one targeting the `main` branch, then add its URL as a
+GitHub Actions repository secret of that exact name. Until this is done,
+the `migrate` job's last step fails — which is the correct failure mode
+(loud, not a silent no-deploy) given `main`'s automatic git deploy is now
+off.
+
+### Preview deployments
+
+Only `main`'s automatic deploy is disabled. Every other branch still
+deploys as a Vercel preview exactly as before, on every push — previews
+are not gated on migrations, because previews don't get their own
+database (see below) and there is nothing preview-specific for them to
+migrate.
+
+## Shared database (deliberate, Sprint 5)
+
+Preview deployments and production share the same Supabase project.
+There is no second, preview-only database.
+
+This is a conscious trade, not an oversight. `readings` holds only public
+test data anyone can create through a public form — no accounts, nothing
+whose exposure or corruption matters at this stage. Isolating previews
+would cost a second Supabase project, a second variable set, CI targeting
+logic, and a second schema free to drift from the first — and it would
+make every preview show an empty table right when it's being used to
+review a change.
+
+**Consequences worth knowing:**
+
+- A preview writing bad or test data writes it into the same table
+  production reads. Expected, not a bug — see `docs/RUNBOOK.md`.
+- A preview built from a branch expecting a schema `main` doesn't have yet
+  will fail against production's actual schema. Also expected: previews
+  are reviewed against the current production schema, not a schema of
+  their own.
+- The one thing this depends on holding: **migrations only ever reach this
+  shared database through the `migrate` job, which only runs on `main`**.
+  A preview branch cannot apply a migration under any circumstance — see
+  `lib/ci-guardrails.test.ts`, which fails if that restriction is ever
+  loosened. With no database isolation, this is the only remaining
+  barrier between an unreviewed branch and production's schema.
+
+**This changes if:** the app gets real user data, more than one
+practitioner, or anything with an actual privacy surface. At that point
+preview isolation stops being optional and this section needs to be
+rewritten, not just amended.
+
+## Migrations: expand, then contract
+
+Standing rule for every migration from here on, not just the ones in this
+sprint: a migration must leave the schema **compatible with the
+application version currently running**, not just the version being
+deployed alongside it.
+
+Concretely: add a new column as nullable (or with a default) before any
+code depends on it being required; add a new table before code writes to
+it; don't drop a column or table until no deployed version of the app
+still reads it. Never combine "add the new shape" and "remove the old
+shape" in one migration.
+
+Why: rollback (see `docs/RUNBOOK.md`) rolls back the *application*, not
+the database — migrations aren't reverse-migrated as part of a rollback,
+they're forward-fixed if they need undoing at all. If a migration already
+dropped something the previous app version depends on, rolling the app
+back doesn't fix anything; it just moves which version is broken.

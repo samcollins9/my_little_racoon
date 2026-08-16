@@ -111,3 +111,14 @@ jobs:
             exit 1
           fi
           echo "No drift detected."
+
+      # vercel.json disables Vercel's automatic git deploy for `main`
+      # (git.deploymentEnabled.main = false) specifically so this is the
+      # only path a production deployment can start from. This is the fix
+      # for the race named in Sprint 2 and never closed: Vercel used to
+      # deploy straight from the push, independent of whether this job
+      # (or even the build job) passed. Reaching this step means the
+      # migration and drift check both already succeeded, so the schema a
+      # visitor sees is guaranteed to be no older than the code they get.
+      - name: Trigger production deployment
+        run: curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
