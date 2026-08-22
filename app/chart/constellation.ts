@@ -82,6 +82,14 @@ export const ASPECT_SYMBOLS: Record<Aspect["aspect"], string> = {
   sextile: "⚹",
 };
 
+export const ASPECT_MAX_ORB: Record<Aspect["aspect"], number> = {
+  conjunction: 8,
+  opposition: 8,
+  trine: 7,
+  square: 7,
+  sextile: 4,
+};
+
 export const ASPECT_DASH: Record<Aspect["aspect"], string> = {
   conjunction: "0",
   opposition: "0",
@@ -101,13 +109,6 @@ export const ASPECT_BASE_WIDTH: Record<Aspect["aspect"], number> = {
 const COLOR_GOLD = "oklch(0.84 0.07 85)";
 const COLOR_VERDIGRIS = "oklch(0.70 0.13 145)";
 const COLOR_RUST = "oklch(0.68 0.13 25)";
-
-// Body-mark colours are their own palette (handoff line 90), distinct from
-// the aspect-thread palette above -- close but not identical, so worth
-// keeping as separate constants rather than reusing COLOR_GOLD/VERDIGRIS/RUST.
-const BODY_COLOR_LUMINARY = "oklch(0.88 0.06 85)";
-const BODY_COLOR_DIRECT = "oklch(0.80 0.05 145)";
-const BODY_COLOR_RETROGRADE = "oklch(0.74 0.11 25)";
 
 export const ASPECT_COLOR: Record<Aspect["aspect"], string> = {
   conjunction: COLOR_GOLD,
@@ -168,11 +169,7 @@ export function computeBodies(positions: PlanetPosition[]): BodyRender[] {
       labelY: CY + (r + 16) * sin,
       labelAnchor: cos < 0 ? "end" : "start",
       label: `${dms(p.degreeInSign)} ${SIGN_GLYPHS[p.sign]}${p.retrograde ? "  ℞" : ""}`,
-      color: luminary
-        ? BODY_COLOR_LUMINARY
-        : p.retrograde
-          ? BODY_COLOR_RETROGRADE
-          : BODY_COLOR_DIRECT,
+      color: luminary ? COLOR_GOLD : p.retrograde ? COLOR_RUST : COLOR_VERDIGRIS,
     };
   });
 }
