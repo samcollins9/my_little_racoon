@@ -14,6 +14,14 @@ reading there stores it anonymously and returns a `/reading/[id]` link —
 that link is the only access control (Sprint 10); there's no listing
 route and no way to enumerate what's been saved.
 
+`lib/ephemeris/aspects.ts`, `balance.ts`, `moon-phase.ts`, and `julian-day.ts`
+(Sprint 12) compute Ptolemaic aspects, element/modality balance, and moon
+phase, but nothing in the UI currently calls them — a UI that did (Sprint 13)
+was built and then reverted (Sprint 14) ahead of a data-model revision, not
+because this code was wrong. It's kept, tested, and unused on purpose: the
+next phase's data model is expected to consume it, and deleting tested
+working code only to re-derive it later is the worse trade.
+
 `readings.place_name`/`latitude`/`longitude`/`timezone` are vestigial:
 Sprint 2 added them before Sprint 6 dropped place and geocoding entirely.
 They're nullable rather than dropped (Sprint 10 relaxed rather than
