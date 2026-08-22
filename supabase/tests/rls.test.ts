@@ -15,10 +15,6 @@ const anon = createClient(url, anonKey);
 function validReading(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     event_date: "1999-08-11",
-    place_name: "Reykjavik, Iceland",
-    latitude: 64.1466,
-    longitude: -21.9426,
-    timezone: "Atlantic/Reykjavik",
     positions: [
       { body: "Sun", eclipticLongitude: 12.34, sign: "Aries", degreeInSign: 12.34, retrograde: false },
     ],
@@ -80,12 +76,12 @@ describe("readings RLS policies (anon client only)", () => {
     // to nothing -- a successful zero-row update, not a thrown error.
     const { error } = await anon
       .from("readings")
-      .update({ place_name: "tampered" })
+      .update({ event_date: "2000-01-01" })
       .eq("id", knownId);
     expect(error).toBeNull();
 
     const { data } = await anon.rpc("get_reading_by_id", { reading_id: knownId });
-    expect(data?.[0].place_name).toBe("Reykjavik, Iceland");
+    expect(data?.[0].event_date).toBe("1999-08-11");
   });
 
   it("cannot delete an existing reading", async () => {
