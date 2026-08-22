@@ -3,47 +3,26 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
-import { DateInputError, computePositions } from "@/lib/ephemeris/adapter";
+import {
+  DateInputError,
+  calculationInstantForDate,
+  computePositions,
+} from "@/lib/ephemeris/adapter";
 
-export type SaveReadingState = {
-  error: string | null;
-};
+export async function saveReading(formData: FormData) {
+  const dateParam = formData.get("date");
 
-/**
- * Sprint 13: the UI moved from URL-driven state (?date=, redirect-on-error)
- * to local React state (the design handoff's own model), so this takes
- * useActionState's (prevState, formData) shape and returns an error
- * instead of redirecting back to a page that no longer reads query
- * params for it. Saves are whatever instant is currently on screen
- * (including any scrub offset), not just the entered date at noon.
- *
- * R7: id generation stays server-side, deliberately deviating from the
- * handoff's client-generated-UUID proposal -- the handoff's own reasoning
- * (no SELECT policy to read a row back through) is correct, but this
- * action already satisfies it and keeps generation on the safer side of
- * the trust boundary.
- */
-export async function saveReading(
-  _prevState: SaveReadingState,
-  formData: FormData
-): Promise<SaveReadingState> {
-  const instantParam = formData.get("instant");
-
-  if (typeof instantParam !== "string" || !instantParam) {
-    return { error: "Nothing to save yet." };
-  }
-
-  const instant = new Date(instantParam);
-  if (Number.isNaN(instant.getTime())) {
-    return { error: "Could not save that moment." };
+  if (typeof dateParam !== "string" || !dateParam) {
+    redirect("/chart?error=Enter a date before saving.");
   }
 
   let positions;
   try {
+    const instant = calculationInstantForDate(dateParam);
     positions = computePositions(instant);
   } catch (err) {
-    const message = err instanceof DateInputError ? err.message : "Could not save that moment.";
-    return { error: message };
+    const message = err instanceof DateInputError ? err.message : "Could not save that date.";
+    redirect(`/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(message)}`);
   }
 
   // Generated here, not read back from the insert -- there is no SELECT
@@ -56,12 +35,16 @@ export async function saveReading(
   const anon = createAnonClient();
   const { error } = await anon.from("readings").insert({
     id,
-    event_date: instant.toISOString().slice(0, 10),
+    event_date: dateParam,
     positions,
   });
 
   if (error) {
-    return { error: "Save failed, try again." };
+    redirect(
+      `/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(
+        "Save failed, try again."
+      )}`
+    );
   }
 
   redirect(`/reading/${id}`);

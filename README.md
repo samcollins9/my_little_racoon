@@ -4,26 +4,15 @@ A Next.js + TypeScript app deployed on Vercel, with a Supabase database
 migrated by CI, row level security policies proven by an automated test
 suite, and migrations guaranteed to land before the code depending on
 them serves traffic. This repository is the full deployment-lifecycle
-exercise plus a design pass (Sprints 1–13) — see `docs/ROADMAP_v1.md` for
-the plan and `docs/RUNBOOK.md` for rollback and incident procedures.
+exercise (Sprints 1–10) — see `docs/ROADMAP_v1.md` for the plan and
+`docs/RUNBOOK.md` for rollback and incident procedures.
 
 `/chart` enters a past date and computes geocentric planetary positions
 for it, via an adapter around `astronomy-engine` (`lib/ephemeris/`) with
-no place/houses/angles input — see the Sprint 6 file for why. It also
-computes the five Ptolemaic aspects, element/modality balance, and moon
-phase (`lib/ephemeris/aspects.ts`, `balance.ts`, `moon-phase.ts`, Sprint
-12) and draws them as the Aspect Constellation
-(`docs/design/HANDOFF_chart_constellation.md`, Sprint 13) — a star field
-where angle is ecliptic longitude and depth is orbital order, with
-threads wired between bodies in aspect. Saving a reading there stores it
-anonymously and returns a `/reading/[id]` link — that link is the only
-access control (Sprint 10); there's no listing route and no way to
-enumerate what's been saved.
-
-**`/chart`'s results view is desktop-only**, per the design handoff: the
-layout assumes a viewport ≥1320px and has no responsive treatment.
-Narrower viewports aren't a supported target yet — a mobile pass is future
-work, not a bug in this one.
+no place/houses/angles input — see the Sprint 6 file for why. Saving a
+reading there stores it anonymously and returns a `/reading/[id]` link —
+that link is the only access control (Sprint 10); there's no listing
+route and no way to enumerate what's been saved.
 
 `readings.place_name`/`latitude`/`longitude`/`timezone` are vestigial:
 Sprint 2 added them before Sprint 6 dropped place and geocoding entirely.
