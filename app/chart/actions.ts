@@ -8,6 +8,7 @@ import {
   calculationInstantForDate,
   computePositions,
 } from "@/lib/ephemeris/adapter";
+import { fetchDayEvents } from "@/lib/events/wikipedia";
 
 export async function saveReading(formData: FormData) {
   const dateParam = formData.get("date");
@@ -25,6 +26,12 @@ export async function saveReading(formData: FormData) {
     redirect(`/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(message)}`);
   }
 
+  // Sprint 16: the project's first outbound network call at runtime.
+  // fetchDayEvents never throws -- a Wikipedia outage resolves to null
+  // rather than blocking the save (R6), so it isn't wrapped in its own
+  // try/catch here.
+  const events = await fetchDayEvents(dateParam);
+
   // Generated here, not read back from the insert -- there is no SELECT
   // policy on readings (Sprint 4), so asking the insert to return its row
   // would come back empty even on success. The id has to be chosen before
@@ -37,6 +44,7 @@ export async function saveReading(formData: FormData) {
     id,
     event_date: dateParam,
     positions,
+    events,
   });
 
   if (error) {
