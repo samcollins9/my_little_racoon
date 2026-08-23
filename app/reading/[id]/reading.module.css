@@ -632,7 +632,14 @@
        44px by construction -- min-height does, regardless of IBM Plex
        Mono's actual metrics, and flex centring keeps the label
        vertically centred in the taller box rather than assuming a
-       line-height that happens to fill it. */
+       line-height that happens to fill it.
+       QA1 round 2: .castButton is worn by both a <button> (border-box
+       under the UA stylesheet) and a next/link <a> (content-box, no
+       reset anywhere in this project) -- min-height without box-sizing
+       made them diverge to 44px and 74px respectively instead of
+       matching. border-box is what makes min-height mean the same
+       thing on both. */
+    box-sizing: border-box;
     min-height: 44px;
     padding: 14px;
     flex: 1;
