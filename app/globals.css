@@ -1,19 +1,131 @@
+/*
+ * Sprint 19, R2: the shared foundation the design's tokens and keyframes
+ * rest on. The old --background/--foreground pair and the
+ * prefers-color-scheme block are gone, not overridden -- this design is
+ * fixed dark, and a media query that swaps the ground based on the
+ * visitor's OS setting would be a second, competing source of truth for
+ * the same thing. Fonts are loaded via next/font/google in app/layout.tsx
+ * (R3) and exposed here as --font-cormorant/--font-mono custom
+ * properties, not loaded a second time in this file.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --om-ink: oklch(0.118 0.012 285);
+  --om-ink-raised: oklch(0.142 0.014 286);
+  --om-ink-sunk: oklch(0.105 0.012 285);
+  --om-ink-footer: oklch(0.122 0.014 286);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    color-scheme: dark;
-  }
+  --om-rule-strong: oklch(0.29 0.02 288);
+  --om-rule: oklch(0.21 0.018 288);
+  --om-rule-faint: oklch(0.185 0.014 286);
+
+  --om-bone: oklch(0.92 0.012 85);
+  --om-bone-dim: oklch(0.84 0.012 85);
+  --om-grey: oklch(0.60 0.015 285);
+  --om-grey-dim: oklch(0.44 0.015 285);
+
+  --om-verdigris: oklch(0.70 0.13 145);
+  --om-verdigris-light: oklch(0.80 0.10 145);
+  --om-rust: oklch(0.68 0.13 25);
+  --om-gold: oklch(0.84 0.07 85);
+  --om-amber: oklch(0.78 0.11 85);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, sans-serif;
-  margin: 2rem;
+  color: var(--om-bone);
+  background: var(--om-ink);
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+a {
+  color: var(--om-verdigris);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--om-verdigris-light);
+}
+
+/*
+ * The seven keyframes the design's animations are built from. Defined
+ * once, applied per component (app/reading/[id]/reading.module.css) --
+ * see that file's own note on why the per-instance star/thread animations
+ * are applied inline and neutralised under reduced motion with an
+ * !important override, while the shared, single-instance animations
+ * (sigil turn, skeleton shimmer, paragraph rise) are wrapped in a
+ * prefers-reduced-motion: no-preference block instead. Both land on the
+ * same guarantee (R9): nothing animates unless the visitor hasn't asked
+ * for reduced motion, and the page is fully legible either way.
+ */
+@keyframes om-breathe {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes om-twinkle {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes om-halo {
+  0%,
+  100% {
+    opacity: 0.09;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.26;
+    transform: scale(1.14);
+  }
+}
+
+@keyframes om-turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes om-flicker {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  42% {
+    opacity: 0.95;
+  }
+  58% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes om-shimmer {
+  0% {
+    background-position: -220px 0;
+  }
+  100% {
+    background-position: 420px 0;
+  }
+}
+
+@keyframes om-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

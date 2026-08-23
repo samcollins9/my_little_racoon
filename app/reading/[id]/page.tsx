@@ -1,11 +1,22 @@
 import { notFound } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import { composeChart } from "@/lib/chart/model";
-import type { PlanetPosition } from "@/lib/ephemeris/adapter";
+import { CALCULATION_HOUR_UTC, type PlanetPosition } from "@/lib/ephemeris/adapter";
+import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { generateReadingHoroscope } from "./actions";
 import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
+import { eventsStatusLabel, formatLongDate } from "./format";
+import {
+  STAR_FIELD,
+  computeBodies,
+  computeMoonPhaseGeometry,
+  computeSectors,
+  computeThreads,
+} from "./constellation";
+import { ReadingPanel, IdleBlock } from "./ReadingPanel";
+import styles from "./reading.module.css";
 
 type StoredReading = {
   event_date: string;
@@ -14,6 +25,9 @@ type StoredReading = {
   horoscope: string | null;
 };
 
+// Screen 2a (docs/design/HANDOFF_reading_responsive.md). Desktop only --
+// the 900px breakpoint is Sprint 20.
+//
 // Retrieval is by id only, through the same get_reading_by_id RPC the
 // RLS policies were written around (Sprint 4) -- never a table select.
 // Any error (including a malformed id -- Postgres rejects a non-uuid
@@ -37,130 +51,292 @@ export default async function ReadingPage({
     notFound();
   }
 
-  // Read back exactly as stored (R6) -- not recomputed from the date.
+  // Read back exactly as stored (R6, carried from Sprint 10) -- not
+  // recomputed from the date. R4: all data from composeChart and
+  // lib/ephemeris/, nothing astronomical from the design prototype.
   const reading = data[0] as StoredReading;
-
-  // R1: the chart from composeChart, not just the raw positions column --
-  // this is where Sprint 12's aspect engine, sitting tested and unused
-  // since Sprint 14's revert, finally gets a caller. The aspects table
-  // below deliberately omits applying/separating: composeChart's own
-  // aspects have that structurally false (Sprint 15's R4; see
-  // lib/chart/model.ts), and this page has no reason to recompute a real
-  // second snapshot the way lib/llm/generate.ts's prompt path does --
-  // showing nothing is safer than showing a label that might be wrong.
   const chart = composeChart(reading.event_date, reading.positions);
   const paragraphs = horoscopeParagraphs(reading.horoscope);
+  const longDate = formatLongDate(reading.event_date);
+  const status = eventsStatusLabel(reading.events);
+
+  const bodies = computeBodies(chart.positions);
+  const threads = computeThreads(chart.aspects, bodies);
+  const sectors = computeSectors(bodies);
+  const dateBandMoon = computeMoonPhaseGeometry(chart.positions, 15, 15, 12);
+  const calculationHour = `${String(CALCULATION_HOUR_UTC).padStart(2, "0")}:00 UT`;
 
   return (
-    <main>
-      <h1>Reading for {reading.event_date}</h1>
+    <div className={styles.page}>
+      <main className={styles.card}>
+        <div className={styles.dateBand}>
+          <div className={styles.dateBandLeft}>
+            <span className={styles.eyebrow}>The sky over</span>
+            <h1 className={styles.dateHeading}>
+              {longDate.day} {longDate.month} <span className={styles.dateYear}>{longDate.year}</span>
+            </h1>
+          </div>
+          <div className={styles.dateBandRight}>
+            <div className={styles.moonGlyph}>
+              <svg viewBox="0 0 30 30" width="30" height="30">
+                <circle cx="15" cy="15" r="12" fill="none" stroke="oklch(0.34 0.02 288)" strokeWidth="1" />
+                <path d={dateBandMoon.path} fill="oklch(0.86 0.05 85)" />
+              </svg>
+              <span className={styles.moonPhaseName}>{dateBandMoon.phaseName}</span>
+            </div>
+            <span className={styles.jdBlock}>
+              JD {chart.julianDay.toFixed(4)}
+              <br />
+              sealed · anyone with the link
+            </span>
+          </div>
+        </div>
 
-      <section>
-        <h2>Positions</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Body</th>
-              <th>Sign</th>
-              <th>Degree</th>
-              <th>Retrograde</th>
-            </tr>
-          </thead>
-          <tbody>
-            {chart.positions.map((position) => (
-              <tr key={position.body}>
-                <td>{position.body}</td>
-                <td>{position.sign}</td>
-                <td>{position.degreeInSign.toFixed(2)}&deg;</td>
-                <td>{position.retrograde ? "Yes" : "No"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2>Aspects</h2>
-        {chart.aspects.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Body</th>
-                <th>Aspect</th>
-                <th>Body</th>
-                <th>Orb</th>
-              </tr>
-            </thead>
-            <tbody>
-              {chart.aspects.map((aspect) => (
-                <tr key={`${aspect.bodyA}-${aspect.aspect}-${aspect.bodyB}`}>
-                  <td>{aspect.bodyA}</td>
-                  <td>{aspect.aspect}</td>
-                  <td>{aspect.bodyB}</td>
-                  <td>{aspect.orb.toFixed(2)}&deg;</td>
-                </tr>
+        <div className={styles.body}>
+          <div className={styles.leftColumn}>
+            <svg
+              viewBox="0 0 640 640"
+              width="560"
+              height="560"
+              className={styles.constellationSvg}
+            >
+              <defs>
+                <radialGradient id="omReadingField" cx="50%" cy="46%" r="56%">
+                  <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
+                  <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
+                  <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="640" height="640" fill="url(#omReadingField)" />
+              {STAR_FIELD.map((star, i) => (
+                <circle
+                  key={i}
+                  cx={star.x}
+                  cy={star.y}
+                  r={star.radius}
+                  fill="oklch(0.80 0.02 288)"
+                  opacity={star.opacity}
+                  className={styles.star}
+                  style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
+                />
               ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No aspects within orb.</p>
-        )}
-      </section>
+              <circle cx="320" cy="320" r="288" fill="none" stroke="oklch(0.235 0.02 288)" strokeWidth="1" />
+              <circle cx="320" cy="320" r="60" fill="none" stroke="oklch(0.20 0.018 288)" strokeWidth="1" />
+              {sectors.map((sector) => (
+                <g key={sector.sign}>
+                  <line
+                    x1={sector.lineX1}
+                    y1={sector.lineY1}
+                    x2={sector.lineX2}
+                    y2={sector.lineY2}
+                    stroke="oklch(0.22 0.018 288)"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x={sector.glyphX}
+                    y={sector.glyphY}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="17"
+                    fill={sector.occupied ? "oklch(0.72 0.09 145)" : "oklch(0.34 0.02 288)"}
+                    fontFamily="var(--font-mono), monospace"
+                  >
+                    {sector.glyph}
+                  </text>
+                </g>
+              ))}
+              {threads.map((thread, i) => (
+                <line
+                  key={i}
+                  x1={thread.x1}
+                  y1={thread.y1}
+                  x2={thread.x2}
+                  y2={thread.y2}
+                  stroke={thread.color}
+                  strokeWidth={thread.baseWidth}
+                  strokeDasharray={thread.dash}
+                  strokeLinecap="round"
+                  opacity={0.35 + thread.tightness * 0.5}
+                  className={styles.thread}
+                  style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
+                />
+              ))}
+              {bodies.map((body) => (
+                <g key={body.key}>
+                  <circle
+                    cx={body.x}
+                    cy={body.y}
+                    r="18"
+                    fill={body.color}
+                    opacity="0.1"
+                    className={styles.bodyHalo}
+                    style={{ animation: "om-halo 8s ease-in-out infinite" }}
+                  />
+                  <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
+                  <text
+                    x={body.glyphX}
+                    y={body.glyphY}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="15"
+                    fill={body.color}
+                    fontFamily="var(--font-mono), monospace"
+                  >
+                    {body.glyph}
+                  </text>
+                  <text
+                    x={body.labelX}
+                    y={body.labelY}
+                    textAnchor={body.labelAnchor}
+                    dominantBaseline="central"
+                    fontSize="9.5"
+                    fill="oklch(0.60 0.015 285)"
+                    fontFamily="var(--font-mono), monospace"
+                    letterSpacing="0.05em"
+                  >
+                    {body.label}
+                  </text>
+                </g>
+              ))}
+              <text
+                x="320"
+                y="316"
+                textAnchor="middle"
+                fontSize="12"
+                fill="oklch(0.54 0.015 285)"
+                fontFamily="var(--font-mono), monospace"
+                letterSpacing="0.24em"
+              >
+                {reading.event_date.split("-").join(" · ")}
+              </text>
+              <text
+                x="320"
+                y="338"
+                textAnchor="middle"
+                fontSize="11"
+                fill="oklch(0.40 0.015 285)"
+                fontFamily="var(--font-mono), monospace"
+                letterSpacing="0.24em"
+              >
+                {calculationHour}
+              </text>
+            </svg>
 
-      <section>
-        <h2>Balance</h2>
-        <p>
-          Elements — Fire {chart.elements.Fire}, Earth {chart.elements.Earth}, Air{" "}
-          {chart.elements.Air}, Water {chart.elements.Water}
-        </p>
-        <p>
-          Modalities — Cardinal {chart.modalities.Cardinal}, Fixed {chart.modalities.Fixed},
-          Mutable {chart.modalities.Mutable}
-        </p>
-        <p>Moon phase — {chart.moonPhase.phaseName}</p>
-      </section>
+            <div className={styles.balanceGrid}>
+              <div className={styles.balanceCellBordered}>
+                <div className={styles.balanceLabel}>Elements</div>
+                <div className={styles.balanceRows}>
+                  {ELEMENTS.map((element) => (
+                    <div key={element} className={styles.balanceRowElement}>
+                      <span className={styles.balanceName}>{element}</span>
+                      <span className={styles.balanceTrack}>
+                        <span
+                          className={styles.balanceFill}
+                          style={{
+                            width: `${(chart.elements[element] / 10) * 100}%`,
+                            background: "var(--om-verdigris)",
+                          }}
+                        />
+                      </span>
+                      <span className={styles.balanceCount}>{chart.elements[element]}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className={styles.balanceCell}>
+                <div className={styles.balanceLabel}>Modalities</div>
+                <div className={styles.balanceRows}>
+                  {MODALITIES.map((modality) => (
+                    <div key={modality} className={styles.balanceRowModality}>
+                      <span className={styles.balanceName}>{modality}</span>
+                      <span className={styles.balanceTrack}>
+                        <span
+                          className={styles.balanceFill}
+                          style={{
+                            width: `${(chart.modalities[modality] / 10) * 100}%`,
+                            background: "var(--om-rust)",
+                          }}
+                        />
+                      </span>
+                      <span className={styles.balanceCount}>{chart.modalities[modality]}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <section>
-        <h2>Events</h2>
-        <p>{eventsLabel(reading.events)}</p>
-        {reading.events && reading.events.events.length > 0 ? (
-          <ul>
-            {reading.events.events.map((event, i) => (
-              <li key={i}>
-                {event.year}: {event.text}
-                {isSafeExternalUrl(event.sourceUrl) ? (
-                  <>
-                    {" "}
-                    (<a href={event.sourceUrl}>source</a>)
-                  </>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </section>
+          <div className={styles.rightColumn}>
+            <section className={styles.eventsSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>What happened</h2>
+                {status ? <span className={styles.eventsStatus}>{status}</span> : null}
+              </div>
+              {reading.events && reading.events.events.length > 0 ? (
+                <div className={styles.eventsList}>
+                  {reading.events.events.map((event, i) => (
+                    <div key={i} className={styles.eventRow}>
+                      <span className={styles.eventYear}>{event.year}</span>
+                      <span className={styles.eventText}>
+                        {event.text}
+                        {isSafeExternalUrl(event.sourceUrl) ? (
+                          <>
+                            {" "}
+                            (<a href={event.sourceUrl}>source</a>)
+                          </>
+                        ) : null}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.eventsEmpty}>{eventsLabel(reading.events)}</p>
+              )}
+            </section>
 
-      <section>
-        <h2>Horoscope</h2>
-        {paragraphs.length > 0 ? (
-          paragraphs.map((paragraph, i) => <p key={i}>{paragraph}</p>)
-        ) : (
-          <p>No horoscope generated yet.</p>
-        )}
-
-        {generateError ? <p role="alert">{generateError}</p> : null}
-
-        {isHoroscopeEnabled() ? (
-          <form action={generateReadingHoroscope}>
-            <input type="hidden" name="readingId" value={id} />
-            <button type="submit">
-              {reading.horoscope ? "Regenerate horoscope" : "Generate horoscope"}
-            </button>
-          </form>
-        ) : (
-          <p>Horoscope generation is currently disabled.</p>
-        )}
-      </section>
-    </main>
+            <section className={styles.readingSection}>
+              {isHoroscopeEnabled() ? (
+                <form action={generateReadingHoroscope}>
+                  <input type="hidden" name="readingId" value={id} />
+                  <ReadingPanel
+                    hasHoroscope={!!reading.horoscope}
+                    paragraphs={paragraphs}
+                    aspectCount={chart.aspects.length}
+                    errorMessage={generateError ?? null}
+                  />
+                </form>
+              ) : (
+                <>
+                  <div className={styles.readingHeader}>
+                    <h3 className={styles.sectionTitle}>The reading</h3>
+                    <span
+                      className={`${styles.readingStatus} ${
+                        reading.horoscope ? styles.statusWritten : styles.statusIdle
+                      }`}
+                    >
+                      {reading.horoscope ? "written" : "not read yet"}
+                    </span>
+                  </div>
+                  {reading.horoscope ? (
+                    <div className={styles.writtenBlock}>
+                      {paragraphs.map((paragraph, i) => (
+                        <p key={i} className={styles.paragraph}>
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <IdleBlock />
+                  )}
+                  <div className={styles.readingFooter}>
+                    <p className={styles.disabledNote}>Horoscope generation is currently disabled.</p>
+                  </div>
+                </>
+              )}
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }

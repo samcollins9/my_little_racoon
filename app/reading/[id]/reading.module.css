@@ -1,0 +1,491 @@
+/*
+ * Screen 2a (docs/design/HANDOFF_reading_responsive.md). Desktop only
+ * (Sprint 19, R14) -- the 900px breakpoint is Sprint 20.
+ *
+ * Animation note (R9): the star field and aspect threads each need a
+ * different animation-duration/delay per element (STAR_FIELD's own
+ * per-star values, constellation.ts), which only an inline `style` can
+ * express -- a CSS class can't parameterise per instance. Those are
+ * applied inline in page.tsx unconditionally, then neutralised here
+ * under prefers-reduced-motion: reduce with an !important override,
+ * since only a stylesheet !important rule can beat an inline style at
+ * all. Every other animation here (sigil turn/flicker, skeleton shimmer,
+ * paragraph rise) is a single shared declaration with no per-instance
+ * parameters, so those are instead wrapped in a
+ * prefers-reduced-motion: no-preference block -- true opt-in, matching
+ * this sprint's own wording. Both mechanisms land on the same guarantee:
+ * nothing animates for a visitor who asked for reduced motion, and nothing
+ * here depends on animation having played for the page to be legible.
+ */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 56px 64px 90px;
+  background: radial-gradient(
+    130% 70% at 50% -10%,
+    oklch(0.185 0.022 288),
+    var(--om-ink) 68%
+  );
+}
+
+.card {
+  width: 1320px;
+  height: fit-content;
+  border: 1px solid var(--om-rule-strong);
+  background: var(--om-ink-raised);
+  box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);
+}
+
+/* ---- Date band ---- */
+
+.dateBand {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 34px 40px 26px;
+  border-bottom: 1px solid var(--om-rule);
+}
+
+.dateBandLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.dateHeading {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.dateYear {
+  font-style: italic;
+  color: var(--om-verdigris);
+}
+
+.dateBandRight {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.moonGlyph {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.moonPhaseName {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--om-grey);
+}
+
+.jdBlock {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--om-grey-dim);
+  text-align: right;
+}
+
+/* ---- Body ---- */
+
+.body {
+  display: grid;
+  grid-template-columns: 560px 1fr;
+}
+
+.leftColumn {
+  border-right: 1px solid var(--om-rule);
+  display: flex;
+  flex-direction: column;
+}
+
+.constellationSvg {
+  display: block;
+}
+
+.balanceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--om-rule);
+  margin-top: auto;
+}
+
+.balanceCell {
+  padding: 20px 26px;
+}
+
+.balanceCellBordered {
+  composes: balanceCell;
+  border-right: 1px solid var(--om-rule);
+}
+
+.balanceLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+  margin-bottom: 13px;
+}
+
+.balanceRows {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.balanceRowElement {
+  display: grid;
+  grid-template-columns: 52px 1fr 18px;
+  align-items: center;
+  gap: 9px;
+}
+
+.balanceRowModality {
+  display: grid;
+  grid-template-columns: 62px 1fr 18px;
+  align-items: center;
+  gap: 9px;
+}
+
+.balanceName {
+  font-size: 16px;
+  color: var(--om-bone-dim);
+}
+
+.balanceTrack {
+  height: 3px;
+  background: oklch(0.23 0.018 288);
+  display: block;
+  position: relative;
+}
+
+.balanceFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.balanceCount {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  color: var(--om-grey);
+  text-align: right;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- What happened ---- */
+
+.eventsSection {
+  padding: 30px 40px 26px;
+  border-bottom: 1px solid var(--om-rule);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.eventsStatus {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventRow {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--om-rule-faint);
+}
+
+.eventYear {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--om-verdigris);
+  letter-spacing: 0.06em;
+}
+
+.eventText {
+  font-size: 17.5px;
+  line-height: 1.5;
+  color: var(--om-bone-dim);
+  text-wrap: pretty;
+}
+
+.eventsEmpty {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--om-grey);
+}
+
+/* ---- The reading ---- */
+
+.readingSection {
+  padding: 30px 40px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.readingHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.readingStatus {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.statusIdle {
+  color: var(--om-grey);
+}
+
+.statusBusy {
+  color: var(--om-amber);
+}
+
+.statusWritten {
+  color: oklch(0.62 0.1 145);
+}
+
+.statusError {
+  color: var(--om-rust);
+}
+
+/* idle */
+
+.idleBlock {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 10px 0 4px;
+}
+
+.idleSigil {
+  opacity: 0.5;
+}
+
+.idleText {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--om-grey);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.idleAccent {
+  font-style: italic;
+  color: oklch(0.78 0.012 85);
+}
+
+/* busy */
+
+.busyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 6px 0 2px;
+}
+
+.busyTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.busySigil {
+  transform-origin: 20px 20px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .busySigil {
+    animation: om-turn 9s linear infinite;
+  }
+  .busySigilDot {
+    animation: om-flicker 2.4s ease-in-out infinite;
+  }
+}
+
+.busyTextCol {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.busyPhrase {
+  font-size: 19px;
+  color: var(--om-bone-dim);
+  font-style: italic;
+}
+
+.busyDetail {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--om-grey-dim);
+}
+
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.skeletonBar {
+  display: block;
+  height: 9px;
+  background: linear-gradient(
+    90deg,
+    oklch(0.2 0.016 288) 0%,
+    oklch(0.28 0.02 288) 42%,
+    oklch(0.2 0.016 288) 84%
+  );
+  background-size: 420px 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeletonBar {
+    animation: om-shimmer 2.6s linear infinite;
+  }
+}
+
+/* written */
+
+.writtenBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 19.5px;
+  line-height: 1.62;
+  color: var(--om-bone);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+/* Applied only on first appearance after generation (R8), via a ref in
+   the client component -- never on a page load of a stored reading. */
+@media (prefers-reduced-motion: no-preference) {
+  .paragraphRise {
+    animation: om-rise 0.9s ease-out forwards;
+  }
+}
+
+/* ---- Footer ---- */
+
+.readingFooter {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 22px;
+  border-top: 1px solid var(--om-rule);
+}
+
+.castButton {
+  background: transparent;
+  border: 1px solid var(--om-rule-strong);
+  color: oklch(0.72 0.015 285);
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.castButton:hover:not(:disabled) {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris-light);
+}
+
+.castButton:disabled {
+  cursor: not-allowed;
+  color: var(--om-grey-dim);
+}
+
+.footerNote {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  line-height: 1.8;
+  color: var(--om-grey-dim);
+}
+
+.errorNote {
+  composes: footerNote;
+  font-size: 10.5px;
+  color: var(--om-rust);
+}
+
+.disabledNote {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  color: var(--om-grey-dim);
+}
+
+/* ---- Constellation: per-instance animations, applied inline in
+   page.tsx (STAR_FIELD/thread tightness each need their own duration and
+   delay) -- see this file's own top-of-file note on why these three are
+   overridden rather than opt-in wrapped. */
+
+@media (prefers-reduced-motion: reduce) {
+  .star,
+  .thread,
+  .bodyHalo {
+    animation: none !important;
+  }
+}
