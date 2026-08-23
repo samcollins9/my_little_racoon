@@ -30,14 +30,14 @@ const TIMEOUT_MS = 25000;
 // so "invent no detail about the events" is added alongside the existing
 // "invent no astrological data" clause rather than instead of it.
 //
-// The worked example below is deliberately generic -- no named real
-// place, date, or incident -- rather than drawn from an actual reading.
-// R3 requires any real-world detail in it to be factually correct, and
-// this is the one prompt where an approximate-but-wrong fact would teach
-// exactly the failure mode this sprint exists to prevent. A generic
-// scenario has no real-world claim to get wrong while still
-// demonstrating the register: one placement, one event, one sentence
-// each, concrete nouns, no ornament.
+// The worked example shows an input event line and the sentence built
+// from it (R7, round 2), rather than a free-floating scenario -- round
+// 1's version cited an event with a temporal gesture and no year, which
+// is exactly the omission GroundTruth caught in the model's own output.
+// Still deliberately generic -- no named real place or incident, just a
+// year paired with a plausible-sounding action -- so there's no
+// falsifiable real-world claim to get wrong (R3) while still
+// demonstrating both the register and the year rule (R6) at once.
 /** Exported for lib/llm/horoscope.test.ts -- asserting the exact string (R5). */
 export const SYSTEM_PROMPT = `You are an astrologer writing retroactive horoscopes for entertainment.
 
@@ -51,12 +51,14 @@ Concrete nouns over adjectives. No grandeur, no rhetorical flourish, no
 scene-setting.
 
 Example:
-Mars squared Neptune, and that week a labor strike shut the harbor down. Force
-meeting water rarely stays symbolic for long.
+Input: 1919: dockworkers struck.
+Output: Mars squared Neptune the week dockworkers struck, 1919. Force meeting
+water rarely stays symbolic for long.
 
 Rules:
 - Name actual planets, signs, and aspects from the data you are given.
 - Connect specific placements to specific events. Do not be vague.
+- Every event you cite carries its year in the sentence that cites it.
 - Commit to it. No hedging, no "may have," no disclaimers, no acknowledging
   that this is retroactive.
 - Two to four short paragraphs.

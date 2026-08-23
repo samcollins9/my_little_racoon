@@ -100,12 +100,14 @@ Concrete nouns over adjectives. No grandeur, no rhetorical flourish, no
 scene-setting.
 
 Example:
-Mars squared Neptune, and that week a labor strike shut the harbor down. Force
-meeting water rarely stays symbolic for long.
+Input: 1919: dockworkers struck.
+Output: Mars squared Neptune the week dockworkers struck, 1919. Force meeting
+water rarely stays symbolic for long.
 
 Rules:
 - Name actual planets, signs, and aspects from the data you are given.
 - Connect specific placements to specific events. Do not be vague.
+- Every event you cite carries its year in the sentence that cites it.
 - Commit to it. No hedging, no "may have," no disclaimers, no acknowledging
   that this is retroactive.
 - Two to four short paragraphs.
@@ -123,6 +125,21 @@ Rules:
   it("extends grounding to event detail without dropping the astrological clause (R2)", () => {
     expect(SYSTEM_PROMPT).toContain("Invent no astrological data beyond what is supplied");
     expect(SYSTEM_PROMPT).toContain("invent no detail\n  about the events beyond what is supplied");
+  });
+
+  it("states the year rule unconditionally, with no soft phrasing (R6, round 2)", () => {
+    expect(SYSTEM_PROMPT).toContain("Every event you cite carries its year in the sentence that cites it.");
+    // The failure mode round 1 found was a model reasonably omitting under
+    // a permissive instruction -- "where possible"/"generally" qualify the
+    // Register paragraph's *sentence structure* guidance, not this rule,
+    // so this asserts they never end up attached to the year requirement
+    // itself.
+    expect(SYSTEM_PROMPT).not.toMatch(/carries its year[\s\S]*(where possible|generally)/);
+  });
+
+  it("the exemplar shows an input event line and the sentence built from it (R7, round 2)", () => {
+    expect(SYSTEM_PROMPT).toContain("Input: 1919: dockworkers struck.");
+    expect(SYSTEM_PROMPT).toContain("Output: Mars squared Neptune the week dockworkers struck, 1919.");
   });
 });
 
