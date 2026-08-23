@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
+  assertDateInSupportedRange,
   calculationInstantForDate,
   computePositions,
   type PlanetPosition,
@@ -40,10 +41,31 @@ const APPLYING_SNAPSHOT_STEP_MS = 24 * 60 * 60 * 1000;
  * cannot create the disagreement R4 exists to prevent. R4 scopes
  * composeChart itself, not every caller; CHART_MODEL.md names this sprint
  * as the one that needs a real second snapshot from somewhere, this is it.
+ *
+ * Sprint 18, R7: near MAX_SUPPORTED_DATE the later snapshot itself falls
+ * outside the supported range, and computePositions would throw past this
+ * function, past generateAndPersistHoroscope, into a framework error page
+ * -- worse than every other failure here, which surfaces as an inline
+ * message. Falls back to `fallback` (the caller's own composeChart
+ * aspects) instead: a real, renderable answer, chosen deliberately over
+ * catching the throw, because catching would return "try again", which is
+ * wrong for a date that will never work no matter how many times it's
+ * retried.
  */
-export function computePromptAspects(eventDate: string, positions: PlanetPosition[]): Aspect[] {
+export function computePromptAspects(
+  eventDate: string,
+  positions: PlanetPosition[],
+  fallback: Aspect[]
+): Aspect[] {
   const instant = calculationInstantForDate(eventDate);
   const later = new Date(instant.getTime() + APPLYING_SNAPSHOT_STEP_MS);
+
+  try {
+    assertDateInSupportedRange(later);
+  } catch {
+    return fallback;
+  }
+
   const positionsLater = computePositions(later);
   return computeAspects(positions, positionsLater);
 }
@@ -63,7 +85,10 @@ function buildReadingModel(reading: StoredReadingForGeneration): ReadingModel {
     // Prompt-accurate aspects, not composeChart's own -- see
     // computePromptAspects's comment for why this is scoped here rather
     // than inside composeChart.
-    chart: { ...chart, aspects: computePromptAspects(reading.event_date, reading.positions) },
+    chart: {
+      ...chart,
+      aspects: computePromptAspects(reading.event_date, reading.positions, chart.aspects),
+    },
     events: reading.events?.events ?? [],
     horoscope: reading.horoscope,
   };
@@ -98,7 +123,12 @@ export async function generateAndPersistHoroscope(
   let model: string;
   try {
     ({ text, model } = await generateHoroscope(readingModel));
-  } catch {
+  } catch (err) {
+    // R5 (Sprint 18, carried from Sprint 17 note 2): the user-facing
+    // message stays generic -- R8 still requires the swallow -- but this
+    // failure often carries a quota, rate-limit, or billing reason that's
+    // only diagnosable from Vercel's logs, not from what the user sees.
+    console.error("generateAndPersistHoroscope: generateHoroscope failed", err);
     return { ok: false, error: "Horoscope generation failed, try again." };
   }
 

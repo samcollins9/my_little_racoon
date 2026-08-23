@@ -48,6 +48,10 @@ export async function saveReading(formData: FormData) {
   });
 
   if (error) {
+    // R6 (Sprint 18, carried from Sprint 14): the user-facing message
+    // stays generic, but the underlying reason -- a constraint violation,
+    // a connection failure -- is otherwise invisible outside this process.
+    console.error("saveReading: insert failed", error);
     redirect(
       `/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(
         "Save failed, try again."

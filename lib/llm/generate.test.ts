@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PlanetPosition } from "../ephemeris/adapter";
 import {
   computePromptAspects,
@@ -28,6 +28,12 @@ const READING: StoredReadingForGeneration = {
 function fakeAnon(rpcResult: { data: unknown; error: unknown }) {
   return { rpc: vi.fn().mockResolvedValue(rpcResult) } as unknown as SupabaseClient;
 }
+
+let errorSpy: ReturnType<typeof vi.spyOn>;
+
+beforeEach(() => {
+  errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+});
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -102,7 +108,7 @@ const EXPECTED_ASPECTS: {
 
 describe("computePromptAspects", () => {
   it("reproduces CHART_MODEL.md's original Application column, including applying (QA1 Sprint 17 round 1)", () => {
-    const aspects = computePromptAspects("1977-03-31", FIXTURE_POSITIONS);
+    const aspects = computePromptAspects("1977-03-31", FIXTURE_POSITIONS, []);
     expect(aspects).toHaveLength(EXPECTED_ASPECTS.length);
     EXPECTED_ASPECTS.forEach((expected, i) => {
       expect(aspects[i].bodyA).toBe(expected.bodyA);
@@ -112,6 +118,16 @@ describe("computePromptAspects", () => {
       expect(aspects[i].tightness).toBeCloseTo(expected.tightness, 2);
       expect(aspects[i].applying).toBe(expected.applying);
     });
+  });
+
+  it("falls back rather than throwing when the later snapshot exceeds MAX_SUPPORTED_DATE (R7)", () => {
+    const fallback: ReturnType<typeof computePromptAspects> = [
+      { bodyA: "Sun", bodyB: "Moon", aspect: "conjunction", orb: 1, tightness: 0.9, applying: false },
+    ];
+
+    const aspects = computePromptAspects("2100-12-31", MINIMAL_POSITIONS, fallback);
+
+    expect(aspects).toBe(fallback);
   });
 });
 
@@ -140,7 +156,7 @@ describe("generateAndPersistHoroscope", () => {
     expect(readingModelArg.chart.aspects.some((a) => a.applying)).toBe(true);
   });
 
-  it("surfaces a generation failure and performs no write (R8)", async () => {
+  it("surfaces a generation failure, logs it, and performs no write (R5, R8)", async () => {
     vi.spyOn(horoscope, "generateHoroscope").mockRejectedValue(new Error("OpenAI request failed: 429"));
     const anon = fakeAnon({ data: null, error: null });
 
@@ -148,6 +164,7 @@ describe("generateAndPersistHoroscope", () => {
 
     expect(result).toEqual({ ok: false, error: "Horoscope generation failed, try again." });
     expect(anon.rpc).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
   });
 
   it("surfaces a persistence failure without claiming success (R8)", async () => {
@@ -157,6 +174,18 @@ describe("generateAndPersistHoroscope", () => {
     const result = await generateAndPersistHoroscope(anon, "some-id", READING);
 
     expect(result).toEqual({ ok: false, error: "Could not save the horoscope, try again." });
+  });
+
+  it("a reading dated 2100-12-31 generates without throwing (R7, R8)", async () => {
+    vi.spyOn(horoscope, "generateHoroscope").mockResolvedValue({ text: "text", model: "gpt-4o-mini" });
+    const anon = fakeAnon({ data: true, error: null });
+
+    const result = await generateAndPersistHoroscope(anon, "some-id", {
+      ...READING,
+      event_date: "2100-12-31",
+    });
+
+    expect(result).toEqual({ ok: true });
   });
 
   it("persists exactly the generated text and model via set_reading_horoscope on success", async () => {
