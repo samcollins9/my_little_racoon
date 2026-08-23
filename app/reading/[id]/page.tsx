@@ -98,7 +98,7 @@ export default async function ReadingPage({
               viewBox="0 0 640 640"
               width="560"
               height="560"
-              className={styles.constellationSvg}
+              className={`${styles.constellationSvg} ${styles.desktopOnly}`}
             >
               <defs>
                 <radialGradient id="omReadingField" cx="50%" cy="46%" r="56%">
@@ -220,6 +220,69 @@ export default async function ReadingPage({
               >
                 {calculationHour}
               </text>
+            </svg>
+
+            {/* Mobile: cropped viewBox, no sign sectors, no body labels
+                (frame 3/4) -- genuinely dropped, not CSS-hidden, same
+                treatment as /chart's own mobile crop. */}
+            <svg
+              viewBox="110 110 420 420"
+              width="390"
+              height="300"
+              className={`${styles.constellationSvg} ${styles.mobileOnly}`}
+            >
+              <defs>
+                <radialGradient id="omReadingFieldMobile" cx="50%" cy="46%" r="56%">
+                  <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
+                  <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
+                  <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="640" height="640" fill="url(#omReadingFieldMobile)" />
+              {STAR_FIELD.map((star, i) => (
+                <circle
+                  key={i}
+                  cx={star.x}
+                  cy={star.y}
+                  r={star.radius}
+                  fill="oklch(0.80 0.02 288)"
+                  opacity={star.opacity}
+                  className={styles.star}
+                  style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
+                />
+              ))}
+              {threads.map((thread, i) => (
+                <line
+                  key={i}
+                  x1={thread.x1}
+                  y1={thread.y1}
+                  x2={thread.x2}
+                  y2={thread.y2}
+                  stroke={thread.color}
+                  strokeWidth={thread.baseWidth}
+                  strokeDasharray={thread.dash}
+                  strokeLinecap="round"
+                  opacity={0.35 + thread.tightness * 0.5}
+                  className={styles.thread}
+                  style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
+                />
+              ))}
+              {bodies.map((body) => (
+                <g key={body.key}>
+                  <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
+                  <text
+                    x={body.glyphX}
+                    y={body.glyphY}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="18"
+                    fill={body.color}
+                    fontFamily="var(--font-mono), monospace"
+                  >
+                    {body.glyph}
+                  </text>
+                </g>
+              ))}
             </svg>
 
             <div className={styles.balanceGrid}>

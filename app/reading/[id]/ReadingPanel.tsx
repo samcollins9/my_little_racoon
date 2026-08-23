@@ -116,19 +116,58 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
             {buttonLabel}
           </button>
         ) : (
-          <Link href="/chart" className={styles.castButton}>
-            Cast a new reading
-          </Link>
+          <>
+            {/* Desktop: the single /chart link that replaced "Cast it
+                again" (Sprint 22). Mobile frame 4 carries a second
+                control beside it (Sprint 20, R3) -- its own region
+                rather than this one restyled, so the desktop diff stays
+                exactly what Sprint 22 shipped. */}
+            <Link href="/chart" className={`${styles.castButton} ${styles.desktopOnly}`}>
+              Cast a new reading
+            </Link>
+            <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
+              <Link href="/chart" className={styles.castButton}>
+                Cast a new reading
+              </Link>
+              <CopyLinkButton />
+            </div>
+          </>
         )}
         {errorMessage ? (
           <p className={styles.errorNote}>{errorMessage}</p>
         ) : (
-          <p className={styles.footerNote}>
+          <p className={`${styles.footerNote} ${styles.desktopOnly}`}>
             Written on request from 10 positions and {aspectCount} aspects.
           </p>
         )}
       </div>
     </>
+  );
+}
+
+/**
+ * Mobile frame 4 only (Sprint 20, R3/R6) -- desktop has no copy-link
+ * affordance, matching the prototype (the address bar is the only copy
+ * path there). Own small piece of local state (copied), unrelated to and
+ * not compounding ReadingPanel's own state discussion above -- a
+ * separate component with a narrowly-scoped, purely cosmetic concern.
+ */
+function CopyLinkButton() {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      type="button"
+      className={styles.castButton}
+      onClick={() => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        });
+      }}
+    >
+      {copied ? "Copied" : "Copy link"}
+    </button>
   );
 }
 

@@ -489,3 +489,153 @@
     animation: none !important;
   }
 }
+
+/* ============================================================
+   Mobile: 390px, frames 3-4 (docs/design/HANDOFF_reading_responsive.md
+   screen 2b; Sprint 20). One breakpoint, 900px -- desktop rules above
+   are otherwise untouched (R8). No regenerate control at either
+   viewport (Sprint 22); mobile's written footer additionally carries
+   Copy link (R3), which desktop does not.
+   ============================================================ */
+
+.desktopOnly {
+  display: block;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: block;
+  }
+
+  .page {
+    padding: 0;
+  }
+
+  .card {
+    width: 100%;
+    height: 100vh;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Frame 3: date band shrinks, moon glyph and JD meta drop entirely --
+     neither mobile frame shows them. */
+  .dateBand {
+    padding: 14px 24px 16px;
+    flex-shrink: 0;
+  }
+
+  .dateHeading {
+    font-size: 32px;
+    margin: 6px 0 0;
+  }
+
+  .eyebrow {
+    font-size: 9px;
+  }
+
+  .dateBandRight {
+    display: none;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .leftColumn {
+    border-right: none;
+    flex-shrink: 0;
+  }
+
+  .balanceGrid {
+    display: none;
+  }
+
+  .rightColumn {
+    flex: 1;
+    overflow-y: auto;
+    /* Long text fades under the fixed footer instead of being cut
+       mid-word (R6). */
+    mask-image: linear-gradient(to bottom, black calc(100% - 64px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 64px), transparent 100%);
+  }
+
+  .eventsSection {
+    padding: 18px 24px 0;
+    border-bottom: none;
+  }
+
+  .sectionTitle {
+    font-size: 21px;
+  }
+
+  .eventRow {
+    grid-template-columns: 52px 1fr;
+    gap: 12px;
+    padding: 11px 0;
+  }
+
+  .eventYear {
+    font-size: 11.5px;
+  }
+
+  .eventText {
+    font-size: 16.5px;
+    line-height: 1.45;
+  }
+
+  .readingSection {
+    padding: 20px 24px 24px;
+    gap: 14px;
+  }
+
+  .busySigil {
+    width: 30px;
+    height: 30px;
+  }
+
+  .busyPhrase {
+    font-size: 18px;
+  }
+
+  .paragraph {
+    font-size: 18px;
+    line-height: 1.58;
+    max-width: none;
+  }
+
+  /* R4: touch targets clear 44px at this size -- an accessibility floor,
+     not a style preference. */
+  .readingFooter {
+    position: sticky;
+    bottom: 0;
+    background: var(--om-ink-footer);
+    padding: 12px 0;
+    margin-top: 0;
+  }
+
+  .castButton {
+    padding: 14px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .mobileWrittenFooter {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+}
