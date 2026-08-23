@@ -24,9 +24,10 @@ const FETCH_TIMEOUT_MS = 5000;
 // never show up empty.
 const FALLBACK_EVENT_COUNT = 5;
 
-// R1: Wikimedia asks for a descriptive User-Agent identifying the
-// application, not a default or absent one.
-const USER_AGENT = "RetroactiveHoroscope/1.0 (PoC; contact: sam.collins@gmail.com)";
+// R1/R10: Wikimedia asks for a descriptive User-Agent identifying the
+// application, not a default or absent one -- by project URL rather than a
+// personal email, since the repository (and this string) is public.
+const USER_AGENT = "RetroactiveHoroscope/1.0 (PoC; https://github.com/samcollins9/my_little_racoon)";
 
 type RawSelectedEntry = {
   text: string;
@@ -69,7 +70,18 @@ async function fetchSelectedEntries(monthDay: string): Promise<RawSelectedEntry[
     }
 
     const body = (await response.json()) as RawOnThisDayResponse;
-    const entries = body.selected ?? [];
+
+    // R11: an absent or non-array `selected` is an unexpected shape, not a
+    // real "no events" answer -- treat it as a failure (thrown, so the
+    // caller's catch returns null) and leave the cache unpopulated, rather
+    // than caching an empty array that later reads as a successful lookup
+    // with nothing found. A `selected` that genuinely is an array -- even
+    // an empty one -- is a real answer and is cached as normal.
+    if (!Array.isArray(body.selected)) {
+      throw new Error("Wikipedia on-this-day response had no `selected` array");
+    }
+
+    const entries = body.selected;
     entriesByMonthDay.set(monthDay, entries);
     return entries;
   } finally {
@@ -93,9 +105,10 @@ function toDateEvent(entry: RawSelectedEntry): DateEvent {
  * Callers in this codebase only ever reach this after
  * calculationInstantForDate has already accepted the same string.
  *
- * Never throws (R6): any fetch failure, non-2xx response, or timeout
- * resolves to null rather than propagating, so a Wikipedia outage can
- * never block saving a reading.
+ * Never throws (R6): any fetch failure, non-2xx response, timeout, or
+ * unexpectedly-shaped response (R11) resolves to null rather than
+ * propagating, so a Wikipedia outage can never block saving a reading.
+ * Logs the reason before returning (R12).
  */
 export async function fetchDayEvents(isoDate: string): Promise<WikipediaEventsPayload | null> {
   const [year, month, day] = isoDate.split("-");
@@ -121,7 +134,11 @@ export async function fetchDayEvents(isoDate: string): Promise<WikipediaEventsPa
       fetchedAt: new Date().toISOString(),
       events: selected.map(toDateEvent),
     };
-  } catch {
+  } catch (err) {
+    // R12: R6 still requires the swallow -- this is about leaving a trace
+    // in Vercel's logs, so an outage is distinguishable from a date that
+    // genuinely had no events, rather than silently indistinguishable.
+    console.error("fetchDayEvents failed", err);
     return null;
   }
 }
