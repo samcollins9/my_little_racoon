@@ -1,5 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { ReadingModel } from "../chart/model";
+import {
+  calculationInstantForDate,
+  computePositions,
+  type PlanetPosition,
+} from "../ephemeris/adapter";
+import { computeAspects, type Aspect } from "../ephemeris/aspects";
+import { composeChart, type ReadingModel } from "../chart/model";
+import type { WikipediaEventsPayload } from "../events/wikipedia";
 import { generateHoroscope } from "./horoscope";
 
 /**
@@ -11,6 +18,55 @@ export function isHoroscopeEnabled(
   source: Record<string, string | undefined> = process.env
 ): boolean {
   return source.HOROSCOPE_ENABLED?.trim().toLowerCase() !== "false";
+}
+
+// Same one-day convention as lib/ephemeris/adapter.ts's own retrograde
+// check (RETROGRADE_STEP_DAYS) and the method CHART_MODEL.md's original
+// Application column was generated with, before Sprint 15's composeChart
+// made `applying` structurally false.
+const APPLYING_SNAPSHOT_STEP_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * composeChart(positions, positions) -- Sprint 15's R4 -- makes every
+ * aspect's `applying` structurally false (lib/chart/model.ts,
+ * docs/design/CHART_MODEL.md). Correct for the persisted chart: R4 forbids
+ * computePositions inside composeChart specifically so a displayed chart
+ * can never disagree with its own stored row. Wrong for a prompt that's
+ * about to assert "applying" or "separating" as fact to an LLM instructed
+ * not to hedge.
+ *
+ * This recomputes a real one-day-later snapshot purely to derive accurate
+ * applying flags for the prompt -- never displayed, never stored, so it
+ * cannot create the disagreement R4 exists to prevent. R4 scopes
+ * composeChart itself, not every caller; CHART_MODEL.md names this sprint
+ * as the one that needs a real second snapshot from somewhere, this is it.
+ */
+export function computePromptAspects(eventDate: string, positions: PlanetPosition[]): Aspect[] {
+  const instant = calculationInstantForDate(eventDate);
+  const later = new Date(instant.getTime() + APPLYING_SNAPSHOT_STEP_MS);
+  const positionsLater = computePositions(later);
+  return computeAspects(positions, positionsLater);
+}
+
+export type StoredReadingForGeneration = {
+  id: string;
+  event_date: string;
+  positions: PlanetPosition[];
+  events: WikipediaEventsPayload | null;
+  horoscope: string | null;
+};
+
+function buildReadingModel(reading: StoredReadingForGeneration): ReadingModel {
+  const chart = composeChart(reading.event_date, reading.positions);
+  return {
+    id: reading.id,
+    // Prompt-accurate aspects, not composeChart's own -- see
+    // computePromptAspects's comment for why this is scoped here rather
+    // than inside composeChart.
+    chart: { ...chart, aspects: computePromptAspects(reading.event_date, reading.positions) },
+    events: reading.events?.events ?? [],
+    horoscope: reading.horoscope,
+  };
 }
 
 export type GenerateResult = { ok: true } | { ok: false; error: string };
@@ -30,16 +86,18 @@ export type GenerateResult = { ok: true } | { ok: false; error: string };
 export async function generateAndPersistHoroscope(
   anon: SupabaseClient,
   readingId: string,
-  reading: ReadingModel
+  reading: StoredReadingForGeneration
 ): Promise<GenerateResult> {
   if (!isHoroscopeEnabled()) {
     return { ok: false, error: "Horoscope generation is currently disabled." };
   }
 
+  const readingModel = buildReadingModel(reading);
+
   let text: string;
   let model: string;
   try {
-    ({ text, model } = await generateHoroscope(reading));
+    ({ text, model } = await generateHoroscope(readingModel));
   } catch {
     return { ok: false, error: "Horoscope generation failed, try again." };
   }

@@ -2,6 +2,17 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReadingModel } from "../chart/model";
 import { buildPrompt, generateHoroscope, resolveOpenAiConfig } from "./horoscope";
 
+/**
+ * Mixed applying/separating values below are deliberate, not arbitrary --
+ * buildPrompt is tested in isolation from where a ReadingModel actually
+ * comes from, but this shape must still be one production can produce.
+ * composeChart alone cannot (Sprint 15's R4 makes its own `applying`
+ * structurally false); lib/llm/generate.ts's computePromptAspects is what
+ * supplies a real one, and generate.test.ts checks that function directly
+ * against docs/design/CHART_MODEL.md's recorded values. See QA1's Sprint
+ * 17 round-1 finding: this fixture used to assert a shape nothing in the
+ * codebase could produce.
+ */
 function reading(overrides: Partial<ReadingModel["chart"]> = {}, events: ReadingModel["events"] = []): ReadingModel {
   return {
     id: "11111111-1111-1111-1111-111111111111",

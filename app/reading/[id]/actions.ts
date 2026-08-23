@@ -2,18 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
-import { composeChart, type ReadingModel } from "@/lib/chart/model";
-import { generateAndPersistHoroscope } from "@/lib/llm/generate";
-import type { PlanetPosition } from "@/lib/ephemeris/adapter";
-import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
-
-type StoredReading = {
-  id: string;
-  event_date: string;
-  positions: PlanetPosition[];
-  events: WikipediaEventsPayload | null;
-  horoscope: string | null;
-};
+import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/lib/llm/generate";
 
 /**
  * R7: explicit, not automatic -- this only ever runs from the button's
@@ -22,6 +11,10 @@ type StoredReading = {
  * Re-fetches the reading by id rather than trusting hidden form fields for
  * positions/events -- the only thing the form actually needs to carry is
  * the id, and generation always runs against the authoritative stored row.
+ * Building the ReadingModel (including the prompt-accurate aspect
+ * recomputation) happens inside generateAndPersistHoroscope, not here, so
+ * it stays covered by lib/llm/generate.test.ts rather than living
+ * untested in this "use server" file.
  */
 export async function generateReadingHoroscope(formData: FormData) {
   const readingId = formData.get("readingId");
@@ -36,16 +29,8 @@ export async function generateReadingHoroscope(formData: FormData) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent("Could not load that reading.")}`);
   }
 
-  const reading = data[0] as StoredReading;
-  const chart = composeChart(reading.event_date, reading.positions);
-  const readingModel: ReadingModel = {
-    id: reading.id,
-    chart,
-    events: reading.events?.events ?? [],
-    horoscope: reading.horoscope,
-  };
-
-  const result = await generateAndPersistHoroscope(anon, readingId, readingModel);
+  const reading = data[0] as StoredReadingForGeneration;
+  const result = await generateAndPersistHoroscope(anon, readingId, reading);
 
   if (!result.ok) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent(result.error)}`);
