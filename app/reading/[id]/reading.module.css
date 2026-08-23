@@ -628,8 +628,17 @@
   }
 
   .castButton {
+    /* QA1 round 1: padding + an unmeasured font line-box doesn't clear
+       44px by construction -- min-height does, regardless of IBM Plex
+       Mono's actual metrics, and flex centring keeps the label
+       vertically centred in the taller box rather than assuming a
+       line-height that happens to fill it. */
+    min-height: 44px;
     padding: 14px;
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
   }
 
