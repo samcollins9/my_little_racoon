@@ -16,11 +16,32 @@ route and no way to enumerate what's been saved.
 
 `lib/ephemeris/aspects.ts`, `balance.ts`, `moon-phase.ts`, and `julian-day.ts`
 (Sprint 12) compute Ptolemaic aspects, element/modality balance, and moon
-phase, but nothing in the UI currently calls them — a UI that did (Sprint 13)
-was built and then reverted (Sprint 14) ahead of a data-model revision, not
-because this code was wrong. It's kept, tested, and unused on purpose: the
-next phase's data model is expected to consume it, and deleting tested
-working code only to re-derive it later is the worse trade.
+phase. A UI calling them was built (Sprint 13), reverted ahead of a
+data-model revision (Sprint 14, not because the code was wrong), then
+finally given a caller by `lib/chart/model.ts`'s `composeChart` (Sprint
+15) and `/reading/[id]` (Sprint 18) — the gap between "tested" and "used"
+was deliberate, not neglect.
+
+`readings.events` (Sprint 16) and `readings.horoscope` (Sprint 17) are
+both **anon-writable by anyone holding a reading id** — `set_reading_horoscope`
+is granted to `anon` the same way insert is, and there's no owner concept
+to check against (Sprint 4). Treat both columns as untrusted content, the
+same trust level as any other public form submission. `/reading/[id]`
+(Sprint 18) is the one place that renders them, and it does so two ways
+worth keeping in mind before changing that code:
+
+- Both render as escaped text only — never `dangerouslySetInnerHTML`,
+  never a markdown renderer that permits raw HTML, never `innerHTML`.
+  `horoscope`'s paragraphs are produced by splitting on newlines and
+  mapping each to a `<p>` as JSX text content (`app/reading/[id]/display.ts`),
+  which stays escaped without needing a markdown library at all — reaching
+  for one to get the same paragraph rendering is what turns a shared link
+  into stored XSS.
+- Any external URL from `events` (`sourceUrl`) is scheme-checked
+  (`isSafeExternalUrl`, requiring `https://`) before it's ever allowed
+  into an `href`. This is a separate guard from escaping, not a redundant
+  one: React's default escaping protects text content, not a `javascript:`
+  URL sitting in an attribute.
 
 `readings.place_name`/`latitude`/`longitude`/`timezone` are vestigial:
 Sprint 2 added them before Sprint 6 dropped place and geocoding entirely.
