@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import styles from "./reading.module.css";
@@ -73,7 +74,16 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
       ? styles.statusWritten
       : styles.statusIdle;
 
-  const buttonLabel = errorMessage ? "Try again" : hasHoroscope ? "Cast it again" : "Read the chart";
+  // Sprint 22: no regenerate control. A written reading with no error
+  // shows a plain link to /chart instead of a submit button -- a visitor
+  // wanting another reading is sent to cast a new one, not offered a
+  // control that re-rolls the one they're looking at. R2: the idle-state
+  // generate button ("Read the chart") is untouched. R5: a failed
+  // generation still offers "Try again", re-enabled, regardless of
+  // hasHoroscope -- that's a retry of the failed attempt, not a
+  // regeneration of a successful one.
+  const showButton = pending || !!errorMessage || !hasHoroscope;
+  const buttonLabel = errorMessage ? "Try again" : "Read the chart";
 
   return (
     <>
@@ -101,16 +111,20 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
       )}
 
       <div className={styles.readingFooter}>
-        <button type="submit" disabled={pending} className={styles.castButton}>
-          {buttonLabel}
-        </button>
+        {showButton ? (
+          <button type="submit" disabled={pending} className={styles.castButton}>
+            {buttonLabel}
+          </button>
+        ) : (
+          <Link href="/chart" className={styles.castButton}>
+            Cast a new reading
+          </Link>
+        )}
         {errorMessage ? (
           <p className={styles.errorNote}>{errorMessage}</p>
         ) : (
           <p className={styles.footerNote}>
             Written on request from 10 positions and {aspectCount} aspects.
-            <br />
-            The reading is kept; casting again replaces it.
           </p>
         )}
       </div>
