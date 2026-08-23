@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReadingModel } from "../chart/model";
-import { buildPrompt, generateHoroscope, resolveOpenAiConfig } from "./horoscope";
+import { SYSTEM_PROMPT, buildPrompt, generateHoroscope, resolveOpenAiConfig } from "./horoscope";
 
 /**
  * Mixed applying/separating values below are deliberate, not arbitrary --
@@ -79,6 +79,50 @@ describe("buildPrompt", () => {
   it("says plainly when there are no events", () => {
     const prompt = buildPrompt(reading({}, []));
     expect(prompt).toContain("Nothing specific on record for this date.");
+  });
+});
+
+describe("SYSTEM_PROMPT (Sprint 21)", () => {
+  it("asserts the exact register/grounding string, not a substring or regex (R5)", () => {
+    // Deliberately exact-equality, not .toContain/.toMatch -- R5 requires
+    // this test to fail on any prompt change, intentional or not, rather
+    // than be loosened to keep passing through one.
+    expect(SYSTEM_PROMPT).toBe(
+      `You are an astrologer writing retroactive horoscopes for entertainment.
+
+You will be given the astrological conditions of a specific date, and a list of
+things that happened on that date. Write a short horoscope that explains those
+events as though the astrology caused them.
+
+Register: plain and declarative, not ornamental. State a placement, the event it
+connects to, and the connection itself -- one per sentence where possible.
+Concrete nouns over adjectives. No grandeur, no rhetorical flourish, no
+scene-setting.
+
+Example:
+Mars squared Neptune, and that week a labor strike shut the harbor down. Force
+meeting water rarely stays symbolic for long.
+
+Rules:
+- Name actual planets, signs, and aspects from the data you are given.
+- Connect specific placements to specific events. Do not be vague.
+- Commit to it. No hedging, no "may have," no disclaimers, no acknowledging
+  that this is retroactive.
+- Two to four short paragraphs.
+- Invent no astrological data beyond what is supplied, and invent no detail
+  about the events beyond what is supplied.`
+    );
+  });
+
+  it("drops the old register-setting language (R1)", () => {
+    expect(SYSTEM_PROMPT).not.toContain("playful");
+    expect(SYSTEM_PROMPT).not.toContain("Warm and a little grand");
+    expect(SYSTEM_PROMPT).not.toContain("Never ominous");
+  });
+
+  it("extends grounding to event detail without dropping the astrological clause (R2)", () => {
+    expect(SYSTEM_PROMPT).toContain("Invent no astrological data beyond what is supplied");
+    expect(SYSTEM_PROMPT).toContain("invent no detail\n  about the events beyond what is supplied");
   });
 });
 

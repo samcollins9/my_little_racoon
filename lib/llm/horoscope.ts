@@ -23,20 +23,45 @@ const TOP_ASPECT_COUNT = 6; // PRD §4.3: the tail beyond this dilutes rather th
 // takes longer than a JSON lookup.
 const TIMEOUT_MS = 25000;
 
-const SYSTEM_PROMPT = `You are an astrologer writing playful retroactive horoscopes for entertainment.
+// Sprint 21: register changed from effusive to plain and declarative, and
+// the grounding rule strengthened in the same edit, not left as it was --
+// concreteness raises fabrication pressure (a model asked for specific
+// detail from event text that may not contain it will supply its own),
+// so "invent no detail about the events" is added alongside the existing
+// "invent no astrological data" clause rather than instead of it.
+//
+// The worked example below is deliberately generic -- no named real
+// place, date, or incident -- rather than drawn from an actual reading.
+// R3 requires any real-world detail in it to be factually correct, and
+// this is the one prompt where an approximate-but-wrong fact would teach
+// exactly the failure mode this sprint exists to prevent. A generic
+// scenario has no real-world claim to get wrong while still
+// demonstrating the register: one placement, one event, one sentence
+// each, concrete nouns, no ornament.
+/** Exported for lib/llm/horoscope.test.ts -- asserting the exact string (R5). */
+export const SYSTEM_PROMPT = `You are an astrologer writing retroactive horoscopes for entertainment.
 
 You will be given the astrological conditions of a specific date, and a list of
 things that happened on that date. Write a short horoscope that explains those
 events as though the astrology caused them.
+
+Register: plain and declarative, not ornamental. State a placement, the event it
+connects to, and the connection itself -- one per sentence where possible.
+Concrete nouns over adjectives. No grandeur, no rhetorical flourish, no
+scene-setting.
+
+Example:
+Mars squared Neptune, and that week a labor strike shut the harbor down. Force
+meeting water rarely stays symbolic for long.
 
 Rules:
 - Name actual planets, signs, and aspects from the data you are given.
 - Connect specific placements to specific events. Do not be vague.
 - Commit to it. No hedging, no "may have," no disclaimers, no acknowledging
   that this is retroactive.
-- Warm and a little grand. Never ominous.
 - Two to four short paragraphs.
-- Invent no astrological data beyond what is supplied.`;
+- Invent no astrological data beyond what is supplied, and invent no detail
+  about the events beyond what is supplied.`;
 
 // R2/§4.3: round to two decimals -- full precision spends tokens and
 // reads as noise, not as meaning the model can use.
