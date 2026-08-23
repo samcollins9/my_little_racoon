@@ -8,11 +8,17 @@ import {
   type PlanetPosition,
 } from "@/lib/ephemeris/adapter";
 import { saveReading } from "./actions";
+import styles from "./chart.module.css";
 
 function dateOnly(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
+// Sprint 23: a minimal restyle into Sprint 19's design language --
+// tokens, fonts, spacing only. No constellation, no scrub, no hover, no
+// aspect table (R5); this page still computes and shows exactly what it
+// did before, unchanged (Out of Scope). Stays a server component (R6):
+// nothing here needs client state.
 export default async function ChartPage({
   searchParams,
 }: {
@@ -34,68 +40,77 @@ export default async function ChartPage({
   }
 
   return (
-    <main>
-      <h1>Planetary positions</h1>
-      <p>
-        Geocentric planetary positions for a past date. No account required
-        to view them — save one and anyone with the link can open it.
-      </p>
+    <div className={styles.page}>
+      <main className={styles.card}>
+        <h1 className={styles.heading}>Planetary positions</h1>
+        {/* R9: the sharing-model sentence dropped, 23 Aug 2026 -- noise on
+            an entry page, not reassurance. Rest of the intro unchanged. */}
+        <p className={styles.intro}>Geocentric planetary positions for a past date.</p>
 
-      <form method="get">
-        <label htmlFor="date">Date</label>
-        <br />
-        <input
-          id="date"
-          name="date"
-          type="date"
-          defaultValue={dateParam}
-          min={dateOnly(MIN_SUPPORTED_DATE)}
-          max={dateOnly(MAX_SUPPORTED_DATE)}
-          required
-        />
-        <button type="submit">Cast</button>
-        <p>
-          Supported range: {dateOnly(MIN_SUPPORTED_DATE)} to{" "}
-          {dateOnly(MAX_SUPPORTED_DATE)}.
+        <form method="get" className={styles.formGroup}>
+          <label className={styles.label} htmlFor="date">
+            Date
+          </label>
+          <input
+            id="date"
+            name="date"
+            className={styles.dateInput}
+            type="date"
+            defaultValue={dateParam}
+            min={dateOnly(MIN_SUPPORTED_DATE)}
+            max={dateOnly(MAX_SUPPORTED_DATE)}
+            required
+          />
+          <button type="submit" className={styles.button}>
+            Cast
+          </button>
+        </form>
+        <p className={styles.fineprint}>
+          Supported range: {dateOnly(MIN_SUPPORTED_DATE)} to {dateOnly(MAX_SUPPORTED_DATE)}.
         </p>
-      </form>
 
-      {error ? <p role="alert">{error}</p> : null}
-
-      {positions && instant ? (
-        <>
-          <p>
-            Positions calculated for {instant.toISOString()} — every date is
-            evaluated at {CALCULATION_HOUR_UTC}:00 UTC, not a specific hour
-            you provide.
+        {error ? (
+          <p className={styles.errorText} role="alert">
+            {error}
           </p>
-          <table>
-            <thead>
-              <tr>
-                <th>Body</th>
-                <th>Sign</th>
-                <th>Degree</th>
-                <th>Retrograde</th>
-              </tr>
-            </thead>
-            <tbody>
-              {positions.map((position) => (
-                <tr key={position.body}>
-                  <td>{position.body}</td>
-                  <td>{position.sign}</td>
-                  <td>{position.degreeInSign.toFixed(2)}&deg;</td>
-                  <td>{position.retrograde ? "Yes" : "No"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        ) : null}
 
-          <form action={saveReading}>
-            <input type="hidden" name="date" value={dateParam} />
-            <button type="submit">Save this reading</button>
-          </form>
-        </>
-      ) : null}
-    </main>
+        {positions && instant ? (
+          <div className={styles.resultsSection}>
+            <p className={styles.resultsIntro}>
+              Positions calculated for {instant.toISOString()} — every date is evaluated at{" "}
+              {CALCULATION_HOUR_UTC}:00 UTC, not a specific hour you provide.
+            </p>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Body</th>
+                  <th>Sign</th>
+                  <th>Degree</th>
+                  <th>Retrograde</th>
+                </tr>
+              </thead>
+              <tbody>
+                {positions.map((position) => (
+                  <tr key={position.body}>
+                    <td>{position.body}</td>
+                    <td>{position.sign}</td>
+                    <td>{position.degreeInSign.toFixed(2)}&deg;</td>
+                    <td>{position.retrograde ? "Yes" : "No"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <form action={saveReading} className={styles.saveForm}>
+              <input type="hidden" name="date" value={dateParam} />
+              <button type="submit" className={styles.button}>
+                Save this reading
+              </button>
+            </form>
+          </div>
+        ) : null}
+      </main>
+    </div>
   );
 }

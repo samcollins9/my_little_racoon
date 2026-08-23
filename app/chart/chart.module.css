@@ -1,0 +1,153 @@
+/*
+ * Sprint 23: a minimal restyle -- tokens, fonts, and spacing only, all
+ * reused from what Sprint 19 already shipped (app/globals.css's --om-*
+ * custom properties, --font-cormorant/--font-mono) and from the button
+ * style already established in app/reading/[id]/reading.module.css's
+ * .castButton. No new color, font, or keyframe anywhere in this file
+ * (R1) -- deliberately not docs/design/HANDOFF_chart_constellation.md,
+ * which this sprint does not build (see the sprint file).
+ */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 56px 64px 90px;
+  background: radial-gradient(
+    130% 70% at 50% -10%,
+    oklch(0.185 0.022 288),
+    var(--om-ink) 68%
+  );
+}
+
+.card {
+  width: 640px;
+  height: fit-content;
+  border: 1px solid var(--om-rule-strong);
+  background: var(--om-ink-raised);
+  box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);
+  padding: 40px 44px;
+}
+
+.heading {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.intro {
+  margin: 0 0 26px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--om-grey);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  align-items: flex-start;
+}
+
+.label {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.dateInput {
+  background: var(--om-ink-sunk);
+  border: 1px solid var(--om-rule-strong);
+  border-radius: 2px;
+  padding: 11px 14px;
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: var(--om-bone);
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--om-verdigris);
+}
+
+/* Same control the "Read the chart" / "Cast a new reading" buttons on
+   /reading use (reading.module.css's .castButton) -- one button
+   language across the app rather than a second one invented here. */
+.button {
+  margin-top: 2px;
+  background: transparent;
+  border: 1px solid var(--om-rule-strong);
+  color: oklch(0.72 0.015 285);
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.button:hover {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris-light);
+}
+
+.fineprint {
+  margin: 14px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  line-height: 1.8;
+  color: var(--om-grey-dim);
+}
+
+.errorText {
+  margin: 14px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  color: var(--om-rust);
+}
+
+.resultsSection {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--om-rule);
+}
+
+.resultsIntro {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--om-grey);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 0 10px 8px 0;
+  border-bottom: 1px solid var(--om-rule);
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.table td {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--om-rule-faint);
+  font-size: 16px;
+  color: var(--om-bone-dim);
+}
+
+.saveForm {
+  margin-top: 22px;
+  display: flex;
+}
