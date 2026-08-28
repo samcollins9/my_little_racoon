@@ -2,7 +2,7 @@
 id: 13
 title: "Aspect Constellation chart UI"
 epic: "Design Pass"
-status: todo
+status: abandoned
 created: 2026-08-16T19:09:06+00:00
 ---
 

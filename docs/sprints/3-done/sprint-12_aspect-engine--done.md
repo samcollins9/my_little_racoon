@@ -2,7 +2,7 @@
 id: 12
 title: "Aspect engine"
 epic: "Design Pass"
-status: todo
+status: done
 created: 2026-08-16T19:09:06+00:00
 ---
 

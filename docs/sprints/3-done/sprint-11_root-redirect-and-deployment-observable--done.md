@@ -2,7 +2,7 @@
 id: 11
 title: "Root redirect and deployment observable"
 epic: "Design Pass"
-status: todo
+status: done
 created: 2026-08-16T19:09:06+00:00
 ---
 
@@ -101,3 +101,11 @@ from the redesign landing in Sprint 13.
 
 - **Dev Team 1:** the whole sprint.
 - **Dev Team 2:** unassigned. Small sprint, no parallel track.
+
+**Corrected 16 Aug 2026, after the fact.** Dev Team 2 actually built this
+sprint (worktree at `../my_little_raccoon-devteam2-sprint-11`, branch
+`devteam2/sprint-11`), not Dev Team 1 as originally assigned above. No
+code consequence — flagged by QA1's round-1 audit because this section is
+what determines who runs the remaining lifecycle commands
+(`/sprint-dev-done`, `/sprint-complete`) for this sprint. That's Dev Team
+2, from here on.

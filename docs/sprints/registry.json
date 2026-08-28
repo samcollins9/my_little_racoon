@@ -1,5 +1,5 @@
 {
-  "next_id": 14,
+  "next_id": 25,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -64,20 +64,86 @@
     "11": {
       "title": "Root redirect and deployment observable",
       "epic": "Design Pass",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-11_root-redirect-and-deployment-observable.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-11_root-redirect-and-deployment-observable--done.md"
     },
     "12": {
       "title": "Aspect engine",
       "epic": "Design Pass",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-12_aspect-engine.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-12_aspect-engine--done.md"
     },
     "13": {
       "title": "Aspect Constellation chart UI",
       "epic": "Design Pass",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-13_aspect-constellation-chart-ui.md"
+      "status": "abandoned",
+      "file": "docs/sprints/5-abandoned/sprint-13_aspect-constellation-chart-ui.md"
+    },
+    "14": {
+      "title": "Revert chart UI to text-only",
+      "epic": "Data Model Revision",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-14_revert-chart-ui-to-text-only--done.md"
+    },
+    "15": {
+      "title": "Schema revision and composed chart model",
+      "epic": "Synthesis PoC",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-15_schema-revision-and-composed-chart-model--done.md"
+    },
+    "16": {
+      "title": "Wikipedia event lookup",
+      "epic": "Synthesis PoC",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-16_wikipedia-event-lookup--done.md"
+    },
+    "17": {
+      "title": "Horoscope generation",
+      "epic": "Synthesis PoC",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-17_horoscope-generation--done.md"
+    },
+    "18": {
+      "title": "Display and operability",
+      "epic": "Synthesis PoC",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-18_display-and-operability--done.md"
+    },
+    "19": {
+      "title": "Reading page desktop design",
+      "epic": "Reading Design",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-19_reading-page-desktop-design--done.md"
+    },
+    "20": {
+      "title": "Mobile breakpoint",
+      "epic": "Reading Design",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-20_mobile-breakpoint--done.md"
+    },
+    "21": {
+      "title": "Horoscope tone",
+      "epic": "Synthesis PoC",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-21_horoscope-tone--done.md"
+    },
+    "22": {
+      "title": "Reading page navigation",
+      "epic": "Reading Design",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-22_reading-page-navigation--done.md"
+    },
+    "23": {
+      "title": "Chart page minimal restyle",
+      "epic": "Reading Design",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-23_chart-page-minimal-restyle--done.md"
+    },
+    "24": {
+      "title": "Step labels and flow indicator",
+      "epic": "Reading Design",
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-24_step-labels-and-flow-indicator.md"
     }
   }
 }
