@@ -15,6 +15,12 @@ const eslintConfig = defineConfig([
     // Standalone design prototype/handoff material, not application
     // source -- not meant to be held to this app's lint rules.
     "docs/design/**",
+    // QA1, Sprint 24 round 1: standalone Node CJS tooling (the installer
+    // and its launcher scripts), not Next.js application source -- same
+    // rationale as docs/design/** above. These run directly under Node,
+    // where require() is the normal, correct way to import, not a lint
+    // violation to fix.
+    "scripts/**",
   ]),
 ]);
 
