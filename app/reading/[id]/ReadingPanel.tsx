@@ -67,7 +67,7 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
 
   const showWritten = !pending && hasHoroscope;
 
-  const statusLabel = pending ? "writing" : hasHoroscope ? "written" : "not read yet";
+  const statusLabel = pending ? "writing" : hasHoroscope ? "written" : "not written yet";
   const statusClass = pending
     ? styles.statusBusy
     : hasHoroscope
@@ -77,13 +77,16 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
   // Sprint 22: no regenerate control. A written reading with no error
   // shows a plain link to /chart instead of a submit button -- a visitor
   // wanting another reading is sent to cast a new one, not offered a
-  // control that re-rolls the one they're looking at. R2: the idle-state
-  // generate button ("Read the chart") is untouched. R5: a failed
+  // control that re-rolls the one they're looking at. R5: a failed
   // generation still offers "Try again", re-enabled, regardless of
   // hasHoroscope -- that's a retry of the failed attempt, not a
-  // regeneration of a successful one.
+  // regeneration of a successful one. Sprint 24, R1: the idle-state
+  // generate button renamed "Read the chart" -> "Write the horoscope" --
+  // it names the destination (the generated text), not the jargon verb
+  // for what the code does; "Try again" (R7) is unchanged, that's a retry
+  // of a failed generation, not a step in the sequence.
   const showButton = pending || !!errorMessage || !hasHoroscope;
-  const buttonLabel = errorMessage ? "Try again" : "Read the chart";
+  const buttonLabel = errorMessage ? "Try again" : "Write the horoscope";
 
   return (
     <>
@@ -121,13 +124,17 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
                 again" (Sprint 22). Mobile frame 4 carries a second
                 control beside it (Sprint 20, R3) -- its own region
                 rather than this one restyled, so the desktop diff stays
-                exactly what Sprint 22 shipped. */}
+                exactly what Sprint 22 shipped. Sprint 24, R6: relabelled
+                "Cast a new reading" -> "Cast a new chart" -- this link
+                goes back to /chart, i.e. step 1 ("cast the chart") in the
+                now-settled vocabulary, not to another "reading" (this
+                saved page's own name). */}
             <Link href="/chart" className={`${styles.castButton} ${styles.desktopOnly}`}>
-              Cast a new reading
+              Cast a new chart
             </Link>
             <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
               <Link href="/chart" className={styles.castButton}>
-                Cast a new reading
+                Cast a new chart
               </Link>
               <CopyLinkButton />
             </div>
@@ -180,8 +187,8 @@ export function IdleBlock() {
       </svg>
       <p className={styles.idleText}>
         The chart stands as it is. Nothing has been written about it yet —{" "}
-        <span className={styles.idleAccent}>read the chart</span> when you want the sky held to
-        account for the day.
+        <span className={styles.idleAccent}>write the horoscope</span> when you want the sky held
+        to account for the day.
       </p>
     </div>
   );

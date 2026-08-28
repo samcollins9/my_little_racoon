@@ -36,6 +36,13 @@
   letter-spacing: 0.01em;
 }
 
+/* Sprint 24: spacing wrapper only -- the indicator itself
+   (app/components/flow-indicator.module.css) carries no page-specific
+   layout, so each route supplies its own surrounding gap. */
+.flowSlot {
+  margin: 0 0 22px;
+}
+
 .intro {
   margin: 0 0 26px;
   font-size: 16px;
@@ -74,9 +81,12 @@
   border-color: var(--om-verdigris);
 }
 
-/* Same control the "Read the chart" / "Cast a new reading" buttons on
+/* Same control the "Write the horoscope" / "Cast a new chart" buttons on
    /reading use (reading.module.css's .castButton) -- one button
-   language across the app rather than a second one invented here. */
+   language across the app rather than a second one invented here.
+   Sprint 24 renamed the labels this comment refers to; the shared style
+   itself (and its class name, out of scope per the sprint file) didn't
+   change. */
 .button {
   margin-top: 2px;
   background: transparent;

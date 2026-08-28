@@ -16,6 +16,7 @@ import {
   computeThreads,
 } from "./constellation";
 import { ReadingPanel, IdleBlock } from "./ReadingPanel";
+import { FlowIndicator } from "@/app/components/FlowIndicator";
 import styles from "./reading.module.css";
 
 type StoredReading = {
@@ -66,6 +67,13 @@ export default async function ReadingPage({
   const dateBandMoon = computeMoonPhaseGeometry(chart.positions, 15, 15, 12);
   const calculationHour = `${String(CALCULATION_HOUR_UTC).padStart(2, "0")}:00 UT`;
 
+  // Sprint 24, R2/R3: steps 1 and 2 (chart, reading) are always complete
+  // by the time this page renders at all -- reaching /reading/[id] means
+  // a chart was cast and a reading was saved. Step 3 (horoscope) is
+  // complete only once reading.horoscope is non-null. Derived from data
+  // already fetched above; no client state.
+  const completedSteps = reading.horoscope ? 3 : 2;
+
   return (
     <div className={styles.page}>
       <main className={styles.card}>
@@ -90,6 +98,10 @@ export default async function ReadingPage({
               sealed · anyone with the link
             </span>
           </div>
+        </div>
+
+        <div className={styles.flowSlot}>
+          <FlowIndicator completedSteps={completedSteps} />
         </div>
 
         <div className={styles.body}>
@@ -377,7 +389,7 @@ export default async function ReadingPage({
                         reading.horoscope ? styles.statusWritten : styles.statusIdle
                       }`}
                     >
-                      {reading.horoscope ? "written" : "not read yet"}
+                      {reading.horoscope ? "written" : "not written yet"}
                     </span>
                   </div>
                   {reading.horoscope ? (

@@ -8,6 +8,7 @@ import {
   type PlanetPosition,
 } from "@/lib/ephemeris/adapter";
 import { saveReading } from "./actions";
+import { FlowIndicator } from "@/app/components/FlowIndicator";
 import styles from "./chart.module.css";
 
 function dateOnly(date: Date): string {
@@ -43,6 +44,13 @@ export default async function ChartPage({
     <div className={styles.page}>
       <main className={styles.card}>
         <h1 className={styles.heading}>Planetary positions</h1>
+        {/* Sprint 24, R2/R3: state comes from `positions` -- the same
+            variable the results table below already depends on -- so
+            casting a chart advances this indicator to step 2 on this same
+            page. Nothing here is client state. */}
+        <div className={styles.flowSlot}>
+          <FlowIndicator completedSteps={positions ? 1 : 0} />
+        </div>
         {/* R9: the sharing-model sentence dropped, 23 Aug 2026 -- noise on
             an entry page, not reassurance. Rest of the intro unchanged. */}
         <p className={styles.intro}>Geocentric planetary positions for a past date.</p>
@@ -62,7 +70,7 @@ export default async function ChartPage({
             required
           />
           <button type="submit" className={styles.button}>
-            Cast
+            Cast the chart
           </button>
         </form>
         <p className={styles.fineprint}>
@@ -105,7 +113,7 @@ export default async function ChartPage({
             <form action={saveReading} className={styles.saveForm}>
               <input type="hidden" name="date" value={dateParam} />
               <button type="submit" className={styles.button}>
-                Save this reading
+                See the full reading
               </button>
             </form>
           </div>

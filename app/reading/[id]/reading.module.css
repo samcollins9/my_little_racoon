@@ -103,6 +103,16 @@
   text-align: right;
 }
 
+/* ---- Flow indicator (Sprint 24) ---- */
+
+/* Spacing wrapper only -- the indicator itself
+   (app/components/flow-indicator.module.css) carries no page-specific
+   layout, so each route supplies its own surrounding gap/border. */
+.flowSlot {
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--om-rule);
+}
+
 /* ---- Body ---- */
 
 .body {
@@ -546,6 +556,14 @@
 
   .dateBandRight {
     display: none;
+  }
+
+  /* Sprint 24: same treatment as .dateBand above -- a fixed-height flex
+     column (mobile .card, R9/Sprint 20) needs every header region to
+     declare flex-shrink: 0 or the scrollable .rightColumn squeezes it. */
+  .flowSlot {
+    padding: 10px 24px;
+    flex-shrink: 0;
   }
 
   .body {

@@ -1,0 +1,79 @@
+/*
+ * Sprint 24, R8: reuses only app/globals.css's --om-* custom properties
+ * and --font-mono -- no new color, font, keyframe, or dependency. R9:
+ * flex-wrap plus a flexible connector width (rather than a fixed desktop
+ * layout) means this holds up at mobile width without its own media
+ * query -- it just reflows inside whichever card (app/chart or
+ * app/reading/[id]) already handles the 900px breakpoint.
+ */
+
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), monospace;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.marker {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--om-rule-strong);
+  font-size: 10px;
+  color: var(--om-grey-dim);
+}
+
+.label {
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+  white-space: nowrap;
+}
+
+.connector {
+  flex: 1 1 20px;
+  min-width: 12px;
+  max-width: 44px;
+  height: 1px;
+  margin: 0 10px;
+  background: var(--om-rule-strong);
+}
+
+.connectorDone {
+  background: var(--om-verdigris);
+}
+
+.marker.done {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris);
+}
+
+.label.done {
+  color: var(--om-bone-dim);
+}
+
+.marker.current {
+  border-color: var(--om-verdigris);
+  background: var(--om-verdigris);
+  color: var(--om-ink);
+}
+
+.label.current {
+  color: var(--om-bone);
+}
