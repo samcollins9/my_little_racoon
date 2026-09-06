@@ -2,7 +2,7 @@
 id: 24
 title: "Step labels and flow indicator"
 epic: "Reading Design"
-status: in_progress
+status: done
 created: 2026-08-28T13:57:15+00:00
 ---
 
