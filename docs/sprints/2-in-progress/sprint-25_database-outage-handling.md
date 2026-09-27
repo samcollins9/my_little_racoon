@@ -2,7 +2,7 @@
 id: 25
 title: "Database outage handling"
 epic: "Operability"
-status: todo
+status: in_progress
 created: 2026-09-27T19:03:31+00:00
 ---
 
