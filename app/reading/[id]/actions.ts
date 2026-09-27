@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
+import { DatabaseUnavailableError, isDatabaseUnavailable } from "@/lib/supabase/availability";
 import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/lib/llm/generate";
 
 /**
@@ -23,7 +24,17 @@ export async function generateReadingHoroscope(formData: FormData) {
   }
 
   const anon = createAnonClient();
-  const { data, error } = await anon.rpc("get_reading_by_id", { reading_id: readingId });
+  const { data, error, status } = await anon.rpc("get_reading_by_id", { reading_id: readingId });
+
+  // Sprint 25, R7: redirecting back to /reading/[id] here used to land the
+  // visitor on a page that then reported the reading as missing. Throwing
+  // instead renders the route's error boundary -- R3's unavailable state --
+  // directly, without depending on the database still being down when a
+  // redirect reloads the page.
+  if (isDatabaseUnavailable({ error, status })) {
+    console.error("generateReadingHoroscope: database unavailable at load", error);
+    throw new DatabaseUnavailableError();
+  }
 
   if (error || !data || data.length === 0) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent("Could not load that reading.")}`);

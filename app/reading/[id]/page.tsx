@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
+import { DatabaseUnavailableError, isDatabaseUnavailable } from "@/lib/supabase/availability";
 import { composeChart } from "@/lib/chart/model";
 import { CALCULATION_HOUR_UTC, type PlanetPosition } from "@/lib/ephemeris/adapter";
 import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
@@ -46,8 +47,25 @@ export default async function ReadingPage({
   const { error: generateError } = await searchParams;
 
   const anon = createAnonClient();
-  const { data, error } = await anon.rpc("get_reading_by_id", { reading_id: id });
+  // `status` is taken below (the events label), hence httpStatus here.
+  const {
+    data,
+    error,
+    status: httpStatus,
+  } = await anon.rpc("get_reading_by_id", { reading_id: id });
 
+  // Sprint 25, R3: an outage is not a fact about any id -- it is the same
+  // for every request -- so reporting it reveals nothing Sprint 10's
+  // uniformity protects. Only the shared classifier's verdict takes this
+  // path; the thrown error carries nothing from the id, and error.tsx
+  // renders the unavailable state with a 5xx (R8: logged here, server-side).
+  if (isDatabaseUnavailable({ error, status: httpStatus })) {
+    console.error("ReadingPage: database unavailable", error);
+    throw new DatabaseUnavailableError();
+  }
+
+  // R4: unchanged. Malformed id, missing id, and any other RPC error all
+  // still land on the same silent 404.
   if (error || !data || data.length === 0) {
     notFound();
   }

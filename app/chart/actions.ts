@@ -9,6 +9,10 @@ import {
   computePositions,
 } from "@/lib/ephemeris/adapter";
 import { fetchDayEvents } from "@/lib/events/wikipedia";
+import { isDatabaseUnavailable } from "@/lib/supabase/availability";
+
+const SAVE_UNAVAILABLE_MESSAGE =
+  "Readings can't be saved right now because the service is unavailable. Try again in a few minutes.";
 
 export async function saveReading(formData: FormData) {
   const dateParam = formData.get("date");
@@ -40,7 +44,7 @@ export async function saveReading(formData: FormData) {
   // for.
   const id = randomUUID();
   const anon = createAnonClient();
-  const { error } = await anon.from("readings").insert({
+  const { error, status } = await anon.from("readings").insert({
     id,
     event_date: dateParam,
     positions,
@@ -51,10 +55,19 @@ export async function saveReading(formData: FormData) {
     // R6 (Sprint 18, carried from Sprint 14): the user-facing message
     // stays generic, but the underlying reason -- a constraint violation,
     // a connection failure -- is otherwise invisible outside this process.
-    console.error("saveReading: insert failed", error);
+    // Sprint 25, R5: an outage is the one failure that gets its own message
+    // -- "Save failed, try again." invited an immediate retry that can't
+    // work and suggested the visitor had done something wrong. Every other
+    // insert failure keeps the generic message. Either way the redirect
+    // carries the date back, so the cast chart is still shown with it.
+    const unavailable = isDatabaseUnavailable({ error, status });
+    console.error(
+      unavailable ? "saveReading: database unavailable" : "saveReading: insert failed",
+      error
+    );
     redirect(
       `/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(
-        "Save failed, try again."
+        unavailable ? SAVE_UNAVAILABLE_MESSAGE : "Save failed, try again."
       )}`
     );
   }

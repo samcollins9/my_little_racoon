@@ -1,0 +1,71 @@
+/*
+ * Sprint 25, R3: the unavailable state's own small layout. Existing --om-*
+ * tokens and fonts only (Out of Scope: no restyle beyond the existing
+ * tokens); the values mirror app/chart/chart.module.css's card and button
+ * rather than inventing new ones. max-width rather than a fixed width, so
+ * it never forces a horizontal scroll below 900px.
+ */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 56px 16px 90px;
+  background: radial-gradient(130% 70% at 50% -10%, oklch(0.185 0.022 288), var(--om-ink) 68%);
+}
+
+.card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 640px;
+  height: fit-content;
+  border: 1px solid var(--om-rule-strong);
+  background: var(--om-ink-raised);
+  box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);
+  padding: 40px 44px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--om-rust);
+}
+
+.heading {
+  margin: 12px 0 12px;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.text {
+  margin: 0 0 26px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--om-grey);
+}
+
+.link {
+  display: inline-block;
+  border: 1px solid var(--om-rule-strong);
+  color: oklch(0.72 0.015 285);
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  border-radius: 2px;
+}
+
+.link:hover {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris-light);
+}
+
+@media (max-width: 900px) {
+  .card {
+    padding: 28px 24px;
+  }
+}
