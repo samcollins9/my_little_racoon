@@ -1,12 +1,12 @@
 {
   "id": 25,
   "title": "Database outage handling",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a28860552f21e72d224a3e382765b6808466033fc81bf1fb4bca7bebad41f5ae",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "14c63c613478ab752998077aa716a3132305414219e714aefac958cd944961c6",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "b7ddba88ae50f9bc72eaf99c948adeab881c46a4",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-09-27T20:42:23+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=b7ddba8 | ci=green: 1 CI run(s) for b7ddba88ae50f9bc72eaf99c948adeab881c46a4 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "2f37f7a9-9e92-5ca9-b86a-6f4f2fccc8cd",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-09-27T20:32:01+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-09-27T20:42:23+00:00"
   }
 }
