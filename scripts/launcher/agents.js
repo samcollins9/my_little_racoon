@@ -3,10 +3,16 @@
 // lives, how to read its frontmatter, and how to map its `color:` field to
 // a VS Code terminal color. Model is deliberately NOT read or passed on the
 // command line anywhere in this launcher — `claude --agent <id>` alone puts
-// each agent's frontmatter `model:` in charge, and passing --model on top
-// would only invite the two to drift, even though frontmatter wins either
-// way (verified empirically: `--agent X --model haiku` still ran as X's
-// frontmatter model).
+// each agent's frontmatter `model:` in charge, since this launcher itself
+// never gives `--model` a chance to compete with it. Do not add one by
+// hand: sprint 45 found (`claude 2.1.280`) that `--model`, given alongside
+// `--agent`, WINS over the frontmatter rather than being overridden by
+// it — the opposite of what an earlier version of this comment claimed,
+// itself measured at an earlier CLI version. Treat this precedence as a
+// property of the CLI version in use, not a settled fact — see CLAUDE.md's
+// own team-table section for the full, version-anchored measurement.
+// Passing `--model` on top would silently change the role's actual model,
+// not merely invite the two to drift.
 const fs = require('fs');
 const path = require('path');
 
@@ -26,8 +32,21 @@ const ROLES = [
 
 // VS Code task icons only accept `terminal.ansi*` theme colors (see
 // https://code.visualstudio.com/updates/v1_69, "Task icons"). There is no
-// true ANSI orange or purple, so Dev Team 2 (orange) and LiveQA (purple)
-// map to the closest available shade rather than an exact one.
+// true ANSI purple, so LiveQA (purple) maps to the closest available shade
+// (`terminal.ansiMagenta`) rather than an exact one.
+//
+// Sprint 44, Req 5: `orange` used to be this framework's own approximation
+// for Dev Team 2 too (`terminal.ansiBrightYellow`), and that was the actual
+// defect the operator reported — `terminal.ansiBrightYellow` sits beside
+// QA1's own `terminal.ansiYellow` and reads as the same color in most
+// themes, so two of the six role tabs looked alike even though their agent
+// files were never confused with each other. Dev Team 2 now declares
+// `color: cyan` (`terminal.ansiCyan`, a real, distinct ANSI color, no
+// approximation needed) instead. `orange` stays in this map even though no
+// role this framework ships uses it any more: a downstream project may have
+// its own agent file declaring `color: orange`, and removing the entry
+// would silently break that project's own task color for no gain to
+// anyone — this map is additive, not pruned to only what's currently used.
 const COLOR_MAP = {
   blue: 'terminal.ansiBlue',
   red: 'terminal.ansiRed',
@@ -35,6 +54,7 @@ const COLOR_MAP = {
   yellow: 'terminal.ansiYellow',
   green: 'terminal.ansiGreen',
   purple: 'terminal.ansiMagenta',
+  cyan: 'terminal.ansiCyan',
 };
 
 function agentFilePath(roleId) {
@@ -63,7 +83,32 @@ function readAgentMeta(roleId) {
     model: front.model || null,
     color: front.color || null,
     themeColor: COLOR_MAP[front.color] || null,
+    // Sprint 11: added for headless's --agents payload (see run-role.js's
+    // agentBody() usage below) — pre-existing callers destructure the
+    // fields they already used, so an additional field is not a breaking
+    // change to readAgentMeta's shape.
+    description: front.description || null,
   };
+}
+
+// Sprint 11: the persona body — everything after the frontmatter block —
+// discovered empirically to be needed because `--bare` mode does not read
+// .claude/agents/*.md at all (confirmed against a real invocation:
+// `--agent qa1` alone fails there with "not found. Available agents:
+// claude, Explore, general-purpose, Plan, statusline-setup", Claude
+// Code's own built-in agent types, not this project's). Headless supplies
+// the persona explicitly instead, via `--agents '{"<id>":{"prompt":
+// "<this>", ...}}'` alongside `--agent <id>`, confirmed to resolve
+// correctly the same way (a fake API key then fails at the auth step
+// instead of at agent resolution). Reuses parseFrontmatter's own
+// frontmatter-block regex via its match, rather than a second copy of it,
+// so the two can never drift about where the frontmatter ends.
+function agentBody(roleId) {
+  const file = agentFilePath(roleId);
+  if (!fs.existsSync(file)) return null;
+  const raw = fs.readFileSync(file, 'utf8');
+  const match = raw.match(/^---\r?\n[\s\S]*?\r?\n---/);
+  return (match ? raw.slice(match[0].length) : raw).trim();
 }
 
 module.exports = {
@@ -74,4 +119,5 @@ module.exports = {
   agentFilePath,
   parseFrontmatter,
   readAgentMeta,
+  agentBody,
 };

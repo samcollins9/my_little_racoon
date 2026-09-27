@@ -13,3 +13,9 @@ node_modules/
 .env*.local
 .vercel
 *.tsbuildinfo
+
+# Fully Completely (added by scripts/install.js)
+*.fc-bak-*
+.claude/role-claims.json
+.claude/role-claims.json.lock
+.claude/role-claims.json.lock.stolen-*

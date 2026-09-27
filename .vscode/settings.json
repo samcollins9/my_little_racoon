@@ -1,3 +1,4 @@
 {
-  "fullyCompletely.autoLaunch": false
+  "fullyCompletely.autoLaunch": false,
+  "fullyCompletely.testCommand": ""
 }

@@ -7,11 +7,12 @@
 [Why we're doing this now. Two paragraphs max.]
 
 ### Requirements
+- [Specific, testable requirement. If it asserts how an external tool, CLI, or API behaves — verified how? Either confirm it by hand before writing the requirement around it, or write it as a flagged assumption Dev Team must verify before building on it, not as settled fact. Two real sprint failures came from a requirement asserting CLI behavior nobody had actually measured.]
 - [Specific, testable requirement]
-- [Specific, testable requirement]
+- [If this sprint ships a release, state the version bump explicitly as its own requirement — confirm the currently published version at build time rather than trusting a line written earlier in the sprint's own life. Omit this entirely for a sprint that doesn't publish anything.]
 
 ### Acceptance Criteria
-- [How QA1 verifies requirement 1]
+- [How QA1 verifies requirement 1. If the requirement says the tool "reports X" or "the message says Y", the acceptance criterion must assert on the printed/displayed output itself — not only on the resulting file or data effect. A message can lie about a state change that happened correctly underneath it, and a test that only checks the file effect will never catch that.]
 - [How QA1 verifies requirement 2]
 
 ### Out of Scope
@@ -21,6 +22,13 @@
 - Blocks: [what this sprint blocks downstream]
 - Blocked by: [what must be done first]
 - External: [APIs, services, decisions waiting on others]
+
+### Human Prerequisites
+[Anything a PERSON must do OUTSIDE this repository before this sprint's gates can pass — a migration applied to a hosted database, a DNS record, an account, a device at hand. Not anything a role can do itself; that belongs in Requirements instead. An empty section is a normal outcome: write "None" rather than leaving it blank or padding it with filler. If QA1's audit predicts an operator-side blocker, it routes here at planning time (or, once a sprint is already in flight, as a Master Controller repair to this file) — never left as a warning buried in a verdict's own notes, which is read after the failure, not before.]
+
+### Team Assignments
+- **Dev Team 1:** [what they own, or "not assigned"]
+- **Dev Team 2:** [what they own, or "not assigned"; if both teams are assigned, confirm here that the split is genuinely independent — no shared files, types, or dependencies — and name the worktree Dev Team 2 must build in]
 
 ### Risks & Mitigations
 - [Risk] — [Mitigation]
