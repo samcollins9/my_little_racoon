@@ -1,5 +1,5 @@
 {
-  "next_id": 25,
+  "next_id": 26,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -144,6 +144,12 @@
       "epic": "Reading Design",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-24_step-labels-and-flow-indicator--done.md"
+    },
+    "25": {
+      "title": "Database outage handling",
+      "epic": "Operability",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-25_database-outage-handling.md"
     }
   }
 }
