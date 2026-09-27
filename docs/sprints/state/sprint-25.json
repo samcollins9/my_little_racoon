@@ -7,11 +7,11 @@
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "14c63c613478ab752998077aa716a3132305414219e714aefac958cd944961c6",
   "last_shipped_commit": "b7ddba88ae50f9bc72eaf99c948adeab881c46a4",
-  "groundtruth_result": null,
+  "groundtruth_result": "FAIL",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-09-27T19:31:46+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=b7ddba8 | ci=green: 1 CI run(s) for b7ddba88ae50f9bc72eaf99c948adeab881c46a4 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-09-27T21:02:05+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "FAIL: FAIL (round 1). Live on production https://my-little-racoon.vercel.app, 2026-09-27,\ncurl -i plus headless Chromium (Playwright). The Supabase project was really paused by the\nuser (Human Prerequisite met) from about 20:53Z and restored, with /api/health/db back to ok\nat 21:01:25Z.\n\nDEPLOYMENT: /api/health/db reports b648fe5, which is ship bookkeeping on top of the shipped\nb7ddba8. git diff b7ddba8 b648fe5 touches only docs/sprints/state/sprint-25.json, and the\napp/ and lib/ tree hashes are identical (app 9395d930, lib 1c714266). The test is valid for\nb7ddba8.\n\nHEADLINE: all three outage paths the sprint targets behaved exactly like the pre-fix app on\na real pause. The classifier did not recognise the live paused error as unavailable on any\ncall site. Cause not diagnosed. I don't read code, and a direct Supabase REST probe to\ncapture the live paused shape was denied by the permission layer, so I dropped it. The only\nlive evidence of the shape is the app's own health endpoint while paused:\nHTTP 503 {\"status\":\"down\",\"connected\":false,\"migrationVersion\":null,\"error\":\"Project paused.\nPlease unpause the project before proceeding.\",...}. Dev Team should re-measure R1's\nrecording against a real pause. The recorded fixtures evidently do not match what\nproduction received today.\n\nBEFORE PAUSE (baseline), PASS:\n/reading/58d6c515-7497-4fbe-bf86-e5dae76ae777 HTTP 200 (a real written reading).\n/reading/abc HTTP 404. /reading/65a75e4c-29ad-4fb9-a333-85401d16444f (random uuid) HTTP 404.\n\nWHILE PAUSED:\nR3 FAIL, severity high, the sprint's core requirement. The real reading returned HTTP/2 404,\nnot 5xx, in 4 of 4 fetches (curl -i once, curl 3 reps) plus 1 browser load. Body text\nverbatim: \"404 | This page could not be found.\" It contains no unavailable or\nnot-responding wording (grep count 0). The body is byte-identical to /reading/abc's apart\nfrom the id itself. So an outage still makes every shared link look deleted, exactly as the\nContext section describes the pre-fix behaviour. The error.tsx boundary never rendered.\nR4 PASS, trivially: /reading/abc and the random uuid both returned HTTP 404 \"This page could\nnot be found.\", but so did the real reading, so this proves nothing about separation.\nR5 FAIL, severity high. On /chart?date=1969-07-20, \"See the full reading\" redirected to\n/chart?date=1969-07-20&error=Save%20failed%2C%20try%20again. and the page shows verbatim\n\"Save failed, try again.\" That is the old generic message R5 replaces. The cast positions\nand the date field (1969-07-20) were still shown, which is the part of R5 that holds.\nR6 PASS. /chart?date=1969-07-20 returned HTTP 200 with positions rendered while paused.\nR7 FAIL, severity high. On an unwritten reading (5bf3a1f5-b47f-4dfa-9a42-41f18eb24861)\nloaded before the pause and held open, pressing \"Write the horoscope\" while paused: the\nserver-action POST returned 200 and the browser landed on\n/reading/5bf3a1f5-...?error=Could%20not%20load%20that%20reading. rendering \"404 | This page\ncould not be found.\" This is the exact pre-fix path the sprint names: redirect to a page\nthat reports the reading missing.\n/api/health/db PASS: HTTP 503, status \"down\" (R9 unchanged behaviour).\nR8, server-side console.error, is not observable from outside. I have no log access, so it\nis untested.\n\nAFTER RESTORE, PASS:\nThe real reading returned HTTP 200. /reading/abc and the random uuid both returned 404. The\nheld reading 5bf3a1f5 returned 200, status \"NOT WRITTEN YET\", so nothing was half-written by\nthe failed action. A full run passed: cast 1969-07-20, \"See the full reading\" to\n/reading/7da672ea-b942-462e-8005-44028768b119, \"Write the horoscope\", then a reload shows\nWRITTEN with the first line verbatim \"Jupiter was in conjunction with Uranus in Libra when\nthe Apollo 11 Lunar Module Eagle landed on the Moon, 1969.\" Zero page errors.\n\nQA1's non-blocking note (error.tsx claiming an outage for any exception) could not be\nexercised. The boundary never rendered at all during the pause.\n\nROUND COST: the retest needs another user-scheduled pause and restore of production (Human\nPrerequisite). Dev Team should confirm the classifier against a real paused response before\nreshipping, so round 2 does not spend another outage finding the same thing."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-09-27T20:42:23+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-09-27T21:02:05+00:00"
   }
 }
