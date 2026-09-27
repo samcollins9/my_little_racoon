@@ -1,16 +1,16 @@
 {
   "id": 25,
   "title": "Database outage handling",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "a28860552f21e72d224a3e382765b6808466033fc81bf1fb4bca7bebad41f5ae",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "14c63c613478ab752998077aa716a3132305414219e714aefac958cd944961c6",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-09-27T19:31:46+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-09-27T20:26:32+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS (round 1). Audited HEAD b7ddba8, working tree clean. Sprint 25 diff = f296262..HEAD\n(8a9d263 findings, b7ddba8 code; 94127b7 is start bookkeeping).\n\nSPRINT FILE: re-read fresh immediately before this verdict. The only change since\nMaster Controller's f296262 is the lifecycle-owned status: todo -> in_progress line.\nNo requirement amended. No A->B \"arrives between versions\" criterion in this sprint.\n\nREQUIREMENTS\nR1 met. docs/sprint-25-database-outage-findings.md holds five verbatim JSON\nrecordings (prod healthy / paused / restored, local DNS failure, local connection\nrefused), supabase-js 2.112.3 (matches the installed package), date 27 Sep 2026, the\nmeasurement script source, the paused-state /api/health/db response (503, down), and\nthe pre-fix 404 observed live. Raw data, not a paraphrase. It also states plainly what\nwas NOT observed (a fetch timeout), which is the right thing to put on record. The anon\nkey is omitted from the curl example; I checked, and no secret is in the doc.\nR2 met. One classifier, lib/supabase/availability.ts: error present, status 0, empty\ncode. Imported by all three call sites (reading page, horoscope action, chart save).\ngrep for message.includes / \"fetch failed\" / ENOTFOUND in app/ and lib/ returns\nnothing outside tests. Fixtures are parsed out of the findings doc's own json blocks at\ntest time, so they cannot drift from the recording. Covered: paused (RPC and insert),\nDNS, refused, 22P02, empty result, and 23502. The first test asserts the recording\ncount, so silently dropping a block from the doc fails the suite.\nR3/R4 traced in page.tsx. Only the classifier's true verdict throws\nDatabaseUnavailableError. Malformed id (22P02, status 400), missing id (null error,\nempty data), and any other RPC error still fall through to the unchanged\n`if (error || !data || data.length === 0) notFound()`. The thrown error's message is a\nfixed string, and error.tsx reads no params and renders no error text, so nothing in\nthe unavailable output is derived from the id. The route has no loading.tsx and no\nSuspense and no generateMetadata, so there is no early flush and no second RPC that\ncould 404 first. That is the static half of \"the 5xx survives rendering\". The real\nstatus code is LiveQA's to prove with curl -i, as the sprint says.\nR5 met. The classifier picks the message. A 23502 keeps \"Save failed, try again.\"\n(covered by a recorded fixture). The redirect still carries the date, so the cast chart\nre-renders beside the error.\nR6 met. app/chart/page.tsx is untouched. No database call is added to the /chart GET path.\nR7 met. The action throws into the same error boundary instead of redirecting to a\npage that 404s. The non-outage load failure keeps its existing redirect.\nR8 met. console.error on all three unavailable paths. The reading page's notFound path\nstill logs nothing. The chart save's non-outage insert failure keeps the Sprint 18 R6\nlog it already had, which is not a 404 path.\nR9 met. lib/llm/, app/api/, app/components/, ReadingPanel.tsx, app/chart/page.tsx,\nlayout, globals.css and package*.json are all absent from the diff. generate.test.ts\npasses unmodified.\n\nCI steps (all green locally): lint clean, typecheck clean, test 195/195 across 20\nfiles (7 new), build compiled. Every CSS variable in unavailable.module.css already\nexists. No new tokens, no new dependency.\n\nNON-BLOCKING (low), for Dev Team or Master Controller to decide, not a condition:\napp/reading/[id]/error.tsx is a route-wide error boundary, so it catches every\nexception on /reading/[id], not only DatabaseUnavailableError. A render bug (say,\ncomposeChart throwing on bad stored positions) now shows \"The service behind saved\nreadings isn't responding.\" That is a false outage claim to the visitor. Its docblock\nsays the copy \"is true for both\". The heading and \"try again in a few minutes\" are\ntrue for both; the service-not-responding sentence is not. Operators still see the real\nerror in the server log and still get a 500, so nothing is hidden from us, only\nmislabelled to the visitor. The cheap fix is to drop the causal sentence and keep the\nrest, which still satisfies R3. I have not reproduced this, so it is a note, not a FAIL.\n\nNo test named known-failing or pre-existing. No new Human Prerequisites: the sprint's\nown pause/restore prerequisite already covers LiveQA's pass.\n\nHandoff: Dev Team runs /sprint-dev-done 25. LiveQA owns what a static read cannot\nprove: the real 5xx status via curl -i while paused, that both 404 cases still 404\nwhile paused and after restore, and the action's error boundary in a real browser."
     }
   ],
   "last_claim": {
-    "claude_session_id": "2f37f7a9-9e92-5ca9-b86a-6f4f2fccc8cd",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-09-27T19:31:46+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-09-27T20:26:32+00:00"
   }
 }
