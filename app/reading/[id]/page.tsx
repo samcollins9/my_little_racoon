@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
-import { DatabaseUnavailableError, isDatabaseUnavailable } from "@/lib/supabase/availability";
+import {
+  DatabaseUnavailableError,
+  isDatabaseUnavailable,
+  logDatabaseUnavailable,
+} from "@/lib/supabase/availability";
 import { composeChart } from "@/lib/chart/model";
 import { CALCULATION_HOUR_UTC, type PlanetPosition } from "@/lib/ephemeris/adapter";
 import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
@@ -54,18 +58,19 @@ export default async function ReadingPage({
     status: httpStatus,
   } = await anon.rpc("get_reading_by_id", { reading_id: id });
 
-  // Sprint 25, R3: an outage is not a fact about any id -- it is the same
-  // for every request -- so reporting it reveals nothing Sprint 10's
-  // uniformity protects. Only the shared classifier's verdict takes this
-  // path; the thrown error carries nothing from the id, and error.tsx
-  // renders the unavailable state with a 5xx (R8: logged here, server-side).
-  if (isDatabaseUnavailable({ error, status: httpStatus })) {
-    console.error("ReadingPage: database unavailable", error);
+  // Sprint 25, R3 (amended round 1): every RPC error except a malformed id
+  // (22P02) counts as unavailable -- including shapes nobody has recorded.
+  // An outage is not a fact about any id, so reporting it reveals nothing
+  // Sprint 10's uniformity protects: during one, the real reading, a
+  // malformed id and a missing id all get the same 5xx (R4, amended). The
+  // thrown error carries nothing from the id; error.tsx renders the state.
+  if (isDatabaseUnavailable("lookup", { error })) {
+    logDatabaseUnavailable("ReadingPage", { error, status: httpStatus });
     throw new DatabaseUnavailableError();
   }
 
-  // R4: unchanged. Malformed id, missing id, and any other RPC error all
-  // still land on the same silent 404.
+  // R4: what's left is only a 22P02 or an empty result -- both the same
+  // silent 404 as before this sprint.
   if (error || !data || data.length === 0) {
     notFound();
   }

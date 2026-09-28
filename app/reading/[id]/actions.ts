@@ -2,7 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
-import { DatabaseUnavailableError, isDatabaseUnavailable } from "@/lib/supabase/availability";
+import {
+  DatabaseUnavailableError,
+  isDatabaseUnavailable,
+  logDatabaseUnavailable,
+} from "@/lib/supabase/availability";
 import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/lib/llm/generate";
 
 /**
@@ -31,8 +35,10 @@ export async function generateReadingHoroscope(formData: FormData) {
   // instead renders the route's error boundary -- R3's unavailable state --
   // directly, without depending on the database still being down when a
   // redirect reloads the page.
-  if (isDatabaseUnavailable({ error, status })) {
-    console.error("generateReadingHoroscope: database unavailable at load", error);
+  // Amended round 1: same lookup rule as page.tsx -- only a 22P02 or an
+  // empty result falls through to the not-found redirect below.
+  if (isDatabaseUnavailable("lookup", { error })) {
+    logDatabaseUnavailable("generateReadingHoroscope (load)", { error, status });
     throw new DatabaseUnavailableError();
   }
 

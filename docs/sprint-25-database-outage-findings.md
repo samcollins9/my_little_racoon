@@ -16,24 +16,33 @@ the returned error, including its class name.
 | Healthy, uuid not present | 200 | — (`error: null`, `data: []`) | — | — |
 | Healthy, malformed id `abc` | 400 | `22P02` | `invalid input syntax for type uuid: "abc"` | `null` / `null` |
 | Healthy, insert violating NOT NULL | 400 | `23502` | `null value in column "positions" … violates not-null constraint` | `null` / `null` |
-| **Production project paused** | **0** | **`""`** | **`TypeError: fetch failed`** | cause text / `""` |
+| **Production project paused — pause 1 (19:59Z, this recording)** | **0** | **`""`** | **`TypeError: fetch failed`** | cause text / `""` |
+| **Production project paused — pause 2 (~20:53Z, LiveQA round 1; see correction below)** | not captured | not captured | health route reported `Project paused. Please unpause the project before proceeding.` | not captured |
 | Local, DNS failure (`.invalid` host) | 0 | `""` | `TypeError: fetch failed` | cause text / `""` |
 | Local, connection refused | 0 | `""` | `TypeError: fetch failed` | cause text / `""` |
 
 Findings:
 
-1. **A paused Supabase project stops resolving in DNS.** It is not an HTTP
-   error page and not a special status code: `curl` gets `Could not resolve
-   host` (exit 6) and `supabase-js` gets `getaddrinfo ENOTFOUND`. The paused
-   shape is therefore byte-identical, apart from the hostname inside
-   `details`, to the local DNS-failure run.
+1. **Corrected after LiveQA round 1: this recording is one of at least two
+   paused states observed.** During *this* pause (19:59Z) the project stopped
+   resolving in DNS: `curl` got `Could not resolve host` (exit 6) and
+   `supabase-js` got `getaddrinfo ENOTFOUND`, byte-identical apart from the
+   hostname to the local DNS-failure run. During the next pause (LiveQA's,
+   ~20:53Z) Supabase answered with an HTTP response instead — see
+   **Correction (LiveQA round 1)** below. Originally this finding read "A
+   paused Supabase project stops resolving in DNS", as if that were the only
+   shape; that generalised from one pause and was wrong.
 2. **`supabase-js` never throws for any of these.** Every failure comes back
    as `{ data: null, error }`; the measurement's `THREW` branch never fired.
 3. **Every unreachable mode shares one structure:** `status: 0`, `code: ""`,
    `message: "TypeError: fetch failed"`, and the specific network cause only
    in `details` (`ENOTFOUND`, `ECONNREFUSED`). Every error that reached
-   Postgres carries an HTTP status and a SQLSTATE `code`. The classifier
-   (R2) keys on that structure, not on the cause text or hostname.
+   Postgres carries an HTTP status and a SQLSTATE `code`. *Round 1's
+   classifier keyed on that structure as the definition of an outage; the
+   second pause showed a paused project can also answer over HTTP, so the
+   amended classifier (R2) instead lists what is **not** an outage (`22P02`
+   for the lookup, SQLSTATE class 22/23 for the insert) and treats every
+   other error as unavailable.*
 4. The error is a plain `Object`, not a `PostgrestError` class instance, in
    every case recorded — `instanceof` is not usable as a signal.
 5. `/api/health/db` while paused: **HTTP 503**, `status: "down"`,
@@ -44,8 +53,37 @@ Findings:
 
 **Limit of what was observed:** the DNS behaviour was seen from this
 machine's resolver. The production health route's `fetch failed` confirms
-Vercel's runtime also got a network-level failure, but not which one. Nothing
-downstream depends on it being `ENOTFOUND` specifically.
+Vercel's runtime also got a network-level failure during this pause, but not
+which one.
+
+## Correction (LiveQA round 1)
+
+Source: LiveQA's round-1 verdict, recorded in commit `5a874f9`
+(`docs/sprints/state/sprint-25.json`, 27 Sep 2026 21:02Z).
+
+- **Window:** the user paused production from about **20:53Z**; restored,
+  with `/api/health/db` back to `ok`, at **21:01:25Z**.
+- **The only captured evidence of the shape** is production's own
+  `/api/health/db` during that window: **HTTP 503**,
+  `{"status":"down","connected":false,"migrationVersion":null,"error":"Project paused. Please unpause the project before proceeding.",…}`.
+  That route passes `error.message` through from `supabase-js` (via the
+  admin client). *Inference, not observed:* a failed fetch reads `TypeError:
+  fetch failed` (finding 5), so this message most likely came from an HTTP
+  response Supabase sent.
+- **Not captured:** the HTTP status `supabase-js` saw, `error.code`,
+  `details`, `hint`. LiveQA's direct Supabase REST probe was denied by its
+  permission layer, and the app only logged the message. The amended R8 now
+  logs the whole error object and status, so the next occurrence is captured
+  in full.
+- **Effect:** round 1's classifier did not recognise it. On production,
+  `/reading/<real id>` returned 404, the save showed "Save failed, try
+  again.", and the horoscope action redirected to a 404 — all three exactly
+  as before the sprint.
+- **Why the two pauses differed** (time since pausing, DNS caching, something
+  on Supabase's side) is unconfirmed. The amended classifier doesn't depend
+  on knowing: every unlisted error is unavailable. R1b: Dev Team re-runs the
+  measurement script at the start of the round-2 retest pause, before LiveQA
+  begins, and adds whatever it records here.
 
 **Harmlessness of the insert probe:** it omits `positions` (NOT NULL since
 `20260816181929`), so against a healthy database Postgres rejects it (23502,

@@ -9,7 +9,7 @@ import {
   computePositions,
 } from "@/lib/ephemeris/adapter";
 import { fetchDayEvents } from "@/lib/events/wikipedia";
-import { isDatabaseUnavailable } from "@/lib/supabase/availability";
+import { isDatabaseUnavailable, logDatabaseUnavailable } from "@/lib/supabase/availability";
 
 const SAVE_UNAVAILABLE_MESSAGE =
   "Readings can't be saved right now because the service is unavailable. Try again in a few minutes.";
@@ -60,11 +60,15 @@ export async function saveReading(formData: FormData) {
     // work and suggested the visitor had done something wrong. Every other
     // insert failure keeps the generic message. Either way the redirect
     // carries the date back, so the cast chart is still shown with it.
-    const unavailable = isDatabaseUnavailable({ error, status });
-    console.error(
-      unavailable ? "saveReading: database unavailable" : "saveReading: insert failed",
-      error
-    );
+    // Amended round 1: "every other" now means only SQLSTATE class 22/23
+    // (the data really was rejected); any other error, including one nobody
+    // has recorded, counts as unavailable and is logged in full (R8).
+    const unavailable = isDatabaseUnavailable("insert", { error });
+    if (unavailable) {
+      logDatabaseUnavailable("saveReading", { error, status });
+    } else {
+      console.error("saveReading: insert failed", error);
+    }
     redirect(
       `/chart?date=${encodeURIComponent(dateParam)}&error=${encodeURIComponent(
         unavailable ? SAVE_UNAVAILABLE_MESSAGE : "Save failed, try again."
