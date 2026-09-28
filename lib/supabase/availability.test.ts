@@ -28,6 +28,7 @@ const recordings: Recording[] = [...findings.matchAll(/```json\n([\s\S]*?)\n```/
 
 const PROD = "rzlojpwlhbcfzpohbwso.supabase.co";
 const PAUSED_AT = "2026-09-27T19:59:12.431Z";
+const R1B_PAUSED_AT = ["2026-09-28T19:27:20.156Z", "2026-09-28T19:27:31.441Z"];
 const recordingsOf = (target: string) => recordings.filter((r) => r.target === target);
 const operationOf = (label: string): SupabaseOperation =>
   label.startsWith("insert") ? "insert" : "lookup";
@@ -41,8 +42,9 @@ function recorded(label: string) {
 
 describe("isDatabaseUnavailable, against R1's recorded results", () => {
   it("found every recording the doc is expected to hold", () => {
-    // healthy, paused, restored (production) + DNS failure + connection refused
-    expect(recordingsOf(PROD)).toHaveLength(3);
+    // production: healthy, paused, restored (R1) + two runs in the round-2
+    // retest pause (R1b); plus local DNS failure and connection refused
+    expect(recordingsOf(PROD)).toHaveLength(5);
     expect(recordingsOf("no-such-project.invalid")).toHaveLength(1);
     expect(recordingsOf("127.0.0.1:54399")).toHaveLength(1);
   });
@@ -55,6 +57,22 @@ describe("isDatabaseUnavailable, against R1's recorded results", () => {
     for (const result of paused.results) {
       expect(isDatabaseUnavailable(operationOf(result.label), result)).toBe(true);
     }
+  });
+
+  it("round-2 retest pause (R1b), both runs, including the recorded Cloudflare 530: unavailable", () => {
+    const runs = recordingsOf(PROD).filter((r) => R1B_PAUSED_AT.includes(r.recordedAt));
+    expect(runs).toHaveLength(2);
+    for (const run of runs) {
+      for (const result of run.results) {
+        expect(isDatabaseUnavailable(operationOf(result.label), result)).toBe(true);
+      }
+    }
+    // The real example of "non-zero HTTP status, no SQLSTATE": supabase-js
+    // omitted code/details/hint entirely, so `code` is absent, not "".
+    const cloudflare530 = runs.flatMap((r) => r.results).find((r) => r.status === 530);
+    expect(cloudflare530?.error).toBeDefined();
+    expect(cloudflare530?.error && "code" in cloudflare530.error).toBe(false);
+    expect(isDatabaseUnavailable("lookup", cloudflare530!)).toBe(true);
   });
 
   it("DNS failure and connection refused: unavailable", () => {

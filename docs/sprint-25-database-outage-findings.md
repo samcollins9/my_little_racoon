@@ -18,6 +18,7 @@ the returned error, including its class name.
 | Healthy, insert violating NOT NULL | 400 | `23502` | `null value in column "positions" … violates not-null constraint` | `null` / `null` |
 | **Production project paused — pause 1 (19:59Z, this recording)** | **0** | **`""`** | **`TypeError: fetch failed`** | cause text / `""` |
 | **Production project paused — pause 2 (~20:53Z, LiveQA round 1; see correction below)** | not captured | not captured | health route reported `Project paused. Please unpause the project before proceeding.` | not captured |
+| **Production project paused — pause 3 (19:27:20Z, R1b; mixed)** | 0 and **530** | `""` and absent | `TypeError: fetch failed` and Cloudflare 530 "Origin DNS error" HTML | cause text and absent |
 | Local, DNS failure (`.invalid` host) | 0 | `""` | `TypeError: fetch failed` | cause text / `""` |
 | Local, connection refused | 0 | `""` | `TypeError: fetch failed` | cause text / `""` |
 
@@ -83,7 +84,8 @@ Source: LiveQA's round-1 verdict, recorded in commit `5a874f9`
   on Supabase's side) is unconfirmed. The amended classifier doesn't depend
   on knowing: every unlisted error is unavailable. R1b: Dev Team re-runs the
   measurement script at the start of the round-2 retest pause, before LiveQA
-  begins, and adds whatever it records here.
+  begins, and adds whatever it records here. **Done:** see **Round-2 retest
+  pause (R1b)** below.
 
 **Harmlessness of the insert probe:** it omits `positions` (NOT NULL since
 `20260816181929`), so against a healthy database Postgres rejects it (23502,
@@ -372,6 +374,181 @@ An earlier local attempt used `http://127.0.0.1:1` and got `Error: bad port`
 rather than a refusal — undici rejects port 1 before connecting (it is on the
 Fetch spec's blocked-port list). Discarded as not a connection failure and
 rerun against a closed port.
+
+## Round-2 retest pause (R1b), 28 September 2026
+
+Recorded by Dev Team 1 at the start of the round-2 retest pause, before
+LiveQA began. Same script and versions as above (`supabase-js` 2.112.3,
+Node v22.23.2). Production was running the round-1 fix (`c6ce307`, shipping
+`eee2be7`).
+
+- **19:26:42Z:** the pause had not taken effect yet. A probe run found
+  the project healthy and returned the same results as the baseline (empty
+  result, `22P02`, `23502`), and `/api/health/db` was `ok`. That run's output
+  file was later overwritten, so it is not reproduced here.
+- **19:27:08Z:** `/api/health/db` first reported `down`.
+- **19:27:20Z (paused, run 1): mixed within one second.** The random-uuid
+  lookup and the insert got the pause-1 shape (`status: 0`, `code: ""`,
+  `ENOTFOUND`). The `abc` lookup got **HTTP 530**: Cloudflare's "Origin DNS
+  error" page (error 1016), 8295 bytes of HTML returned as `message`, with
+  no `code`, `details` or `hint` at all. `supabase-js` omitted them, so they
+  are absent from the JSON, not empty. A raw `curl` a moment later got the
+  same 530.
+- **19:27:31Z (paused, run 2):** all three were back to `status: 0` /
+  `ENOTFOUND`.
+
+**A pause has now produced three shapes:** DNS failure (pause 1, and most of
+this one), a Cloudflare 530 HTML page (this one, briefly), and an HTTP
+response whose message was `Project paused. Please unpause the project
+before proceeding.` (LiveQA round 1, fields not captured). The pause
+evidently moves through states over time, and which one a request hits
+depends on timing. This is why the amended classifier doesn't enumerate
+outage shapes. None of the three carries `22P02` or a class 22/23 SQLSTATE,
+so all three classify as unavailable. The 530 is now a real recorded example
+of "non-zero HTTP status, no SQLSTATE", the case previously covered only by
+the synthetic unit-test fixture.
+
+### Paused, run 1 (19:27:20Z)
+
+```json
+{
+  "recordedAt": "2026-09-28T19:27:20.156Z",
+  "supabaseJs": "2.112.3",
+  "node": "v22.23.2",
+  "target": "rzlojpwlhbcfzpohbwso.supabase.co",
+  "mode": "all",
+  "results": [
+    {
+      "label": "rpc get_reading_by_id, random well-formed uuid",
+      "ms": 57,
+      "status": 0,
+      "statusText": "",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "TypeError: fetch failed",
+        "details": "TypeError: fetch failed\n\nCaused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co (ENOTFOUND)\nError: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)",
+        "hint": "",
+        "code": ""
+      }
+    },
+    {
+      "label": "rpc get_reading_by_id, malformed id 'abc'",
+      "ms": 265,
+      "status": 530,
+      "statusText": "<none>",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "<!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!-->\n<html class=\"no-js\" lang=\"en-US\">\n    <!--<![endif]-->\n    <head>\n        <title>Origin DNS error | rzlojpwlhbcfzpohbwso.supabase.co | Cloudflare</title>\n        <meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" /> <script>\n  (function(){if(document.addEventListener&&window.XMLHttpRequest&&JSON&&JSON.stringify){var e=function(a){var c=document.getElementById(\"error-feedback-survey\"),d=document.getElementById(\"error-feedback-success\"),b=new XMLHttpRequest;a={event:\"feedback clicked\",properties:{errorCode: 1016 },helpful:a,version: 1 };b.open(\"POST\",\"https://sparrow.cloudflare.com/api/v1/event\");b.setRequestHeader(\"Content-Type\",\"application/json\");b.setRequestHeader(\"Sparrow-Source-Key\",\"c771f0e4b54944bebf4261d44bd79a1e\");\nb.send(JSON.stringify(a));c.classList.add(\"feedback-hidden\");d.classList.remove(\"feedback-hidden\")};document.addEventListener(\"DOMContentLoaded\",function(){var a=document.getElementById(\"error-feedback\"),c=document.getElementById(\"feedback-button-yes\"),d=document.getElementById(\"feedback-button-no\");\"classList\"in a&&(a.classList.remove(\"feedback-hidden\"),c.addEventListener(\"click\",function(){e(!0)}),d.addEventListener(\"click\",function(){e(!1)}))})}})();\n</script>\n        <script\n            defer\n            src=\"https://performance.radar.cloudflare.com/beacon.js\"\n        ></script>\n    </head>\n    <body>\n        <div id=\"cf-wrapper\">\n            <div\n                class=\"cf-alert cf-alert-error cf-cookie-error hidden\"\n                id=\"cookie-alert\"\n                data-translate=\"enable_cookies\"\n            >\n                Please enable cookies.\n            </div>\n            <div id=\"cf-error-details\" class=\"p-0\">\n                <header\n                    class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-15 antialiased\"\n                >\n                    <h1\n                        class=\"inline-block md:block mr-2 md:mb-2 font-light text-60 md:text-3xl text-black-dark leading-tight\"\n                    >\n                        <span data-translate=\"error\">Error</span>\n                        <span>1016</span>\n                    </h1>\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >Ray ID: a42525154b4fda26 &bull;</span\n                    >\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >2026-09-28 19:27:19 UTC</span\n                    >\n                    <h2\n                        class=\"text-gray-600 leading-1.3 text-3xl lg:text-2xl font-light\"\n                    >\n                        Origin DNS error\n                    </h2>\n                </header>\n                \n                \n                <section class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n                    <div id=\"what-happened-section\" class=\"w-1/2 md:w-full\">\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_happened\"\n                        >\n                            What happened?\n                        </h2>\n                        \n                            <p>You've requested a page on a website (rzlojpwlhbcfzpohbwso.supabase.co) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing/\" target=\"_blank\">Cloudflare</a> network. Cloudflare is currently unable to resolve your requested domain (rzlojpwlhbcfzpohbwso.supabase.co).</p>\n                        \n                        \n                        <p>\n                            Please see\n                            <a\n                                rel=\"noopener noreferrer\"\n                                href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/\"\n                                target=\"_blank\"\n                                >https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/</a\n                            >\n                            for more details.\n                        </p>\n                        \n                    </div>\n\n                    \n                    <div\n                        id=\"resolution-copy-section\"\n                        class=\"w-1/2 mt-6 text-15 leading-normal\"\n                    >\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_can_i_do\"\n                        >\n                            What can I do?\n                        </h2>\n                        <p><strong>If you are a visitor of this website:</strong><br />Please try again in a few minutes.</p><p><strong>If you are the owner of this website:</strong><br />Check your DNS settings. If you are using a CNAME origin record, make sure it is valid and resolvable. <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/234979888-Error-1016-Origin-DNS-error\">Additional troubleshooting information here.</a></p>\n                    </div>\n                    \n                </section>\n                \n\n                <div class=\"feedback-hidden py-8 text-center\" id=\"error-feedback\">\n    <div id=\"error-feedback-survey\" class=\"footer-line-wrapper\">\n        Was this page helpful?\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-yes\"\n            type=\"button\"\n        >\n            Yes\n        </button>\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-no\"\n            type=\"button\"\n        >\n            No\n        </button>\n    </div>\n    <div class=\"feedback-success feedback-hidden\" id=\"error-feedback-success\">\n        Thank you for your feedback!\n    </div>\n</div> <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">a42525154b4fda26</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">73.132.231.167</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n            </div>\n            <!-- /#cf-error-details -->\n        </div>\n        <!-- /#cf-wrapper -->\n\n         <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n        \n    </body>\n</html>"
+      }
+    },
+    {
+      "label": "insert readings, positions omitted (NOT NULL)",
+      "ms": 35,
+      "status": 0,
+      "statusText": "",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "TypeError: fetch failed",
+        "details": "TypeError: fetch failed\n\nCaused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co (ENOTFOUND)\nError: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)",
+        "hint": "",
+        "code": ""
+      }
+    }
+  ]
+}
+```
+
+### Paused, run 2 (19:27:31Z)
+
+```json
+{
+  "recordedAt": "2026-09-28T19:27:31.441Z",
+  "supabaseJs": "2.112.3",
+  "node": "v22.23.2",
+  "target": "rzlojpwlhbcfzpohbwso.supabase.co",
+  "mode": "all",
+  "results": [
+    {
+      "label": "rpc get_reading_by_id, random well-formed uuid",
+      "ms": 38,
+      "status": 0,
+      "statusText": "",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "TypeError: fetch failed",
+        "details": "TypeError: fetch failed\n\nCaused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co (ENOTFOUND)\nError: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)",
+        "hint": "",
+        "code": ""
+      }
+    },
+    {
+      "label": "rpc get_reading_by_id, malformed id 'abc'",
+      "ms": 24,
+      "status": 0,
+      "statusText": "",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "TypeError: fetch failed",
+        "details": "TypeError: fetch failed\n\nCaused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co (ENOTFOUND)\nError: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)",
+        "hint": "",
+        "code": ""
+      }
+    },
+    {
+      "label": "insert readings, positions omitted (NOT NULL)",
+      "ms": 52,
+      "status": 0,
+      "statusText": "",
+      "data": null,
+      "error": {
+        "__class": "Object",
+        "message": "TypeError: fetch failed",
+        "details": "TypeError: fetch failed\n\nCaused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co (ENOTFOUND)\nError: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)",
+        "hint": "",
+        "code": ""
+      }
+    }
+  ]
+}
+```
+
+Raw `curl` of the RPC endpoint during run 1 (anon key and the Cloudflare
+`set-cookie` value omitted; body summarised: 8295 bytes of HTML, title
+`Origin DNS error | rzlojpwlhbcfzpohbwso.supabase.co | Cloudflare`,
+Cloudflare error code 1016):
+
+```
+HTTP/2 530 
+date: Mon, 28 Sep 2026 19:27:20 GMT
+content-type: text/plain
+content-length: 8295
+cf-ray: a42525173b633d1c-IAD
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+server: cloudflare
+content-security-policy: default-src 'none'; sandbox
+x-content-type-options: nosniff
+referrer-policy: same-origin
+sb-gateway-version: 1
+sb-project-ref: rzlojpwlhbcfzpohbwso
+sb-request-id: 01a0e97c-6a87-7a40-8d2c-8688237d3ddd
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+alt-svc: h3=":443"; ma=86400
+```
+
+`/api/health/db` during run 1 (first 300 characters of the body):
+
+```
+HTTP/2 503 
+…
+{"status":"down","connected":false,"migrationVersion":null,"error":"<!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=…
+```
 
 ## Measurement script
 
