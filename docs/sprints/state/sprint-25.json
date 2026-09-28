@@ -1,13 +1,13 @@
 {
   "id": 25,
   "title": "Database outage handling",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a28860552f21e72d224a3e382765b6808466033fc81bf1fb4bca7bebad41f5ae",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "14c63c613478ab752998077aa716a3132305414219e714aefac958cd944961c6",
   "last_shipped_commit": "eee2be714bd65d84f2fef4e0d05d5922d093dc36",
-  "groundtruth_result": "FAIL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-09-28T19:01:11+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-09-27T19:31:46+00:00",
   "completed": null,
   "history": [
@@ -63,11 +63,23 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=eee2be7 | ci=green: 1 CI run(s) for eee2be714bd65d84f2fef4e0d05d5922d093dc36 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-09-28T19:57:40+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 2), with one named limit, stated at the end. Tested live on production\nhttps://my-little-racoon.vercel.app on 2026-09-28 against the amended sprint file (2ffe589).\nTools: curl -i, headless Chromium (Playwright), and vercel logs (the CLI is logged in as\nsamcollins9, so that Human Prerequisite is met).\nThe pause was the third, user-scheduled one. Dev Team 1's R1b probe finished before I started\n(its report says the pause began about 19:27:08Z). My checks ran 19:28:09Z to 19:30Z. Restore:\n/api/health/db returned ok at 19:56:46Z.\n\nDEPLOYMENT: live is c6ce307 (reship bookkeeping). git diff eee2be7 c6ce307 touches only\ndocs/sprints/state/sprint-25.json. The app/ and lib/ trees are identical (app 45bd3be9,\nlib 9eba49d0). So this test is valid for the reshipped eee2be7.\n\nBEFORE PAUSE: /reading/58d6c515-7497-4fbe-bf86-e5dae76ae777 returned 200. /reading/abc\nreturned 404, and so did the random uuid /reading/0f34064d-4cec-4b0c-8253-5fddd6bfc36f.\n\nWHILE PAUSED:\nR3 PASS. The real reading returned HTTP 500 on all 3 curl reps, on 2 browser loads (1280px and\n390px), and on 20 more reps between 19:29 and 19:30Z (20/20 were 500). The visible text,\nverbatim: \"TEMPORARILY UNAVAILABLE / This reading can't be shown right now. / The service\nbehind saved readings isn't responding. Try this link again in a few minutes. / CAST A NEW\nCHART\". The visible text never contains the id and never says not found, missing or deleted.\nAt 390px there is no horizontal scroll.\nR4 (amended) PASS. /reading/abc and the random uuid also returned HTTP 500 on all 3 reps.\nAfter masking the id, all three HTML bodies are byte-identical (the same md5, c0fa932d).\nThe id and a \"This page could not be found\" string do appear in the raw HTML. I located both.\nThe id sits only in the Next.js router segment tree (the \"c\":[\"\",\"reading\",\"abc\"] payload).\nThe not-found string sits only in the framework's notFound template slot, which every page\ncarries, including the pre-fix 404. Neither appears in the rendered output.\nR6 PASS. /chart?date=1969-07-20 returned HTTP 200 with positions rendered.\nR5 PASS. \"See the full reading\" redirected with the new error. The page shows, verbatim:\n\"Readings can't be saved right now because the service is unavailable. Try again in a few\nminutes.\" The old \"Save failed, try again.\" is absent. The cast positions and the date field\n(1969-07-20) are still shown.\nR7 PASS. I held the unwritten reading a958d6d8-258b-4d50-a470-736bbdba284e open from before the\npause and pressed \"Write the horoscope\". The server action returned 500 and rendered the same\nTEMPORARILY UNAVAILABLE boundary. It stayed on the reading URL with no ?error= redirect and no\n404.\nHealth: HTTP 503, status \"down\". The error field reads verbatim \"Project paused. Please\nunpause the project before proceeding.\" (61 chars), consistently across 21 samples,\n19:28-19:30Z.\nR8 PASS, checked live with vercel logs --environment production --json --expand. Every\nunavailable request logged at level error, with its call-site label and the whole object:\nstatus, code, message, details and hint. I saw all three labels:\n\"ReadingPage: database unavailable\", \"saveReading: database unavailable\" and\n\"generateReadingHoroscope (load): database unavailable\".\nLogged shape, verbatim excerpt: status: 0, code: '', message: 'TypeError: fetch failed',\ndetails: '... Caused by: Error: getaddrinfo ENOTFOUND rzlojpwlhbcfzpohbwso.supabase.co\n(ENOTFOUND) ...', hint: ''.\nAfter the restore, the 404 path stayed silent: /reading/abc and the uuid logged at info with an\nempty message.\n\nAFTER RESTORE, PASS: the real reading returned 200. /reading/abc and the uuid both returned\n404. The held reading a958d6d8 returned 200 and still shows NOT WRITTEN YET, so the failed\naction left nothing half-written.\nFull run: cast 1969-07-20, then \"See the full reading\" to\n/reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d, then \"Write the horoscope\". After a reload it\nshows WRITTEN, beginning \"Jupiter was in conjunction with Uranus on July 20, 1969.\" There were\nzero page errors.\n\nNAMED LIMIT (not a defect; Master Controller should weigh it). Round 1 failed on a paused\nresponse that was NOT the DNS shape. This round, every request the app itself made while\npaused, 34 logged in total, got the DNS shape: status 0 / ENOTFOUND. That includes 20\ndeliberate extra samples, taken while /api/health/db was reporting the HTTP \"Project paused\"\nmessage the whole time. So the health route and the pages reach Supabase differently, and I\ncould not make the app receive a non-DNS shape. The amended classifier's default branch,\nwhich is what fixes the round-1 failure, is therefore proven by QA1's static trace and the\nsynthetic unit test, not by a live observation. What I proved live: in a real outage, all\nthree call sites fail closed to unavailable, with the right status and copy, and log in full.\nIf a future pause surfaces a non-DNS shape, the full-object logging now in production will\ncapture it.\n\nCARRIED from QA1, not re-litigated: error.tsx says \"The service behind saved readings isn't\nresponding\" for every exception on the route. I saw it only during real outages, where it was\ntrue."
+    },
+    {
+      "ts": "2026-09-28T19:57:40+00:00",
+      "actor": "liveqa",
+      "event": "sprint_file_drift_since_audit",
+      "detail": "NOTE: sprint 25's file has changed since QA1's PASS (audited hash a28860552f21..., current f69c091896a1...). Recorded, not refused \u2014 see this function's own comment for why. If this sprint's own acceptance criteria changed for a real reason, that's worth a fresh /sprint-qa1 look once the live-test loop settles; if it was a cosmetic edit, this note is the whole record of it."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-09-28T19:12:13+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-09-28T19:57:40+00:00"
   }
 }
