@@ -1,5 +1,5 @@
 {
-  "next_id": 26,
+  "next_id": 27,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -150,6 +150,12 @@
       "epic": "Operability",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-25_database-outage-handling--done.md"
+    },
+    "26": {
+      "title": "README local validation section",
+      "epic": "Operability",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-26_readme-local-validation-section.md"
     }
   }
 }
