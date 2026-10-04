@@ -154,8 +154,8 @@
     "26": {
       "title": "README local validation section",
       "epic": "Operability",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-26_readme-local-validation-section.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-26_readme-local-validation-section.md"
     }
   }
 }
