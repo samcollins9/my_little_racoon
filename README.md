@@ -141,17 +141,109 @@ there uses the anon client exclusively; none of them use the service role
 key, since that bypasses RLS and would make the suite pass no matter what
 the policies actually say.
 
-## CI commands
+## Local validation
 
-Also see `.github/workflows/ci.yml`. Run any of these locally before pushing:
+What you can run on your own machine to check a change before pushing, what
+each step needs, and what only CI can check. Every command below was run with
+no `.env.local` present on 4 October 2026 (Sprint 26), and the results
+described are what those runs showed. Times are rough figures from those runs.
+
+### Tier 1: CI's `build` job, locally
+
+No Docker, no `.env.local`, no Supabase. These are the steps of
+`.github/workflows/ci.yml`'s `build` job, in the same order:
 
 ```bash
-npm run lint        # eslint
-npm run typecheck   # tsc --noEmit
-npm run test        # vitest run
-npm run test:rls    # vitest run --config vitest.rls.config.ts, needs a live stack
-npm run build        # next build — the same command Vercel runs
+npm ci              # clean install from package-lock.json (~10s)
+npm run lint        # eslint (~2s)
+npm run typecheck   # tsc --noEmit (~2s)
+npm run test        # vitest run (~1s)
+npm run build       # next build, the same command Vercel runs (~5s)
 ```
+
+**Network:** `lint`, `typecheck` and `test` need none; they also pass with
+networking switched off. `npm ci` needs the npm registry. `npm run build` needs
+Google Fonts: `next/font/google` (`app/layout.tsx`) downloads both typefaces at
+build time, and the build fails without a connection.
+
+**What passing shows:** the code lints, type-checks, passes the unit tests,
+and compiles as a production build. **What it doesn't:** `npm run test`
+excludes `supabase/tests/**` (`vitest.config.ts`), so nothing in tier 1 touches
+a database. The RLS policies and the save/retrieve path are tier 2. Nothing
+here checks the deployed app.
+
+### Tier 2: CI's `rls-tests` job, locally
+
+Needs Docker running. This is the local equivalent of CI's `rls-tests` job:
+
+```bash
+npx supabase start   # local stack; applies every migration (~30-90s)
+export $(npx supabase status -o env \
+  --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
+  --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
+  | grep '^NEXT_PUBLIC_SUPABASE_' | tr -d '"')
+npm run test:rls     # vitest run --config vitest.rls.config.ts (~2s)
+npx supabase stop    # when you're done
+```
+
+The `export` line (bash) is CI's own "Export local stack URL/anon key" step.
+The tests read `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+from the environment, and Vitest does not load `.env.local`. Without that
+line, every test fails with `Supabase client requires NEXT_PUBLIC_SUPABASE_URL
+and NEXT_PUBLIC_SUPABASE_ANON_KEY`. The two-command recipe under
+[Running the policy tests](#running-the-policy-tests) leaves this step out. It
+is the same suite; see that section for what the tests cover.
+
+### Running the built app locally
+
+```bash
+npm run build && npm run start   # http://localhost:3000
+```
+
+With no `.env.local`, this is what each route does:
+
+- `/` redirects (307) to `/chart`.
+- `/chart` renders the date form, and casting a chart
+  (`/chart?date=1969-07-20`) shows the positions. Step 1 is pure computation
+  and needs no environment.
+- **See the full reading** fails. The server action needs Supabase, it returns
+  500, and the browser shows Next's generic "This page couldn't load" error.
+- `/reading/<any id>` returns 500 with the "temporarily unavailable" page.
+- `/api/health/db` returns 503 with `"status":"misconfigured"`, the error
+  `Supabase admin client requires NEXT_PUBLIC_SUPABASE_URL and
+  SUPABASE_SERVICE_ROLE_KEY`, and `"commit":{"sha":"local-dev", ...,
+  "isLocal":true}`. `local-dev` marks a build without
+  `VERCEL_GIT_COMMIT_SHA`, i.e. not a Vercel deployment.
+
+Saving and reading need a `.env.local`; read the next paragraph before
+creating one.
+
+### Which `.env.local` is which
+
+A `.env.local` pointing at the **local** Docker stack (the values
+`npx supabase start` prints, per [Local setup](#local-setup)) is the normal
+one. A `.env.local` holding the **production** project's URL and keys means
+`npm run dev` and `npm run start` read and write the production database:
+every reading you save is a real production row. Use one only deliberately,
+and delete it afterwards.
+
+### What only CI can check
+
+CI's `migrate` job, which runs only on pushes to `main`, after `build` and
+`rls-tests` pass:
+
+1. `supabase link` to the production project.
+2. `supabase db push`, which applies any new migrations to production.
+3. The schema-drift check (`supabase db diff --linked`).
+4. The Vercel deploy hook, which starts the production deployment.
+
+None of it can run locally. Every step needs the project's secrets
+(`SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`,
+`VERCEL_DEPLOY_HOOK_URL`), which exist only in GitHub Actions, and every step
+acts on production. Tier 2's `supabase start` applies the same migrations to a
+fresh local database. That shows they apply cleanly from scratch, not that
+they apply on top of production's current state or that production hasn't
+drifted.
 
 ## Path to production
 
