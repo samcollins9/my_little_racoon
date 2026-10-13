@@ -2,7 +2,7 @@
 id: 26
 title: "README local validation section"
 epic: "Operability"
-status: in_progress
+status: done
 created: 2026-10-04T21:31:34+00:00
 ---
 
