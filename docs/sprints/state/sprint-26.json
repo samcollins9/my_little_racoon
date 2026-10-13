@@ -1,12 +1,12 @@
 {
   "id": 26,
   "title": "README local validation section",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "7fbb13b6688b696093032800fa68fb2389e15a581b1820d58c6ccb225b728d60",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "09b319224e10b5ab4fd4f388e6a59af330f2bafdd79fdb34af5e5189c77218e9",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "6f2892d2d471ef1edac44c558cc13c8f186c0ec4",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-10-13T11:49:05+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=6f2892d | ci=green: 1 CI run(s) for 6f2892d2d471ef1edac44c558cc13c8f186c0ec4 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "2f37f7a9-9e92-5ca9-b86a-6f4f2fccc8cd",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-10-05T16:18:22+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-10-13T11:49:05+00:00"
   }
 }
