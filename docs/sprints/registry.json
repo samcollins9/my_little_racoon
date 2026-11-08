@@ -1,5 +1,5 @@
 {
-  "next_id": 27,
+  "next_id": 28,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -156,6 +156,12 @@
       "epic": "Operability",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-26_readme-local-validation-section--done.md"
+    },
+    "27": {
+      "title": "Pin the Supabase CLI in CI",
+      "epic": "Operability",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-27_pin-the-supabase-cli-in-ci.md"
     }
   }
 }
