@@ -2,7 +2,7 @@
 id: 27
 title: "Pin the Supabase CLI in CI"
 epic: "Operability"
-status: in_progress
+status: done
 created: 2026-11-08T01:08:23+00:00
 ---
 
