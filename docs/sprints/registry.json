@@ -160,8 +160,8 @@
     "27": {
       "title": "Pin the Supabase CLI in CI",
       "epic": "Operability",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-27_pin-the-supabase-cli-in-ci.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-27_pin-the-supabase-cli-in-ci.md"
     }
   }
 }
