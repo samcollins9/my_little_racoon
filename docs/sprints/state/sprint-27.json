@@ -1,7 +1,7 @@
 {
   "id": 27,
   "title": "Pin the Supabase CLI in CI",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "99b8bea4895785d590203e0455fedebfed533e0032aef01f273175c1c9d1cc68",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS (round 1). Audited HEAD d5308e9. The working tree is clean. The sprint diff is 83b6996..HEAD.\n\nSPRINT FILE: re-read fresh before this verdict. Since Master Controller wrote it (83b6996), the only change is the lifecycle-owned status line. No criterion compares two versions.\n\nR1 met. Both jobs drop supabase/setup-cli and run the CLI as `npx supabase` after `npm ci`. No setup-cli and no `version: latest` remain in ci.yml. Every supabase invocation in ci.yml uses npx; there is no bare `supabase` that could resolve to a PATH binary.\nVerified the drift claim. package-lock.json pins supabase at 2.114.0, and every @supabase/cli-<platform> binary package, including linux-x64, is also at 2.114.0. `npx supabase --version` prints 2.114.0 here.\npackage.json says ^2.114.0, but that range cannot float CI: npm ci installs exactly what the lockfile says, and fails if package.json and the lockfile disagree. Changing the CLI version therefore requires a committed lockfile change. That is R1's \"can't drift without a version-changing commit\", and it is built into how the install works, not a matter of convention.\nThe version is the same one used locally, so no lockfile change was needed.\n\nR2 met, verified against the pinned binary itself, not taken from the commit message. I did not see Dev Team's handoff text in this session, so I ran 2.114.0's own --help:\n- db push: has --linked, --local, --db-url and --project-ref. No --remote.\n- db diff: has --linked, --local, --db-url, --project-ref and --schema. No --remote.\n- migration list: has --linked. No --remote.\n- link: has --project-ref.\nEvery flag the workflow uses (db push --linked, db diff --linked --schema, migration list --linked, link --project-ref) exists in 2.114.0. Nothing was carried over from the newer CLI's error message.\n\nR3 met. 2.114.0 prints no target line, so Dev Team added \"Confirm drift-check target is the linked project\". I checked each assumption it rests on against the 2.114.0 bundle:\n(a) It compares supabase/.temp/project-ref with the SUPABASE_PROJECT_REF secret. The bundle confirms 2.114.0's link writes exactly that path (join(workdir,\"supabase\",\".temp\",\"project-ref\")). The file is gitignored, so it can only come from this job's own link.\n(b) It runs `migration list --linked` and requires the newest local migration's version to appear at least twice. 2.114.0's columns are Local | Remote | Time (UTC). The Time column goes through a formatter that turns a valid 14-digit version into YYYY-MM-DD HH:MM:SS, so the raw version string can only appear in the Local and Remote columns.\nI simulated both cases: the version applied on remote gives count 2 and passes; missing from remote gives count 1 and the step exits 1. It does not pass vacuously. The newest prefix (20260823004820) is a valid timestamp, so the formatter does not fall back to the raw string.\ndb diff uses the same --linked link that this step just proved, so a wrong target fails loudly before the drift check can print an empty \"No drift detected\".\nResidual limit (not a condition): the count test assumes every future migration filename starts with a valid 14-digit UTC timestamp. That is the CLI's own naming convention, and every one of the 8 existing files follows it.\n\nR4: static half met. rls-tests keeps start, the env export and test:rls, all now on the pinned npx CLI. The live pass is CI's, so LiveQA checks it.\n\nR5 met. Outside docs/sprints/, only .github/workflows/ci.yml changed. config.toml, migrations, app code and package*.json are all untouched. ci.yml parses as YAML, and migrate still needs [build, rls-tests].\n\nWhat could not be verified locally (expected, per the sprint): link, db push, migration list and db diff against the hosted project need GitHub secrets no role holds, so CI is the first real run of them. That is LiveQA's gate.\n\nSmall observation, not an issue: migrate now runs npm ci (a full install) just to get the CLI. That costs about 10s per run and is the price of one install source. It is the right trade, and the comment in rls-tests explains it.\n\nNo test named known-failing. No new Human Prerequisites beyond the sprint's own: Supabase must be unpaused when Pipeman pushes.\n\nHandoff: Dev Team runs /sprint-dev-done 27. LiveQA checks:\n- all three jobs green;\n- both setup steps print 2.114.0;\n- the confirm step's \"Target: linked project\" line and the migration list output, quoted;\n- db push and the drift check each succeeding;\n- the deploy hook firing;\n- /api/health/db ok with commit.sha equal to the pushed commit."
+    },
+    {
+      "ts": "2026-11-08T01:19:45+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-08T01:17:52+00:00"
+    "claude_session_id": "a288ae52-2d3e-4cea-a3a9-5f7841038874",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-08T01:19:45+00:00"
   }
 }
