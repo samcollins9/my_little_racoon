@@ -1,17 +1,17 @@
 {
   "id": 27,
   "title": "Pin the Supabase CLI in CI",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "99b8bea4895785d590203e0455fedebfed533e0032aef01f273175c1c9d1cc68",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "5ba3edce1852097dc4397bc0a342993a4985ade5f26104a95c6be22bd7ef02d6",
   "last_shipped_commit": "d5308e9864f4afcd7c0743ccacfa629a89e7d1ea",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-08T01:09:56+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=d5308e9 | ci=green: 1 CI run(s) for d5308e9864f4afcd7c0743ccacfa629a89e7d1ea all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-08T01:36:11+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). For this sprint the released artifact is the CI pipeline itself.\nVerified on 2026-11-08 from the real GitHub Actions logs (gh run view --log) and production\n/api/health/db.\n\nRuns checked:\n- 42433858429 for the shipped commit d5308e9 (push, 01:20:53Z)\n- 42434175923 for the pushed bookkeeping tip 5d4ca09 (push, 01:25:14Z)\ngit diff --stat d5308e9 5d4ca09 touches only docs/sprints/state/sprint-27.json, so both runs\nexercise the same ci.yml. Every criterion holds in BOTH runs. Quotes below are from the\nlogs, identical in each run unless noted.\n\nCRITERION 1, all three jobs green: PASS.\nbuild, rls-tests and migrate are all success in both runs. Every step in every job is\nsuccess, including the new \"Confirm drift-check target is the linked project\".\nrls-tests (R4): \"npx supabase start\", then \"Started supabase local development setup.\",\nthen \"Test Files 2 passed (2)\" and \"Tests 10 passed (10)\".\n\nCRITERION 2, db push and the drift check target the linked project: PASS.\nLink project:\n  npx supabase link --project-ref \"***\"\n  Finished supabase link.\nPush migrations:\n  npx supabase db push --linked\n  Connecting to remote database...\n  Remote database is up to date.\nConfirm step:\n  Target: linked project (supabase/.temp/project-ref matches SUPABASE_PROJECT_REF)\n  Connecting to remote database...\n  then a migration list table, columns Local | Remote | Time (UTC). All 8 versions are\n  present on both sides, 20260815221042 through 20260823004820.\n  Linked project's history includes newest local migration 20260823004820.\nCheck for schema drift:\n  npx supabase db diff --linked --schema public > drift.sql\n  ... Applying migration 20260815221042_create_readings.sql ... (all 8) ...\n  Diffing schemas: public\n  Finished supabase db diff on branch main.\n  No schema changes found\n  No drift detected.\nThe local Postgres in that step is the CLI's shadow database (\"Creating shadow database...\",\nimage postgres:17.6.1.155). db diff --linked builds the migrations there to compare against\nthe remote. That is not the local-stack target that caused the 8 Nov failure.\nI searched the whole migrate job, both runs, for local stack, --remote, 127.0.0.1, 54322 and\nECONNREFUSED. The only hit is the confirm step's own \"Target: linked project\" line.\nContext: the failure this sprint fixes printed \"Target: local stack (127.0.0.1:54322) ...\npass --remote\" and ECONNREFUSED. That is absent.\nLimit, stated rather than implied: db diff 2.114.0 prints no target line of its own. The\nevidence that the drift check hit the linked project is the --linked flag plus the confirm\nstep's ref match and two-sided migration table. That is the arrangement QA1 judged under R3.\n\nCRITERION 3, deploy hook fired and health matches: PASS.\nTrigger production deployment, run 42433858429:\n  curl -fsS -X POST \"***\"\n  {\"job\":{\"id\":\"jvNmgUqQo0BALHlR0O9T\",\"state\":\"PENDING\",...}}\nRun 42434175923:\n  {\"job\":{\"id\":\"ho4m1smQZTdiLkePvIVD\",\"state\":\"PENDING\",...}}\n/api/health/db:\n  {\"status\":\"ok\",\"connected\":true,\"migrationVersion\":\"20260823004820_set_reading_horoscope\",\n  \"commit\":{\"sha\":\"5d4ca0943aa8ae1aaaf32a1385261d9cbf3c5140\",\"short\":\"5d4ca09\",\n  \"isLocal\":false}}\ncommit.sha equals the pushed tip. Production smoke check: / 307, /chart 200,\n/chart?date=1969-07-20 200, a real reading 200, /reading/abc 404.\n\nCRITERION 4, pinned version installed in both jobs: PASS.\n\"Show Supabase CLI version\" prints \"npx supabase --version\" then \"2.114.0\", in rls-tests AND\nmigrate, in both runs. That matches package-lock.json's 2.114.0."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-08T01:25:08+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-08T01:36:11+00:00"
   }
 }
