@@ -43,16 +43,23 @@ jobs:
       - name: Install
         run: npm ci
 
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
+      # The Supabase CLI is the `supabase` devDependency, installed by
+      # `npm ci` above at exactly the version package-lock.json pins (the
+      # binary itself comes from the lockfile-pinned @supabase/cli-<platform>
+      # package). There is deliberately no supabase/setup-cli step: a second
+      # install source is what let CI float to `latest` and drift from the
+      # local CLI (Sprint 27). Always call it as `npx supabase`, never bare
+      # `supabase`, so a CLI on the runner's PATH can't be picked up instead.
+      # Changing the version is a lockfile commit, nothing else.
+      - name: Show Supabase CLI version
+        run: npx supabase --version
 
       # Applies every migration in supabase/migrations/ to a fresh local
       # stack. This is what actually proves the RLS policies work, not
       # just that the migration's SQL is well-formed -- runs on every push
       # and PR (not gated to main), since it needs no production secrets.
       - name: Start local Supabase stack
-        run: supabase start
+        run: npx supabase start
 
       # `-o env` quotes its values (it's meant for shell sourcing / dotenv
       # parsers); $GITHUB_ENV's own KEY=value parser does not strip quotes,
@@ -61,7 +68,7 @@ jobs:
       # base64url JWT), so blanket-stripping it is safe here.
       - name: Export local stack URL/anon key
         run: |
-          supabase status -o env \
+          npx supabase status -o env \
             --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
             --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
             | tr -d '"' >> "$GITHUB_ENV"
@@ -76,24 +83,63 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: supabase/setup-cli@v1
+      - uses: actions/setup-node@v4
         with:
-          version: latest
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      # Installs the lockfile-pinned Supabase CLI -- see the note in the
+      # rls-tests job. Same install, same version, in both jobs.
+      - name: Install
+        run: npm ci
+
+      - name: Show Supabase CLI version
+        run: npx supabase --version
 
       - name: Link project
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
+        run: npx supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
 
       # Applies any migrations under supabase/migrations/ not yet recorded
       # as applied on the linked project. Already-applied migrations are
       # skipped, so this is safe to run on every push to main. A failing
-      # migration exits non-zero and fails this job.
+      # migration exits non-zero and fails this job. `--linked` names the
+      # target explicitly instead of relying on the CLI's default, which a
+      # CLI release has already changed once (Sprint 27).
       - name: Push migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: supabase db push
+        run: npx supabase db push --linked
+
+      # The pinned CLI prints no target line for `db push` or `db diff`, so
+      # an empty diff alone can't prove the drift check compared against
+      # the hosted project. This step proves it before the diff runs: the
+      # link points at SUPABASE_PROJECT_REF, and the linked project's
+      # migration history is actually readable and includes the newest
+      # local migration (listed in both the Local and Remote columns). A
+      # wrong or missing target fails here, loudly, instead of producing a
+      # vacuous "No drift detected."
+      - name: Confirm drift-check target is the linked project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          linked_ref="$(cat supabase/.temp/project-ref)"
+          if [ "$linked_ref" != "$EXPECTED_PROJECT_REF" ]; then
+            echo "::error::Linked project ref does not match SUPABASE_PROJECT_REF"
+            exit 1
+          fi
+          echo "Target: linked project (supabase/.temp/project-ref matches SUPABASE_PROJECT_REF)"
+          npx supabase migration list --linked | tee migrations.txt
+          newest="$(ls supabase/migrations/*.sql | sort | tail -n 1 | xargs basename | cut -d_ -f1)"
+          if [ "$(grep -o "$newest" migrations.txt | wc -l)" -lt 2 ]; then
+            echo "::error::Newest local migration $newest is not in the linked project's applied history"
+            exit 1
+          fi
+          echo "Linked project's history includes newest local migration $newest."
 
       # Run *after* the push above, so a legitimately-new migration isn't
       # mistaken for drift. What this catches is the remote schema no
@@ -104,7 +150,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          supabase db diff --linked --schema public > drift.sql
+          npx supabase db diff --linked --schema public > drift.sql
           if grep -vE '^\s*(--.*)?$' drift.sql | grep -q .; then
             echo "::error::Remote schema has drifted from supabase/migrations/"
             cat drift.sql
