@@ -1,13 +1,12 @@
 import { randomInt, randomUUID } from "node:crypto";
-import { createClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
-import { resolvePublicConfig } from "../../lib/supabase/config";
+import { anon, seed } from "./clients";
 
-// Sprint 28, R4/R10: get_reading_by_date, exercised through the anon client
-// only -- the same client the date page uses. A service role key would
-// bypass RLS and prove nothing about what anon can reach.
-const { url, anonKey } = resolvePublicConfig();
-const anon = createClient(url, anonKey);
+// Sprint 28, R4/R10: get_reading_by_date, asserted through the anon client
+// only -- the same client the date page uses. A service role read would
+// bypass RLS and prove nothing about what anon can reach. R12e: fixture
+// rows (and their horoscopes) are seeded with the service role, because
+// anon can no longer write readings -- exactly how the app writes them.
 
 const FIXTURE_POSITIONS = [
   { body: "Sun", eclipticLongitude: 12.34, sign: "Aries", degreeInSign: 12.34, retrograde: false },
@@ -31,7 +30,7 @@ function freshDate(): string {
 
 async function insertReading(eventDate: string): Promise<string> {
   const id = randomUUID();
-  const { error } = await anon
+  const { error } = await seed
     .from("readings")
     .insert({ id, event_date: eventDate, positions: FIXTURE_POSITIONS });
   if (error) throw new Error(`setup insert failed: ${error.message}`);
@@ -39,7 +38,7 @@ async function insertReading(eventDate: string): Promise<string> {
 }
 
 async function setHoroscope(id: string, text: string): Promise<void> {
-  const { data, error } = await anon.rpc("set_reading_horoscope", {
+  const { data, error } = await seed.rpc("set_reading_horoscope", {
     reading_id: id,
     horoscope: text,
     model: "test-model",

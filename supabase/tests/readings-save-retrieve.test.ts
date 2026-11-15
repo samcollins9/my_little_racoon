@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { createClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
-import { resolvePublicConfig } from "../../lib/supabase/config";
+import { anon, seed } from "./clients";
 
-// Plain anon client, matching what the app itself uses for this feature
-// (lib/supabase/anon-client.ts) -- no service role key anywhere here (R3).
-const { url, anonKey } = resolvePublicConfig();
-const anon = createClient(url, anonKey);
+// Matches what the app itself does. Reads: the anon client, through
+// get_reading_by_id (lib/supabase/anon-client.ts). Writes, since Sprint 28
+// (R12): the service role, server-side (lib/supabase/admin.ts) -- anon can
+// no longer insert, so the save here goes through `seed`, the same role the
+// app's saveReading now uses. Nothing is ever read back through `seed`.
 
 const FIXTURE_POSITIONS = [
   { body: "Sun", eclipticLongitude: 12.34, sign: "Aries", degreeInSign: 12.34, retrograde: false },
@@ -17,7 +17,7 @@ describe("save and retrieve a reading (Sprint 10)", () => {
   it("round trip: retrieval reads back exactly what was saved, not a recomputation", async () => {
     const id = randomUUID();
 
-    const { error: insertError } = await anon.from("readings").insert({
+    const { error: insertError } = await seed.from("readings").insert({
       id,
       event_date: "1999-08-11",
       positions: FIXTURE_POSITIONS,
@@ -43,9 +43,10 @@ describe("save and retrieve a reading (Sprint 10)", () => {
   });
 
   it("a save that violates a required column surfaces an error, not silent loss", async () => {
-    const { error } = await anon.from("readings").insert({
+    const { error } = await seed.from("readings").insert({
       id: randomUUID(),
-      // event_date omitted deliberately -- violates NOT NULL.
+      // event_date omitted deliberately -- violates NOT NULL. The service
+      // role bypasses RLS, not column constraints.
       positions: FIXTURE_POSITIONS,
     });
     expect(error).not.toBeNull();

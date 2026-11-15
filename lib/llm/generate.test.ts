@@ -25,7 +25,7 @@ const READING: StoredReadingForGeneration = {
   horoscope: null,
 };
 
-function fakeAnon(rpcResult: { data: unknown; error: unknown }) {
+function fakeWriter(rpcResult: { data: unknown; error: unknown }) {
   return { rpc: vi.fn().mockResolvedValue(rpcResult) } as unknown as SupabaseClient;
 }
 
@@ -135,22 +135,22 @@ describe("generateAndPersistHoroscope", () => {
   it("does not call OpenAI or write when disabled (R6, R7)", async () => {
     vi.stubEnv("HOROSCOPE_ENABLED", "false");
     const generateSpy = vi.spyOn(horoscope, "generateHoroscope");
-    const anon = fakeAnon({ data: null, error: null });
+    const writer = fakeWriter({ data: null, error: null });
 
-    const result = await generateAndPersistHoroscope(anon, "some-id", READING);
+    const result = await generateAndPersistHoroscope(writer, "some-id", READING);
 
     expect(result).toEqual({ ok: false, error: "Horoscope generation is currently disabled." });
     expect(generateSpy).not.toHaveBeenCalled();
-    expect(anon.rpc).not.toHaveBeenCalled();
+    expect(writer.rpc).not.toHaveBeenCalled();
   });
 
   it("builds the prompt from prompt-accurate aspects, not composeChart's own always-false ones", async () => {
     const generateSpy = vi
       .spyOn(horoscope, "generateHoroscope")
       .mockResolvedValue({ text: "text", model: "gpt-4o-mini" });
-    const anon = fakeAnon({ data: true, error: null });
+    const writer = fakeWriter({ data: true, error: null });
 
-    await generateAndPersistHoroscope(anon, "some-id", { ...READING, positions: FIXTURE_POSITIONS });
+    await generateAndPersistHoroscope(writer, "some-id", { ...READING, positions: FIXTURE_POSITIONS });
 
     const readingModelArg = generateSpy.mock.calls[0][0];
     expect(readingModelArg.chart.aspects.some((a) => a.applying)).toBe(true);
@@ -158,29 +158,29 @@ describe("generateAndPersistHoroscope", () => {
 
   it("surfaces a generation failure, logs it, and performs no write (R5, R8)", async () => {
     vi.spyOn(horoscope, "generateHoroscope").mockRejectedValue(new Error("OpenAI request failed: 429"));
-    const anon = fakeAnon({ data: null, error: null });
+    const writer = fakeWriter({ data: null, error: null });
 
-    const result = await generateAndPersistHoroscope(anon, "some-id", READING);
+    const result = await generateAndPersistHoroscope(writer, "some-id", READING);
 
     expect(result).toEqual({ ok: false, error: "Horoscope generation failed, try again." });
-    expect(anon.rpc).not.toHaveBeenCalled();
+    expect(writer.rpc).not.toHaveBeenCalled();
     expect(errorSpy).toHaveBeenCalled();
   });
 
   it("surfaces a persistence failure without claiming success (R8)", async () => {
     vi.spyOn(horoscope, "generateHoroscope").mockResolvedValue({ text: "text", model: "gpt-4o-mini" });
-    const anon = fakeAnon({ data: null, error: { message: "db error" } });
+    const writer = fakeWriter({ data: null, error: { message: "db error" } });
 
-    const result = await generateAndPersistHoroscope(anon, "some-id", READING);
+    const result = await generateAndPersistHoroscope(writer, "some-id", READING);
 
     expect(result).toEqual({ ok: false, error: "Could not save the horoscope, try again." });
   });
 
   it("a reading dated 2100-12-31 generates without throwing (R7, R8)", async () => {
     vi.spyOn(horoscope, "generateHoroscope").mockResolvedValue({ text: "text", model: "gpt-4o-mini" });
-    const anon = fakeAnon({ data: true, error: null });
+    const writer = fakeWriter({ data: true, error: null });
 
-    const result = await generateAndPersistHoroscope(anon, "some-id", {
+    const result = await generateAndPersistHoroscope(writer, "some-id", {
       ...READING,
       event_date: "2100-12-31",
     });
@@ -193,12 +193,12 @@ describe("generateAndPersistHoroscope", () => {
       text: "A horoscope about Fire signs.",
       model: "gpt-4o-mini-2024-07-18",
     });
-    const anon = fakeAnon({ data: true, error: null });
+    const writer = fakeWriter({ data: true, error: null });
 
-    const result = await generateAndPersistHoroscope(anon, "reading-id-123", READING);
+    const result = await generateAndPersistHoroscope(writer, "reading-id-123", READING);
 
     expect(result).toEqual({ ok: true });
-    expect(anon.rpc).toHaveBeenCalledWith("set_reading_horoscope", {
+    expect(writer.rpc).toHaveBeenCalledWith("set_reading_horoscope", {
       reading_id: "reading-id-123",
       horoscope: "A horoscope about Fire signs.",
       model: "gpt-4o-mini-2024-07-18",

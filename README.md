@@ -139,10 +139,13 @@ npm run test:rls
 
 `npm run test` (the default suite) does **not** include these — they need
 a live Postgres + PostgREST behind them, not just Node. `npm run test:rls`
-uses `vitest.rls.config.ts` to target only `supabase/tests/`. Every test in
-there uses the anon client exclusively; none of them use the service role
-key, since that bypasses RLS and would make the suite pass no matter what
-the policies actually say.
+uses `vitest.rls.config.ts` to target only `supabase/tests/`. Every
+*assertion* in there runs on the anon client, since the service role
+bypasses RLS and would make the suite pass no matter what the policies
+actually say. Since Sprint 28 (R12) anon can't insert readings at all, so
+the suites *seed* their rows with the service role client
+(`SUPABASE_SERVICE_ROLE_KEY`, the local stack's `service_role key`) — and
+never read through it.
 
 ## Local validation
 

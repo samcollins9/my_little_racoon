@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { castHoroscopeForDate } from "@/lib/date-page/cast";
 import { datePagePath, parseDatePageParam } from "@/lib/date-page/params";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 
 /**
@@ -24,7 +25,12 @@ export async function castHoroscope(formData: FormData) {
     redirect("/");
   }
 
-  const result = await castHoroscopeForDate(createAnonClient(), isoDate);
+  // R12: reads on anon (the R4 lookup), writes on the server-only admin
+  // client. The validated date is the only form value that reaches a write.
+  const result = await castHoroscopeForDate(
+    { reader: createAnonClient(), writer: createAdminClient() },
+    isoDate
+  );
 
   redirect(
     result.ok

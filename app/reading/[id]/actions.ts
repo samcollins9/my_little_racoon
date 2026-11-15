@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import {
   DatabaseUnavailableError,
@@ -46,8 +47,13 @@ export async function generateReadingHoroscope(formData: FormData) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent("Could not load that reading.")}`);
   }
 
+  // Sprint 28, R12: the read above stays on anon (get_reading_by_id); only
+  // the write goes through the server-only admin client, because anon can no
+  // longer execute set_reading_horoscope. The only form value used is the
+  // id -- positions and events come from the stored row, and since R12 every
+  // stored row was itself written server-side.
   const reading = data[0] as StoredReadingForGeneration;
-  const result = await generateAndPersistHoroscope(anon, readingId, reading);
+  const result = await generateAndPersistHoroscope(createAdminClient(), readingId, reading);
 
   if (!result.ok) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent(result.error)}`);

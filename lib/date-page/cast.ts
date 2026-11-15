@@ -13,6 +13,15 @@ export const CAST_SAVE_FAILED_MESSAGE = "Could not start the reading, try again.
 
 export type CastResult = { ok: true } | { ok: false; message: string };
 
+/**
+ * R12: reads and writes on different clients. `reader` is the anon client
+ * (the R4 lookup, exactly as the page does it); `writer` is the server-only
+ * admin client, created by the "use server" action -- this module never
+ * imports lib/supabase/admin.ts. The admin client is never used to read rows
+ * back (R12d).
+ */
+export type CastClients = { reader: SupabaseClient; writer: SupabaseClient };
+
 type CastDeps = {
   fetchEvents: (isoDate: string) => Promise<WikipediaEventsPayload | null>;
   generate: typeof generateAndPersistHoroscope;
@@ -40,7 +49,7 @@ type CastDeps = {
  * `isoDate` must already have passed parseDatePageParam.
  */
 export async function castHoroscopeForDate(
-  anon: SupabaseClient,
+  { reader, writer }: CastClients,
   isoDate: string,
   { fetchEvents, generate }: CastDeps = {
     fetchEvents: fetchDayEvents,
@@ -51,13 +60,13 @@ export async function castHoroscopeForDate(
     return { ok: false, message: CAST_DISABLED_MESSAGE };
   }
 
-  const existing = await lookupSavedHoroscope(anon, isoDate, "castHoroscopeForDate (lookup)");
+  const existing = await lookupSavedHoroscope(reader, isoDate, "castHoroscopeForDate (lookup)");
   if (existing.kind === "unavailable") return { ok: false, message: CAST_UNAVAILABLE_MESSAGE };
   if (existing.kind === "found") return { ok: true };
 
   const positions = computePositions(calculationInstantForDate(isoDate));
   const events = await fetchEvents(isoDate);
-  const inserted = await insertReading(anon, { event_date: isoDate, positions, events });
+  const inserted = await insertReading(writer, { event_date: isoDate, positions, events });
 
   if (!inserted.ok) {
     // Same classification as saveReading's (Sprint 25): only a class 22/23
@@ -72,7 +81,7 @@ export async function castHoroscopeForDate(
     return { ok: false, message: CAST_SAVE_FAILED_MESSAGE };
   }
 
-  const result = await generate(anon, inserted.id, {
+  const result = await generate(writer, inserted.id, {
     id: inserted.id,
     event_date: isoDate,
     positions,

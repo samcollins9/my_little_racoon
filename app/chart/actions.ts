@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createAnonClient } from "@/lib/supabase/anon-client";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   DateInputError,
   calculationInstantForDate,
@@ -37,8 +37,12 @@ export async function saveReading(formData: FormData) {
   const events = await fetchDayEvents(dateParam);
 
   // Sprint 28: the insert itself (and why the id is chosen before it) lives
-  // in lib/readings/insert.ts, shared with the date page's cast action.
-  const inserted = await insertReading(createAnonClient(), {
+  // in lib/readings/insert.ts, shared with the date page's cast action. R12:
+  // written with the server-only admin client -- anon can no longer insert.
+  // Every value is server-computed from the validated date: positions above,
+  // events from fetchDayEvents. The date is the only form input that reaches
+  // the row.
+  const inserted = await insertReading(createAdminClient(), {
     event_date: dateParam,
     positions,
     events,

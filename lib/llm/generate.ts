@@ -103,13 +103,20 @@ export type GenerateResult = { ok: true } | { ok: false; error: string };
  * -- a plain function with injected dependencies is directly unit
  * testable; a "use server" export is not.
  *
+ * Sprint 28, R12: `writer` is the server-only admin client
+ * (lib/supabase/admin.ts). set_reading_horoscope is no longer executable by
+ * anon, so the persist step can't run on the anon client; the caller (a
+ * "use server" action) creates the admin client and passes it in. This
+ * module never imports admin.ts itself, and `reading` is always a row the
+ * caller loaded or computed server-side -- never form input.
+ *
  * R8: no write happens unless generateHoroscope succeeds. A thrown error
  * from generateHoroscope (network, timeout, malformed response) or from
  * the RPC call both leave the stored reading untouched -- there is no
  * partial-write path here to guard against, only ordering.
  */
 export async function generateAndPersistHoroscope(
-  anon: SupabaseClient,
+  writer: SupabaseClient,
   readingId: string,
   reading: StoredReadingForGeneration
 ): Promise<GenerateResult> {
@@ -132,7 +139,7 @@ export async function generateAndPersistHoroscope(
     return { ok: false, error: "Horoscope generation failed, try again." };
   }
 
-  const { data, error } = await anon.rpc("set_reading_horoscope", {
+  const { data, error } = await writer.rpc("set_reading_horoscope", {
     reading_id: readingId,
     horoscope: text,
     model,

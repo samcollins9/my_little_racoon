@@ -20,17 +20,23 @@ export type InsertReadingResult =
  * and choosing the message stay with each caller, because each one reports
  * it on its own page.
  *
- * The id is generated here, not read back from the insert -- there is no
- * SELECT policy on readings (Sprint 4), so asking the insert to return its
- * row would come back empty even on success. The id has to be chosen before
- * the write, not learned from it. crypto.randomUUID() is a CSPRNG, exactly
+ * R12: `writer` is the server-only admin client -- anon has no INSERT on
+ * readings. The caller (a "use server" action) creates it; this module
+ * doesn't import lib/supabase/admin.ts. Every field of `reading` is
+ * server-computed from a validated date; no other form input reaches it.
+ *
+ * The id is generated here, not read back from the insert. Originally
+ * (Sprint 10) because anon has no SELECT policy, so a returned row would
+ * come back empty; since R12 the writer is the service role, which could
+ * read it back, but R12d keeps the service role to writes only. Either way
+ * the id is chosen before the write, not learned from it. crypto.randomUUID() is a CSPRNG, exactly
  * as unguessable as the gen_random_uuid() default it stands in for.
  */
 export async function insertReading(
-  anon: SupabaseClient,
+  writer: SupabaseClient,
   reading: NewReading
 ): Promise<InsertReadingResult> {
   const id = randomUUID();
-  const { error, status } = await anon.from("readings").insert({ id, ...reading });
+  const { error, status } = await writer.from("readings").insert({ id, ...reading });
   return error ? { ok: false, error, status } : { ok: true, id };
 }
