@@ -1,6 +1,5 @@
 "use server";
 
-import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import {
@@ -9,6 +8,7 @@ import {
   computePositions,
 } from "@/lib/ephemeris/adapter";
 import { fetchDayEvents } from "@/lib/events/wikipedia";
+import { insertReading } from "@/lib/readings/insert";
 import { isDatabaseUnavailable, logDatabaseUnavailable } from "@/lib/supabase/availability";
 
 const SAVE_UNAVAILABLE_MESSAGE =
@@ -36,22 +36,16 @@ export async function saveReading(formData: FormData) {
   // try/catch here.
   const events = await fetchDayEvents(dateParam);
 
-  // Generated here, not read back from the insert -- there is no SELECT
-  // policy on readings (Sprint 4), so asking the insert to return its row
-  // would come back empty even on success. The id has to be chosen before
-  // the write, not learned from it. crypto.randomUUID() is a CSPRNG,
-  // exactly as unguessable as the gen_random_uuid() default it stands in
-  // for.
-  const id = randomUUID();
-  const anon = createAnonClient();
-  const { error, status } = await anon.from("readings").insert({
-    id,
+  // Sprint 28: the insert itself (and why the id is chosen before it) lives
+  // in lib/readings/insert.ts, shared with the date page's cast action.
+  const inserted = await insertReading(createAnonClient(), {
     event_date: dateParam,
     positions,
     events,
   });
 
-  if (error) {
+  if (!inserted.ok) {
+    const { error, status } = inserted;
     // R6 (Sprint 18, carried from Sprint 14): the user-facing message
     // stays generic, but the underlying reason -- a constraint violation,
     // a connection failure -- is otherwise invisible outside this process.
@@ -76,5 +70,5 @@ export async function saveReading(formData: FormData) {
     );
   }
 
-  redirect(`/reading/${id}`);
+  redirect(`/reading/${inserted.id}`);
 }

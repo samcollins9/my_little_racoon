@@ -21,6 +21,10 @@ import type { PostgrestError } from "@supabase/supabase-js";
  *   insert (readings): any SQLSTATE in class 22 (data exception) or 23
  *     (integrity constraint, e.g. the recorded 23502) -- the save was
  *     rejected, keep the generic message.
+ *   dateLookup (get_reading_by_date, Sprint 28): nothing. The date is
+ *     validated (lib/date-page/params.ts) before the call is made, so no
+ *     error is a fact about the request -- every error is unavailable, and
+ *     the date page degrades (R6) rather than 404ing.
  *
  * Accepted cost (sprint file, Risks): a genuine server-side bug now shows
  * "temporarily unavailable" with a 5xx instead of a 404. For a server fault
@@ -30,7 +34,7 @@ import type { PostgrestError } from "@supabase/supabase-js";
  * "Project paused"), the hostname, and `instanceof PostgrestError` -- the
  * declared type is a class, but every recorded error was a plain object.
  */
-export type SupabaseOperation = "lookup" | "insert";
+export type SupabaseOperation = "lookup" | "insert" | "dateLookup";
 
 type SupabaseErrorLike = Partial<Pick<PostgrestError, "code" | "message" | "details" | "hint">>;
 
@@ -44,6 +48,7 @@ const SQLSTATE_CLASS_22_OR_23 = /^2[23][0-9A-Z]{3}$/;
 const NOT_AN_OUTAGE: Record<SupabaseOperation, (code: string) => boolean> = {
   lookup: (code) => code === "22P02",
   insert: (code) => SQLSTATE_CLASS_22_OR_23.test(code),
+  dateLookup: () => false,
 };
 
 export function isDatabaseUnavailable(

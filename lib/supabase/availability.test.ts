@@ -122,6 +122,30 @@ describe("isDatabaseUnavailable, default branch", () => {
   it("an unrecognised error shape is unavailable, for both operations", () => {
     expect(isDatabaseUnavailable("lookup", SYNTHETIC_UNKNOWN_SHAPE)).toBe(true);
     expect(isDatabaseUnavailable("insert", SYNTHETIC_UNKNOWN_SHAPE)).toBe(true);
+    expect(isDatabaseUnavailable("dateLookup", SYNTHETIC_UNKNOWN_SHAPE)).toBe(true);
+  });
+});
+
+describe("isDatabaseUnavailable, dateLookup (Sprint 28, R6)", () => {
+  // The date is validated before the call, so no code is excepted: even the
+  // two "not an outage" codes the other operations allow count here.
+  it("no error: not unavailable", () => {
+    expect(isDatabaseUnavailable("dateLookup", { error: null })).toBe(false);
+  });
+
+  it("every recorded error, including 22P02 and 23502, is unavailable", () => {
+    expect(isDatabaseUnavailable("dateLookup", recorded("rpc get_reading_by_id, malformed"))).toBe(true);
+    expect(isDatabaseUnavailable("dateLookup", recorded("insert readings, positions omitted"))).toBe(true);
+  });
+
+  it("every paused recording is unavailable", () => {
+    const paused = recordingsOf(PROD).filter((r) => r.recordedAt === PAUSED_AT);
+    expect(paused.length).toBeGreaterThan(0);
+    for (const recording of paused) {
+      for (const result of recording.results) {
+        expect(isDatabaseUnavailable("dateLookup", result)).toBe(true);
+      }
+    }
   });
 });
 

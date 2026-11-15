@@ -63,9 +63,12 @@ npm install
 npm run dev    # http://localhost:3000
 ```
 
-`/` redirects straight to `/chart` (Sprint 11) — there's no page of its
-own. `/chart` itself needs no environment variables to render the date
-form; saving a reading does, same as `/reading/[id]` — see `.env.example`.
+`/` redirects (307) to today's date page, `/date/YYYY-MM-DD`, with today
+meaning the UTC date and worked out on every request (Sprint 28) — there's
+no page of its own. The date page looks up the saved horoscope for its date,
+so it needs Supabase configured, same as `/reading/[id]` — see
+`.env.example`. `/chart` itself needs no environment variables to render the
+date form; saving a reading does.
 
 `/api/health/db` does need Supabase configured. For local development:
 
@@ -202,7 +205,11 @@ npm run build && npm run start   # http://localhost:3000
 
 With no `.env.local`, this is what each route does:
 
-- `/` redirects (307) to `/chart`.
+- `/` redirects (307) to `/date/<today, UTC>`.
+- `/date/<date>` returns 500 (Next's generic error page): creating the
+  Supabase client throws before the lookup runs. Only a database that is
+  configured but unreachable gets the degraded page (chart and events, with
+  a "saved horoscopes can't be loaded" notice).
 - `/chart` renders the date form, and casting a chart
   (`/chart?date=1969-07-20`) shows the positions. Step 1 is pure computation
   and needs no environment.
@@ -275,9 +282,9 @@ drifted.
    which migration are live.
 
 **The deployed-commit observable lives at `/api/health/db`, not on any
-page.** It used to be `/`'s own content (Sprint 1), but Sprint 11 sends
-`/` straight to `/chart` (see below), and a page nobody renders can't
-display anything. Moving the SHA into the health endpoint — already
+page.** It used to be `/`'s own content (Sprint 1), but Sprint 11 made
+`/` a redirect (to `/chart` then, to today's date page since Sprint 28), and
+a page nobody renders can't display anything. Moving the SHA into the health endpoint — already
 GroundTruth's other observable, and not a design surface — means a future
 UI change can't silently take the observable down with it the way
 redirecting `/` almost did the first time. `lib/deployed-commit.ts` itself

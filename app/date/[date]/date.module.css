@@ -1,0 +1,82 @@
+/*
+ * Sprint 28: only what the date page adds to the shared reading layout
+ * (app/reading/[id]/reading.module.css) -- the picker strip (R7) and the
+ * saved-horoscopes-unavailable notice (R6). Existing --om-* tokens and
+ * fonts only; the input and button mirror app/chart/chart.module.css's
+ * .dateInput and .button so the app keeps one control language.
+ */
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.pickerLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.pickerControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pickerInput {
+  box-sizing: border-box;
+  max-width: 100%;
+  background: var(--om-ink-sunk);
+  border: 1px solid var(--om-rule-strong);
+  border-radius: 2px;
+  padding: 8px 12px;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--om-bone);
+}
+
+.pickerInput:focus {
+  outline: none;
+  border-color: var(--om-verdigris);
+}
+
+.pickerButton {
+  background: transparent;
+  border: 1px solid var(--om-rule-strong);
+  color: oklch(0.72 0.015 285);
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+
+.pickerButton:hover,
+.pickerButton:focus-visible {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris-light);
+}
+
+.unavailableText {
+  margin: 0;
+  padding: 10px 0 4px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--om-grey);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+@media (max-width: 900px) {
+  .unavailableText {
+    font-size: 17px;
+  }
+}

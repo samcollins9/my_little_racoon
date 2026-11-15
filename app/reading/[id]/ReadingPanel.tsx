@@ -13,6 +13,14 @@ type Props = {
   paragraphs: string[];
   aspectCount: number;
   errorMessage: string | null;
+  /**
+   * Sprint 28: whether the written state links back to /chart. The date page
+   * passes false -- its own date picker is the way to another chart there,
+   * and a "Cast a new chart" control beside a saved horoscope reads as a
+   * cast action it doesn't offer. Defaults to true, so /reading/[id] renders
+   * exactly as before.
+   */
+  offerNewChart?: boolean;
 };
 
 /**
@@ -27,7 +35,13 @@ type Props = {
  * below) exists only to gate the rise animation; see its own comment for
  * why that isn't the one-state-variable design the handoff describes.
  */
-export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessage }: Props) {
+export function ReadingPanel({
+  hasHoroscope,
+  paragraphs,
+  aspectCount,
+  errorMessage,
+  offerNewChart = true,
+}: Props) {
   const { pending } = useFormStatus();
 
   // R8: the rise animation runs only the first time paragraphs appear
@@ -118,6 +132,10 @@ export function ReadingPanel({ hasHoroscope, paragraphs, aspectCount, errorMessa
           <button type="submit" disabled={pending} className={styles.castButton}>
             {buttonLabel}
           </button>
+        ) : !offerNewChart ? (
+          <div className={styles.mobileOnly}>
+            <CopyLinkButton />
+          </div>
         ) : (
           <>
             {/* Desktop: the single /chart link that replaced "Cast it
