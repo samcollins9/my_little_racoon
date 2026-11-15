@@ -133,6 +133,59 @@ enumeration rationale. PRD v1 holds the "searchable by date" note. No closed spr
 11. **`docs/PRD_v3_date_pages.md` is committed unchanged** as part of this sprint's
     first commit (Master Controller wrote it; the commit wrapper Master Controller
     uses can't commit outside `docs/sprints/` or the decisions log).
+12. **Every write to `readings` is server-authored. Anon has no write path at all.**
+    *(Amendment, 15 Nov 2026, after Dev Team 1's escalation on build commit
+    `647aa43`.)*
+
+    **Why.** Decision (a) puts the newest saved horoscope for today on the front
+    page, so anything anon can write there is a public defacement path. Revoking
+    anon's column-level INSERT on the three horoscope columns, as Dev Team proposed,
+    closes only one of three routes:
+    1. A direct insert with arbitrary `horoscope` text and a future
+       `horoscope_generated_at`. The column revoke closes this one.
+    2. Insert a row with permitted columns only, choosing its id, since anon picks
+       the id client-side. Then call `set_reading_horoscope(id, '<any text>', ...)`
+       directly. Anon has had EXECUTE on that function since Sprint 17, and it
+       writes `horoscope_generated_at = now()`, so that row wins its date. Two
+       calls, and the column revoke doesn't stop it.
+    3. Insert a row with fabricated `events` (and `positions`). Then submit
+       `/reading/[id]`'s existing "Write the horoscope" action with that id.
+       The server writes a genuine horoscope over the attacker's content, which
+       also gives a prompt-injection channel through `events`. R4 then shows that
+       row, fabricated events included, on the date page.
+
+    **The requirement.**
+    - **(a)** A new migration revokes INSERT on `public.readings` from `anon` and
+      `authenticated`, and drops the `"anon can insert readings"` policy. It also
+      revokes EXECUTE on `set_reading_horoscope` from `anon`, `authenticated` and
+      `PUBLIC`. Check whether the project's default-privileges migration
+      (`20260816125144`) re-grants either one, and neutralise it if so.
+    - **(b)** All three server-side writers use the server-only admin client
+      (`lib/supabase/admin.ts`, `SUPABASE_SERVICE_ROLE_KEY`):
+      - `saveReading` (`/chart`);
+      - the date page's cast action;
+      - `generateAndPersistHoroscope`'s persist step.
+
+      Every inserted value stays server-computed (date-derived positions, events
+      from `fetchDayEvents`), as it is now. No client-supplied value other than
+      the date, and for `/reading/[id]` the id, reaches a write.
+    - **(c)** The admin client may be imported only from server-only modules: route
+      handlers, `"use server"` files, and `lib/` modules imported solely by those.
+      Update `admin.ts`'s header comment, which currently says only the health route
+      imports it, to say what is now true.
+    - **(d)** Reads don't change. Every read stays on the anon client through
+      `get_reading_by_id` / `get_reading_by_date`. The service role is used for
+      writes only, never to read rows back.
+    - **(e)** Tests, in `supabase/tests/`:
+      - anon `.insert` into `readings` fails;
+      - anon `rpc('set_reading_horoscope', ...)` fails;
+      - the R10 `get_reading_by_date` tests seed their rows through the service-role
+        client.
+
+      **This deliberately reverses Sprint 4's "can insert a reading" test.** Change
+      that test to assert the denial, and say so in its comment. Don't delete it.
+    - **(f)** Supersedes Dev Team's column-level-grant proposal. Don't build both.
+      With no anon insert at all, a column grant has nothing left to restrict.
 
 ### Acceptance Criteria
 
@@ -166,6 +219,20 @@ enumeration rationale. PRD v1 holds the "searchable by date" note. No closed spr
   the RLS suite are green in the handoff output.
 - **R11:** the PRD file in the diff matches the file Master Controller left (no
   edits).
+- **R12:**
+  - **Migration.** The new migration revokes anon and authenticated INSERT on
+    `readings`, drops the insert policy, and revokes EXECUTE on
+    `set_reading_horoscope` from anon, authenticated and PUBLIC. Nothing in the
+    default-privileges migration re-grants either one.
+  - **Clients.** `grep` shows no `anon.from("readings").insert` and no
+    `anon.rpc("set_reading_horoscope"` left anywhere in `app/` or `lib/`. The admin
+    client is imported only from server-only modules (R12c).
+  - **Inputs.** Trace each of the three writers. No form field other than the date
+    (or `/reading/[id]`'s id) reaches an inserted or updated value.
+  - **Tests.** The R12e tests exist, and the Sprint 4 test is inverted with a
+    comment, not removed.
+  - **Re-test all three attacks.** Re-read routes 1–3 in R12 against the final
+    code. Each must now fail at the database, not just in the app.
 
 **LiveQA (against the deployed app, after Pipeman pushes):**
 1. Open `/` with no path. It lands on today's **UTC** date page, and the date shown
@@ -194,6 +261,14 @@ enumeration rationale. PRD v1 holds the "searchable by date" note. No closed spr
    flow indicator. `/chart` still works.
 7. Phone width (about 390px): the picker and the page lay out without horizontal
    scroll.
+8. **R12, against production.** Use the public anon key from the deployed page's
+   own bundle (it's public by design). With `curl` or `supabase-js`:
+   - attempt an insert into `readings` and a `set_reading_horoscope` RPC call. Both
+     must be **denied**. Record the error codes.
+   - Then submit `/chart`'s save and confirm it still lands on a new
+     `/reading/[id]`. The server-side write path works.
+
+   Don't use any key other than the anon key for this step.
 
 ### Out of Scope
 - **Listing or linking to dates that have readings.** That is sprint 29, and it needs
@@ -226,6 +301,10 @@ enumeration rationale. PRD v1 holds the "searchable by date" note. No closed spr
   recorded as not run. For a full pass, the user confirms `HOROSCOPE_ENABLED` is
   `true` (or deleted) for **Production** in Vercel and redeploys **before** handing
   off to LiveQA.
+- **`SUPABASE_SERVICE_ROLE_KEY` must be set for Production in Vercel** (R12b).
+  It's expected to already exist, because `/api/health/db` uses the admin client and
+  reports `connected: true` in production. Nobody needs to act unless that changes.
+  It must never be prefixed `NEXT_PUBLIC_`.
 - Supabase must be awake (not paused) when CI's `migrate` job applies R4's
   migration, and again during LiveQA. If it has paused, the user restores it from the
   Supabase dashboard.
@@ -256,3 +335,14 @@ enumeration rationale. PRD v1 holds the "searchable by date" note. No closed spr
   without the database instead.
 - **Divergence between `/reading/[id]` and the date page** if components get forked.
   R1 requires reuse, and QA1 checks that the old route behaves the same.
+- **Anon-writable content shown on the front page** (R12). All writes move to the
+  server, and the database denies anon outright. This is checked statically (QA1)
+  and live (LiveQA step 8).
+- **Window between CI's `migrate` and the deploy hook** (minutes). The old build
+  still writes with anon, so `/chart` saves fail with the outage message during
+  that window. This is accepted, because it's the same run and nothing is lost but
+  a retry. Don't split this into expand and contract.
+- **Rows written before this sprint through the old anon paths** could still hold
+  arbitrary text and surface on their date page. No such row is known; exploiting
+  this needed the raw RPC. Out of scope for this sprint. If it ever matters, it's a
+  one-off review of `horoscope` rows in the Supabase dashboard, not code.

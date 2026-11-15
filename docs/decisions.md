@@ -18,3 +18,17 @@ Decided by the user, in a Master Controller session:
 3. **Viewing a date writes nothing.** A row is written only when someone casts a
    horoscope.
 4. **"Today" means the UTC date.**
+
+### Follow-on, same day: anon loses all write access to `readings` (Sprint 28, R12)
+
+Decision (1) turns any anon-writable reading into a front-page defacement path.
+Dev Team 1 found this during the build. Master Controller's amendment closes it at
+the database:
+- anon and authenticated lose INSERT on `readings`;
+- anon, authenticated and PUBLIC lose EXECUTE on `set_reading_horoscope`;
+- every write goes through the server-only service-role client, using values the
+  server computed.
+
+This reverses Sprint 4's "anon can insert readings" policy and Sprint 17's anon
+grant on `set_reading_horoscope`. Reads are unchanged: anon, through the `security
+definer` lookup functions only.
