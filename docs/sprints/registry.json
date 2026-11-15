@@ -1,5 +1,5 @@
 {
-  "next_id": 28,
+  "next_id": 29,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -162,6 +162,12 @@
       "epic": "Operability",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-27_pin-the-supabase-cli-in-ci--done.md"
+    },
+    "28": {
+      "title": "Date page: today by default, chart and events, cast on demand",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-28_date-page-today-by-default-chart-and-events-cast-on-demand.md"
     }
   }
 }
