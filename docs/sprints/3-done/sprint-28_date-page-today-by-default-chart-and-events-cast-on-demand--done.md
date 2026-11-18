@@ -2,7 +2,7 @@
 id: 28
 title: "Date page: today by default, chart and events, cast on demand"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-15T21:02:26+00:00
 ---
 

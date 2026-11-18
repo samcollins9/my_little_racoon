@@ -1,7 +1,7 @@
 {
   "id": 28,
   "title": "Date page: today by default, chart and events, cast on demand",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "4153391308d9dd44c826ee3184e2199acd7c509214a79a5790fa730c3a32df2a",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 1,
   "started": "2026-11-15T21:07:48+00:00",
-  "completed": null,
+  "completed": "2026-11-18T14:49:53+00:00",
   "history": [
     {
       "ts": "2026-11-15T21:07:48+00:00",
@@ -44,11 +44,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: LiveQA live test, sprint 28. VERDICT: PASS. All 8 LiveQA acceptance steps verified against production; none blocked.\n\nENVIRONMENT: https://my-little-racoon.vercel.app (production). Tools: curl over HTTPS; real headless Chromium 156.0.8078.4 driven by Playwright 1.56.1 installed in a scratch dir (layout, picker, console errors); Supabase REST at https://rzlojpwlhbcfzpohbwso.supabase.co with the public anon (publishable) key only, supplied by the user since no client bundle carries it. Testing ran 2026-11-15 22:18 UTC and 2026-11-18 14:44 UTC.\n\nWHAT IS LIVE: /api/health/db reports connected true, migrationVersion 20261115212732_readings_server_authored_writes, commit a3302dc. git diff c633ecb..a3302dc touches only docs/sprints/state/sprint-28.json (bookkeeping), so the deployed app code is the shipped commit c633ecb. CI ran the R12 migration in production.\n\nSTEP 1 (landing, UTC today) PASS. GET / returned HTTP 307, location /date/2026-11-15, cache-control private, no-cache, no-store, max-age=0, must-revalidate; date -u +%F was 2026-11-15. Re-checked 2026-11-18 on the same deploy (a3302dc, no redeploy): GET / returned 307 to /date/2026-11-18, matching date -u +%F. This proves the date is computed per request across UTC midnight. Chart (positions, constellation, elements/modalities) and Wikipedia events rendered with no click.\n\nSTEP 2 (no row written on view) PASS, verified live. User read the Supabase table editor: readings for event_date 2003-08-17 = 0 rows before. LiveQA then loaded /date/2003-08-17 4 times (all HTTP 200, panel \"The reading | not written yet\"). User re-read: 0 rows after. Production has generation ENABLED: the \"Write the horoscope\" submit button was visible on a no-horoscope date (2026-11-15).\n\nSTEP 3 (date with saved horoscope via picker) PASS. The sprint file's example /reading/5bf3a1f5-... (1969-07-20) and /reading/a6e6324c-... (2012-11-11) both show \"not written yet\", so neither has a horoscope. Used the date cast in step 4 instead. GET /date?date=1984-02-29 -> 307 -> /date/1984-02-29, 200, panel \"written\". The only button in the panel form is \"Copy link\"; no \"Write the horoscope\". Real Chromium picker at 390px to 1984-02-29: cast button count 0.\n\nSTEP 4 (cast on demand) PASS. Cast on 1984-02-29 via the page's own no-JS multipart POST: HTTP 303, location /date/1984-02-29, about 5.1s. Three reloads were byte-identical in visible text (md5 87ae9391), all \"written\", beginning \"Moon in Aquarius squared Saturn in Scorpio in 1984.\" The anon get_reading_by_date for 1984-02-29 returns exactly 1 row, id d90b9903-0415-4ef2-9d35-8a64a5e59b8c, horoscope_generated_at 2026-11-15T22:19:30.649127+00:00. Fabrication check: the 3 aspects claimed all match the stored positions. Moon 15d24 Aqr square Saturn 16d21 Sco. Mercury 03d05 Pis trine Pluto 01d57 Sco. Venus 12d41 Aqr sextile Uranus 13d25 Sag. All 4 events the text cites (Aristide 2004, Defonseca 2008, Jolie 2004 Oscars, Tokyo Skytree 2012) appear in the page's own events list. Break attempt: re-POSTed the cast from a stale page for the same date. 303 back to the date page; the horoscope was unchanged, with no regeneration.\n\nSTEP 5 (boundaries, malformed) PASS. /date/1700-01-01 200, /date/2100-12-31 200, /date/1699-12-31 404, /date/2101-01-01 404, /date/2012-13-45 404, /date/abc 404, /date/2023-02-29 404. Picker: ?date=1700-01-01 307 to /date/1700-01-01; ?date=2012-13-45 404; ?date= (empty) 404; ?date=a and date=b (array) 404; bare /date 307 to today. No 500 anywhere. The 404 visible text for /date/abc is identical to the unknown-reading 404 (/reading/00000000-...). Real Chromium picker set to 1700-01-01 then Go landed on /date/1700-01-01 with heading \"1 January 1700\".\n\nSTEP 6 (existing routes) PASS. /reading/a6e6324c-... and /reading/5bf3a1f5-... return 200 and still show \"sealed \u00b7 anyone with the link\" and the 3-step flow indicator (Chart, Reading, 3 Horoscope). The date page shows neither (\"sealed\" absent; no flow indicator). /chart 200. A /reading/[id] cast on a fresh row (see step 8) wrote successfully and redirected back to /reading/4cafeaf3-....\n\nSTEP 7 (390px) PASS. Real Chromium, viewport 390x844. On /date/2026-11-15, /date/1984-02-29, /date/1700-01-01 and /reading/a6e6324c-..., documentElement scrollWidth 390 = clientWidth 390, so there is no horizontal scroll. Some SVG chart nodes extend past the viewport edge but are clipped and do not widen the page. Screenshot reviewed: date band, picker (input plus Go) on one row, chart, events all lay out cleanly. Zero page errors and zero console errors across all loads.\n\nSTEP 8 (R12, production, anon key only) PASS. 2 reps each, all identical:\n- Route 1, direct insert with horoscope and future horoscope_generated_at: HTTP 401, code 42501, \"permission denied for table readings\".\n- Route 2a, insert with permitted columns only and a client-chosen id: HTTP 401, 42501, \"permission denied for table readings\".\n- Route 2b, rpc set_reading_horoscope on that id: HTTP 401, 42501, \"permission denied for function set_reading_horoscope\".\n- set_reading_horoscope against the real existing row 4cafeaf3-...: HTTP 401, 42501, same message; the row's horoscope was unchanged afterwards.\n- Route 3 needs a planted row, which the insert denials above prevent.\n- Anon select on readings: HTTP 200, [] (enumeration still closed).\n- Server write path works: /chart save of 1991-06-12 via its POST form returned 303 to /reading/4cafeaf3-b61a-472b-840b-bc250b874d27 (200). The \"Write the horoscope\" action on that reading (generateAndPersistHoroscope persist on the admin client) returned 303 back to it, and both it and /date/1991-06-12 then showed \"written\".\n\nPRODUCTION DATA LiveQA CREATED (all via the app's own server actions, no direct writes): 1984-02-29 reading d90b9903-... with horoscope (date-page cast); 1991-06-12 reading 4cafeaf3-... with horoscope (/chart save, then /reading cast). No anon write succeeded, so no defacement rows exist.\n\nISSUES: none blocking. Observations: (1) Both example readings named in the sprint file for step 3 have no horoscope, so the plan's example was stale; this did not affect the result. (2) QA1's observation (a), the ?error= reflection, was not re-tested live; it is out of this sprint's scope."
+    },
+    {
+      "ts": "2026-11-18T14:49:53+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=close sprint 28 please"
     }
   ],
   "last_claim": {
-    "claude_session_id": "96a71783-61c8-431c-a2ee-8d5568595811",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-18T14:47:12+00:00"
+    "claude_session_id": "68f97cf8-4fc5-491f-9e69-72d1e97bc04d",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-18T14:49:53+00:00"
   }
 }
