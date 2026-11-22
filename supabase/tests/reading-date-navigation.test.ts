@@ -21,6 +21,16 @@ import { anon, seed } from "./clients";
 const FIXTURE_POSITIONS = [
   { body: "Sun", eclipticLongitude: 12.34, sign: "Aries", degreeInSign: 12.34, retrograde: false },
 ];
+// Sprint 30: navigation only lists dates whose displayed reading has
+// events from the exact year, so every Sprint 29 fixture row carries this.
+// Seed data only; no assertion here changed.
+const EXACT_YEAR_EVENTS = {
+  source: "wikipedia-onthisday",
+  requestedDate: "fixture",
+  matchedYear: true,
+  fetchedAt: "2026-11-22T00:00:00.000Z",
+  events: [],
+};
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const DAY_MS = 86_400_000;
 
@@ -37,7 +47,7 @@ async function insertReading(eventDate: string): Promise<string> {
   const id = randomUUID();
   const { error } = await seed
     .from("readings")
-    .insert({ id, event_date: eventDate, positions: FIXTURE_POSITIONS });
+    .insert({ id, event_date: eventDate, positions: FIXTURE_POSITIONS, events: EXACT_YEAR_EVENTS });
   if (error) throw new Error(`setup insert failed: ${error.message}`);
   return id;
 }
@@ -178,6 +188,7 @@ describe("get_recent_reading_dates (Sprint 29, R1b)", () => {
       id: randomUUID(),
       event_date: undated,
       positions: FIXTURE_POSITIONS,
+      events: EXACT_YEAR_EVENTS,
       horoscope: "set with no timestamp",
     });
     if (error) throw new Error(`setup insert failed: ${error.message}`);
