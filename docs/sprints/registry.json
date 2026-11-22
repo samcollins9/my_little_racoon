@@ -1,5 +1,5 @@
 {
-  "next_id": 29,
+  "next_id": 30,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -168,6 +168,12 @@
       "epic": "Date pages",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-28_date-page-today-by-default-chart-and-events-cast-on-demand--done.md"
+    },
+    "29": {
+      "title": "Browse dates that have readings",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-29_browse-dates-that-have-readings.md"
     }
   }
 }
