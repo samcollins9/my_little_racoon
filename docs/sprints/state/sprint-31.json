@@ -1,7 +1,7 @@
 {
   "id": 31,
   "title": "Retire /chart and the step flow",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "204b4afc77f3b2c20c6d5731eabc7290f070313acd88e1f1a830d9dd3af29bc7",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -38,11 +38,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: QA1 gate 1, round 2: PASS. This is a re-audit after a rebase. The audited tree is HEAD = 361d4536ce9558283de448a0092b7325c6048e6c on devteam2/sprint-31.\n\nWhy a re-audit: devteam2/sprint-31 was rebased from 6a62fc9 onto main at ac87051 after my round-1 PASS (recorded at 7bd32f2). That rebase pulled in Sprint 30's migration and tests and the CLAUDE.md Next.js block. The tree therefore differs from the one round 1 audited, and /sprint-ship would correctly refuse it.\n\nRe-derived as follows:\n(1) git patch-id --stable is identical for 3562dc3 vs 180ad4a and for 3b48ff5 vs 24d9c2a.\n(2) The Sprint 31 code diff, excluding docs/sprints, is byte-identical between 6a62fc9..3b48ff5 and ac87051..361d453.\n(3) git diff ac87051 361d453 restricted to supabase/ and CLAUDE.md is empty. Every non-Sprint-31 change on the branch is exactly main's content. Sprint 30's portion of it is the commit c828bc0 I audited (PASS) as gate 1 for Sprint 30.\nThe sprint file is unchanged apart from its lifecycle status line. Every round-1 finding, including the R2/R6 sprint-file conflict note for Master Controller, carries over unchanged.\n\nRe-ran these on the combined tree:\n- npm test: 26 files, 291 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean, /chart dynamic.\nI could not run test:rls (no docker in this WSL distro). This tree now carries Sprint 30's migration as well, so CI's rls-tests job must be green in Pipeman's push report.\n\nNote on --commit: in dev_agreed_done, /sprint-qa1 takes the gate-1 path, which hashes HEAD and ignores --commit. --commit applies only in the live loop and complete_ready. HEAD equals the requested 361d453, so the tree recorded is exactly that commit's."
+    },
+    {
+      "ts": "2026-11-22T15:53:36+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-22T15:52:00+00:00"
+    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
+    "claude_agent": "dev-team-2",
+    "ts": "2026-11-22T15:53:36+00:00"
   }
 }
