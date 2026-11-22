@@ -40,8 +40,8 @@ type CastDeps = {
  *      one is out of scope; a stale tab or a hand-built POST mustn't do it.
  *      (Two casts racing each other can still both write; R4 shows the
  *      newer, which the sprint accepts.)
- *   3. Insert the reading -- positions and events, as /chart's saveReading
- *      does, through the same insertReading.
+ *   3. Insert the reading -- positions and events, through insertReading
+ *      (shared with the retired /chart page's save action until Sprint 31).
  *   4. Generate and persist through generateAndPersistHoroscope. If that
  *      fails the inserted row stays without a horoscope, which R4's lookup
  *      never returns.
@@ -69,7 +69,7 @@ export async function castHoroscopeForDate(
   const inserted = await insertReading(writer, { event_date: isoDate, positions, events });
 
   if (!inserted.ok) {
-    // Same classification as saveReading's (Sprint 25): only a class 22/23
+    // The classification Sprint 25 set for inserts: only a class 22/23
     // rejection is "the data was refused"; anything else is an outage and is
     // logged in full.
     const { error, status } = inserted;

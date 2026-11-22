@@ -28,9 +28,10 @@ import styles from "./date.module.css";
  * out of prerendering explicitly, so a just-cast horoscope is never hidden
  * behind a cached render.
  *
- * Differences from /reading/[id], deliberately (R8): no FlowIndicator (the
- * chart -> save -> reading flow it describes doesn't happen here; the date
- * picker takes its strip), and no "sealed · anyone with the link" note.
+ * Differences from /reading/[id], deliberately (R8): no step indicator (the
+ * chart -> save -> reading flow it described doesn't happen here, and Sprint
+ * 31 retired it everywhere; the date picker takes its strip), and no
+ * "sealed · anyone with the link" note.
  */
 export default async function DatePage({
   params,

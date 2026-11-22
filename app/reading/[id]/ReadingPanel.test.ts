@@ -10,11 +10,11 @@ import { ReadingPanel } from "./ReadingPanel";
 
 type PanelProps = Parameters<typeof ReadingPanel>[0];
 
-const BASE = {
+const BASE: Pick<PanelProps, "paragraphs" | "aspectCount" | "errorMessage"> = {
   paragraphs: ["The sky held its breath."],
   aspectCount: 7,
   errorMessage: null,
-} as const;
+};
 
 function render(props: PanelProps): string {
   return renderToStaticMarkup(createElement(ReadingPanel, props));

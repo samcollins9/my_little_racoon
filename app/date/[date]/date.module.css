@@ -2,8 +2,9 @@
  * Sprint 28: only what the date page adds to the shared reading layout
  * (app/reading/[id]/reading.module.css) -- the picker strip (R7) and the
  * saved-horoscopes-unavailable notice (R6). Existing --om-* tokens and
- * fonts only; the input and button mirror app/chart/chart.module.css's
- * .dateInput and .button so the app keeps one control language.
+ * fonts only; the input and button mirror the .dateInput and .button of the
+ * retired /chart page (removed in Sprint 31) so the app keeps one control
+ * language.
  */
 
 .picker {
