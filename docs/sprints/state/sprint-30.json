@@ -1,17 +1,17 @@
 {
   "id": 30,
   "title": "Date navigation lists exact-date readings only",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "7252cf7a2d41415fc41b4447d1589c4a24ab64e5fafb7d52cc12059badf33f3b",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "9afda2ef9b35d9f571755518496f9c8ac28b0e60098a44484685151c70cc1887",
   "last_shipped_commit": "c828bc01277fcfc42168fe4cf1bf080db90b46ed",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-22T15:26:11+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=c828bc0 | ci=green: 1 CI run(s) for c828bc01277fcfc42168fe4cf1bf080db90b46ed all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-22T15:50:37+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Tested on 2026-11-22 against https://my-little-racoon.vercel.app.\nShipped commit c828bc0. Production serves the pushed bookkeeping tip ac87051: /api/health/db\nreports status ok, migrationVersion 20261122152710_navigation_exact_date_readings, commit\nac87051. git diff --stat c828bc0 ac87051 touches only docs/sprints/state/sprint-30.json.\nTools: headless Chromium (Playwright 1.57, real link clicks), curl against Supabase REST with\nthe anon/publishable key the user supplied in Sprint 29, and gh run view --log.\n\nCI: runs 45039369504 (c828bc0) and 45039825722 (ac87051). build, rls-tests and migrate all\nsucceed in both.\n- rls-tests: 43 passed, including reading-date-navigation-exact-year.test.ts with 13 tests.\n- Unit tests: 260 passed.\n- migrate: applied 20261122152710 in the first run and printed \"Remote database is up to\n  date.\" in the second. \"No drift detected.\" in both.\n\nSTEP 1, find non-qualifying dates: PASS. No cast was needed. I called rpc get_reading_by_date\nwith the anon key for all 33 dates from Sprint 29's full prev/next walk, plus 2050-06-15.\n- 10 of 33 qualify, meaning the displayed reading's events.matchedYear is true: 1776-07-04,\n  1920-08-18, 1945-05-08, 1963-11-22, 1969-07-20, 1976-07-04, 1977-08-16, 1986-03-31,\n  1991-06-12 and 2001-09-11.\n- 23 are false, for example 1900-01-01, 1969-07-21, 1984-02-29, 2026-12-16, 2050-06-15 and\n  2100-12-31. None had events null.\n- A date I did not cast appeared since Sprint 29: 1929-10-24, created 2026-11-22T15:33:09Z,\n  matchedYear true. That makes 11 qualifying dates in production.\n- LiveQA cast nothing this sprint. The 2050-06-15 reading is the one I cast in Sprint 29.\n\nSTEP 2, non-qualifying dates absent and skipped: PASS.\n- The recent list on every page I checked holds exactly the 11 qualifying dates, in this\n  order: 1929-10-24, 1991-06-12, 2001-09-11, 1969-07-20, 1977-08-16, 1976-07-04, 1920-08-18,\n  1776-07-04, 1945-05-08, 1963-11-22, 1986-03-31. That matches each displayed reading's\n  horoscope_generated_at, newest first.\n- None of the 23 non-qualifying dates appear.\n- Skipping:\n  - 1776-07-04 next is 1920-08-18, skipping 1900-01-01.\n  - 1969-07-20 neighbours skip 1969-07-21, 1969-07-23, 1977-03-31 and 1984-02-29; for\n    example 1984-02-29's page shows prev 1977-08-16 and next 1986-03-31.\n  - 2001-09-11 has next null, skipping every 2008 to 2100 date.\n- The non-qualifying pages still render in full, HTTP 200 with the horoscope WRITTEN, and\n  \"What happened\" reads \"ON THIS DAY, OTHER YEARS\". This held for /date/1900-01-01,\n  /date/1969-07-21, /date/1984-02-29 and /date/2050-06-15.\n- On those pages there is no aria-current entry in the recent list. That is correct, because\n  they aren't in it.\n\nSTEP 3, every linked date is exact-date: PASS. I clicked each of the 11 distinct linked dates\n(the union of prev, next and the recent list across 9 pages) from /date/1900-01-01. All 11\nlanded on a WRITTEN page whose \"What happened\" reads \"THIS EXACT DATE <year>\":\n1776, 1920, 1929, 1945, 1963, 1969-07-20, 1976, 1977, 1986, 1991 and 2001.\nOn qualifying pages the current date is a SPAN with aria-current, not a link. This held for\n1776-07-04, 1929-10-24, 1991-06-12 and 2001-09-11.\n\nSTEP 4, dates only via anon: PASS.\n- get_recent_reading_dates returned HTTP 200: 11 objects, each only {\"event_date\":...}.\n- get_adjacent_reading_dates returned only previous_date and next_date:\n  - 1900-01-01 gave 1776-07-04 and 1920-08-18.\n  - 1776-07-04 gave null and 1920-08-18.\n  - 2001-09-11 gave 1991-06-12 and null.\n  - 1969-07-21 gave 1969-07-20 and 1976-07-04.\n- The new helpers are closed to anon:\n  - POST rpc/displayed_readings returned HTTP 401, code 42501, \"permission denied for\n    function displayed_readings\". GET returned the same.\n  - POST rpc/navigable_reading_dates returned HTTP 401, code 42501, \"permission denied for\n    function navigable_reading_dates\".\n- An anon select on readings still returns HTTP 200 with [].\n\nSTEP 5, 390px: PASS. I used isMobile at 390x844 on /date/1900-01-01, 1776-07-04, 2001-09-11\nand 1929-10-24. scrollWidth is 390 both with \"RECENTLY WRITTEN (11)\" closed and with it open.\nWith it open there are 11 items and no element extends past 390px.\n\nNo console or page errors.\nObservation, not a defect: with 11 of 34 dates qualifying, the list currently holds 11, not\n20. The sprint's Risks section accepts that."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-22T15:42:51+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-22T15:50:37+00:00"
   }
 }
