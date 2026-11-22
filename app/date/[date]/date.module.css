@@ -80,3 +80,99 @@
     font-size: 17px;
   }
 }
+
+/*
+ * Sprint 29, R2/R3/R6: navigation to other dates with a reading, directly
+ * under the picker in the same strip. Everything wraps; nothing has a
+ * fixed width, so it lays out at ~390px without horizontal scroll.
+ */
+
+.dateNav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--om-rule);
+  min-width: 0;
+}
+
+.adjacent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.adjacentLink {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--om-bone);
+}
+
+.adjacentNext {
+  margin-left: auto;
+  text-align: right;
+}
+
+.adjacentLabel,
+.recentTitle {
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  font-weight: normal;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.adjacentDate {
+  font-size: 15px;
+}
+
+.adjacentLink:hover .adjacentDate,
+.adjacentLink:focus-visible .adjacentDate,
+.recentLink:hover,
+.recentLink:focus-visible {
+  color: var(--om-verdigris-light);
+}
+
+/* No `display` here on purpose: .recent shares its element with
+   reading.module.css's desktopOnly/mobileOnly, which own visibility, and
+   two single-class display rules from different modules would be decided
+   by bundle order. */
+.recent {
+  min-width: 0;
+}
+
+.recentTitle {
+  margin: 0 0 6px;
+}
+
+.recentList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+}
+
+.recentLink {
+  color: var(--om-grey);
+  text-decoration: underline;
+  text-decoration-color: var(--om-rule-strong);
+  text-underline-offset: 3px;
+}
+
+.recentCurrent {
+  color: var(--om-verdigris);
+}
+
+.recentSummary {
+  cursor: pointer;
+}

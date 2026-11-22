@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { composeChart } from "@/lib/chart/model";
 import { loadDatePage } from "@/lib/date-page/load";
+import { loadDateNavigation } from "@/lib/date-page/navigation";
 import { parseDatePageParam } from "@/lib/date-page/params";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
@@ -10,6 +11,7 @@ import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
 import { DisabledReadingSection, ReadingView } from "@/app/reading/[id]/ReadingView";
 import readingStyles from "@/app/reading/[id]/reading.module.css";
 import { castHoroscope } from "./actions";
+import { DateNavigation } from "./DateNavigation";
 import { DatePicker } from "./DatePicker";
 import styles from "./date.module.css";
 
@@ -18,8 +20,9 @@ import styles from "./date.module.css";
  * /reading/[id] (R1, through the shared ReadingView), addressed by date.
  *
  * Rendering writes nothing (R3): loadDatePage's only database call is the
- * read-only get_reading_by_date lookup, and the horoscope is written only
- * by the castHoroscope action, on a form submission.
+ * read-only get_reading_by_date lookup, loadDateNavigation's (Sprint 29)
+ * are the two read-only date-only lookups, and the horoscope is written
+ * only by the castHoroscope action, on a form submission.
  *
  * Dynamic per request (R2's risk, applied here too): `connection()` opts
  * out of prerendering explicitly, so a just-cast horoscope is never hidden
@@ -45,7 +48,14 @@ export default async function DatePage({
   const isoDate = parseDatePageParam(date);
   if (!isoDate) notFound();
 
-  const page = await loadDatePage(createAnonClient(), isoDate);
+  // Sprint 29, R4: the navigation is loaded alongside the page, not inside
+  // loadDatePage, so its failure can only ever remove the navigation --
+  // the chart, events and Sprint 28's own R6 notice don't depend on it.
+  const anon = createAnonClient();
+  const [page, navigation] = await Promise.all([
+    loadDatePage(anon, isoDate),
+    loadDateNavigation(anon, isoDate, "DatePage"),
+  ]);
   const horoscope = page.saved.kind === "found" ? page.saved.reading.horoscope : null;
   const castError = typeof error === "string" && error ? error : null;
 
@@ -54,7 +64,12 @@ export default async function DatePage({
       eventDate={page.eventDate}
       positions={page.positions}
       events={page.events}
-      belowDateBand={<DatePicker isoDate={isoDate} />}
+      belowDateBand={
+        <>
+          <DatePicker isoDate={isoDate} />
+          <DateNavigation navigation={navigation} />
+        </>
+      }
     >
       {page.saved.kind === "unavailable" ? (
         <SavedHoroscopesUnavailable />

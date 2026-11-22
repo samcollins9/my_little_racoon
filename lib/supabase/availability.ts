@@ -21,10 +21,12 @@ import type { PostgrestError } from "@supabase/supabase-js";
  *   insert (readings): any SQLSTATE in class 22 (data exception) or 23
  *     (integrity constraint, e.g. the recorded 23502) -- the save was
  *     rejected, keep the generic message.
- *   dateLookup (get_reading_by_date, Sprint 28): nothing. The date is
+ *   dateLookup (get_reading_by_date, Sprint 28; get_adjacent_reading_dates
+ *     and get_recent_reading_dates, Sprint 29): nothing. The date is
  *     validated (lib/date-page/params.ts) before the call is made, so no
  *     error is a fact about the request -- every error is unavailable, and
- *     the date page degrades (R6) rather than 404ing.
+ *     the date page degrades (Sprint 28 R6; Sprint 29 R4 omits the
+ *     navigation) rather than 404ing.
  *
  * Accepted cost (sprint file, Risks): a genuine server-side bug now shows
  * "temporarily unavailable" with a 5xx instead of a 404. For a server fault
