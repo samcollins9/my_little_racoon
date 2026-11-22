@@ -178,8 +178,8 @@
     "30": {
       "title": "Date navigation lists exact-date readings only",
       "epic": "Date pages",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-30_date-navigation-lists-exact-date-readings-only.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-30_date-navigation-lists-exact-date-readings-only.md"
     },
     "31": {
       "title": "Retire /chart and the step flow",

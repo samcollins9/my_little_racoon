@@ -2,7 +2,7 @@
 id: 30
 title: "Date navigation lists exact-date readings only"
 epic: "Date pages"
-status: todo
+status: in_progress
 created: 2026-11-22T15:22:50+00:00
 ---
 
