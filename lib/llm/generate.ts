@@ -99,7 +99,7 @@ export type GenerateResult = { ok: true } | { ok: false; error: string };
 /**
  * The testable core of the generate/regenerate path, separated from the
  * "use server" boundary (app/reading/[id]/actions.ts) the same way
- * lib/chart/model.ts's composeChart is separated from app/chart/actions.ts
+ * lib/chart/model.ts's composeChart is kept out of every "use server" file
  * -- a plain function with injected dependencies is directly unit
  * testable; a "use server" export is not.
  *

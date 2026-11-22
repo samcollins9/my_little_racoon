@@ -13,8 +13,8 @@ export type AdminConfig = {
  *
  * Since Sprint 28 (R12) this module is imported only by:
  *   - app/api/health/db/route.ts, a Route Handler (the health check);
- *   - three "use server" files, for every write to readings:
- *     app/chart/actions.ts (saveReading's insert),
+ *   - two "use server" files, for every write to readings (Sprint 31
+ *     removed a third, the retired /chart page's save action):
  *     app/date/[date]/actions.ts (the date page's cast: insert + horoscope),
  *     app/reading/[id]/actions.ts (the horoscope's set_reading_horoscope).
  * Neither kind is ever bundled for the client. lib/ modules that write

@@ -13,7 +13,7 @@ import { generateReadingHoroscope } from "./actions";
 import { horoscopeParagraphs } from "./display";
 import { ReadingPanel } from "./ReadingPanel";
 import { DisabledReadingSection, ReadingView } from "./ReadingView";
-import { FlowIndicator } from "@/app/components/FlowIndicator";
+import { datePagePath } from "@/lib/date-page/params";
 
 type StoredReading = {
   event_date: string;
@@ -68,16 +68,15 @@ export default async function ReadingPage({
 
   // Read back exactly as stored (R6, carried from Sprint 10) -- not
   // recomputed from the date. Sprint 28: the layout itself is ReadingView,
-  // shared with the date page; this route supplies its flow indicator, its
-  // "sealed" note and its id-addressed generate form, unchanged.
+  // shared with the date page; this route supplies its "sealed" note and
+  // its id-addressed generate form. Sprint 31, R3: no flow indicator (the
+  // step flow is retired), so nothing goes below the date band here.
   const reading = data[0] as StoredReading;
 
-  // Sprint 24, R2/R3: steps 1 and 2 (chart, reading) are always complete
-  // by the time this page renders at all -- reaching /reading/[id] means
-  // a chart was cast and a reading was saved. Step 3 (horoscope) is
-  // complete only once reading.horoscope is non-null. Derived from data
-  // already fetched above; no client state.
-  const completedSteps = reading.horoscope ? 3 : 2;
+  // Sprint 31, R3: the written state links to this reading's own date page.
+  // event_date is the stored row's, never a request value, so the link can
+  // only ever point at the date this reading is about.
+  const datePageHref = datePagePath(reading.event_date);
 
   return (
     <ReadingView
@@ -85,7 +84,6 @@ export default async function ReadingPage({
       positions={reading.positions}
       events={reading.events}
       jdNote="sealed · anyone with the link"
-      belowDateBand={<FlowIndicator completedSteps={completedSteps} />}
     >
       {isHoroscopeEnabled() ? (
         <form action={generateReadingHoroscope}>
@@ -95,6 +93,7 @@ export default async function ReadingPage({
             paragraphs={horoscopeParagraphs(reading.horoscope)}
             aspectCount={composeChart(reading.event_date, reading.positions).aspects.length}
             errorMessage={generateError ?? null}
+            datePageHref={datePageHref}
           />
         </form>
       ) : (

@@ -7,12 +7,21 @@ them serves traffic. This repository is the full deployment-lifecycle
 exercise (Sprints 1–10) — see `docs/ROADMAP_v1.md` for the plan and
 `docs/RUNBOOK.md` for rollback and incident procedures.
 
-`/chart` enters a past date and computes geocentric planetary positions
-for it, via an adapter around `astronomy-engine` (`lib/ephemeris/`) with
-no place/houses/angles input — see the Sprint 6 file for why. Saving a
-reading there stores it anonymously and returns a `/reading/[id]` link —
-that link is the only access control (Sprint 10); there's no listing
-route and no way to enumerate what's been saved.
+The app is addressed by date. `/date/YYYY-MM-DD` shows the geocentric
+planetary positions for that date and what happened on it, and casts a
+horoscope for it on request (Sprints 28–29). The positions come from an
+adapter around `astronomy-engine` (`lib/ephemeris/`) with no
+place/houses/angles input; see the Sprint 6 file for why. A reading is
+stored anonymously. Older readings, from before date pages, were saved
+through a `/chart` page (retired in Sprint 31) and are still reachable by
+their `/reading/[id]` link. That link is their only access control
+(Sprint 10): there's no listing route and no way to enumerate what's been
+saved.
+
+`/chart` is now only a redirect (307, Sprint 31), kept so old bookmarks
+and shared links still land somewhere. `/chart?date=YYYY-MM-DD` with a
+valid, in-range date goes to `/date/YYYY-MM-DD`. Anything else, including
+no date, goes to `/`.
 
 `lib/ephemeris/aspects.ts`, `balance.ts`, `moon-phase.ts`, and `julian-day.ts`
 (Sprint 12) compute Ptolemaic aspects, element/modality balance, and moon
@@ -67,8 +76,8 @@ npm run dev    # http://localhost:3000
 meaning the UTC date and worked out on every request (Sprint 28) — there's
 no page of its own. The date page looks up the saved horoscope for its date,
 so it needs Supabase configured, same as `/reading/[id]` — see
-`.env.example`. `/chart` itself needs no environment variables to render the
-date form; saving a reading does.
+`.env.example`. `/chart` needs no environment variables: it is a redirect
+only.
 
 `/api/health/db` does need Supabase configured. For local development:
 
@@ -213,19 +222,20 @@ With no `.env.local`, this is what each route does:
   Supabase client throws before the lookup runs. Only a database that is
   configured but unreachable gets the degraded page (chart and events, with
   a "saved horoscopes can't be loaded" notice).
-- `/chart` renders the date form, and casting a chart
-  (`/chart?date=1969-07-20`) shows the positions. Step 1 is pure computation
-  and needs no environment.
-- **See the full reading** fails. The server action needs Supabase, it returns
-  500, and the browser shows Next's generic "This page couldn't load" error.
-- `/reading/<any id>` returns 500 with the "temporarily unavailable" page.
+- `/chart` is a redirect only (Sprint 31) and needs no environment.
+  `/chart?date=1969-07-20` redirects (307) to `/date/1969-07-20`. `/chart`,
+  `/chart?date=garbage` and `/chart?date=2200-01-01` redirect (307) to `/`.
+  Check with `curl -sI`. A 308 here would be a regression (see Sprint 11).
+- `/reading/<any id>` returns 500 with the "temporarily unavailable" page,
+  whose one link goes to `/`.
 - `/api/health/db` returns 503 with `"status":"misconfigured"`, the error
   `Supabase admin client requires NEXT_PUBLIC_SUPABASE_URL and
   SUPABASE_SERVICE_ROLE_KEY`, and `"commit":{"sha":"local-dev", ...,
   "isLocal":true}`. `local-dev` marks a build without
   `VERCEL_GIT_COMMIT_SHA`, i.e. not a Vercel deployment.
 
-Saving and reading need a `.env.local`; read the next paragraph before
+Rendering a date page, casting a horoscope on one, and opening a saved
+reading all need a `.env.local`; read the next paragraph before
 creating one.
 
 ### Which `.env.local` is which

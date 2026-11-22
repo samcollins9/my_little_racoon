@@ -21,7 +21,7 @@ type ReadingViewProps = {
   events: WikipediaEventsPayload | null;
   /** Second line of the JD block under the date band; omitted when absent. */
   jdNote?: string;
-  /** The strip between the date band and the body (flow indicator, date picker). */
+  /** The strip between the date band and the body (the date page's picker and navigation). */
   belowDateBand?: ReactNode;
   /** Contents of "The reading" section. */
   children: ReactNode;

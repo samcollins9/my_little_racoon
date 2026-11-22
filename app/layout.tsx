@@ -24,7 +24,7 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Retroactive Horoscope",
   description:
-    "Cast the chart for a past date, see what happened that day, and have a horoscope written for it.",
+    "Pick a date to see the sky over it and what happened that day, and have a horoscope written for it.",
 };
 
 export default function RootLayout({

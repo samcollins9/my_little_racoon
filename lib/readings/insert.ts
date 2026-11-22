@@ -14,11 +14,13 @@ export type InsertReadingResult =
   | { ok: false; error: PostgrestError; status: number };
 
 /**
- * Sprint 28: the one insert into `readings`, shared by /chart's saveReading
- * (Sprint 10) and the date page's cast action (R5), so the two can't drift
- * apart. It only writes; classifying a failure (lib/supabase/availability.ts)
- * and choosing the message stay with each caller, because each one reports
- * it on its own page.
+ * Sprint 28: the one insert into `readings`. It was shared by the /chart
+ * page's save action (Sprint 10) and the date page's cast action (R5) so the
+ * two couldn't drift apart. Since Sprint 31 retired /chart, the date page's
+ * cast (lib/date-page/cast.ts) is the only caller. It stays its own module
+ * so the write lives in one place and is tested on its own. It only writes;
+ * classifying a failure (lib/supabase/availability.ts) and choosing the
+ * message stay with the caller, which reports it on its own page.
  *
  * R12: `writer` is the server-only admin client -- anon has no INSERT on
  * readings. The caller (a "use server" action) creates it; this module

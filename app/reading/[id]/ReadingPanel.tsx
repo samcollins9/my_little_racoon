@@ -7,21 +7,33 @@ import styles from "./reading.module.css";
 
 const SKELETON_WIDTHS = ["96%", "89%", "93%", "61%", "91%", "74%"];
 const PARAGRAPH_RISE_STAGGER_S = 0.45;
+/** Sprint 31, R3: the written state's link to the reading's own date page. */
+const DATE_PAGE_LINK_LABEL = "Go to this date";
 
 type Props = {
   hasHoroscope: boolean;
   paragraphs: string[];
   aspectCount: number;
   errorMessage: string | null;
-  /**
-   * Sprint 28: whether the written state links back to /chart. The date page
-   * passes false -- its own date picker is the way to another chart there,
-   * and a "Cast a new chart" control beside a saved horoscope reads as a
-   * cast action it doesn't offer. Defaults to true, so /reading/[id] renders
-   * exactly as before.
-   */
-  offerNewChart?: boolean;
-};
+} & DateLinkProps;
+
+/**
+ * Whether the written state links to a date page (Sprint 31, R3).
+ *
+ * - The date page passes `offerNewChart={false}`. It is already the date
+ *   page, so a link there would point at itself (Sprint 28).
+ * - /reading/[id] passes `datePageHref`, the path of that reading's own date
+ *   page, built from the stored row's event_date. The union makes it
+ *   required whenever the link is shown, so the panel can't render a link
+ *   with nowhere to go.
+ *
+ * The prop keeps its Sprint 28 name, `offerNewChart`, even though there is
+ * no longer a "new chart" to offer. Renaming it would mean editing the
+ * date page's call, and Sprint 31's R6 keeps app/date/ unchanged.
+ */
+type DateLinkProps =
+  | { offerNewChart: false; datePageHref?: never }
+  | { offerNewChart?: true; datePageHref: string };
 
 /**
  * The whole of "The reading" panel's dynamic parts (docs/design/HANDOFF_reading_responsive.md),
@@ -40,7 +52,7 @@ export function ReadingPanel({
   paragraphs,
   aspectCount,
   errorMessage,
-  offerNewChart = true,
+  ...dateLink
 }: Props) {
   const { pending } = useFormStatus();
 
@@ -89,9 +101,10 @@ export function ReadingPanel({
       : styles.statusIdle;
 
   // Sprint 22: no regenerate control. A written reading with no error
-  // shows a plain link to /chart instead of a submit button -- a visitor
-  // wanting another reading is sent to cast a new one, not offered a
-  // control that re-rolls the one they're looking at. R5: a failed
+  // shows a plain link instead of a submit button -- a visitor wanting
+  // another reading is sent elsewhere, not offered a control that re-rolls
+  // the one they're looking at. Sprint 31: that link now goes to the
+  // reading's own date page rather than the retired /chart. R5: a failed
   // generation still offers "Try again", re-enabled, regardless of
   // hasHoroscope -- that's a retry of the failed attempt, not a
   // regeneration of a successful one. Sprint 24, R1: the idle-state
@@ -132,27 +145,28 @@ export function ReadingPanel({
           <button type="submit" disabled={pending} className={styles.castButton}>
             {buttonLabel}
           </button>
-        ) : !offerNewChart ? (
+        ) : dateLink.offerNewChart === false ? (
           <div className={styles.mobileOnly}>
             <CopyLinkButton />
           </div>
         ) : (
           <>
-            {/* Desktop: the single /chart link that replaced "Cast it
-                again" (Sprint 22). Mobile frame 4 carries a second
-                control beside it (Sprint 20, R3) -- its own region
-                rather than this one restyled, so the desktop diff stays
-                exactly what Sprint 22 shipped. Sprint 24, R6: relabelled
-                "Cast a new reading" -> "Cast a new chart" -- this link
-                goes back to /chart, i.e. step 1 ("cast the chart") in the
-                now-settled vocabulary, not to another "reading" (this
-                saved page's own name). */}
-            <Link href="/chart" className={`${styles.castButton} ${styles.desktopOnly}`}>
-              Cast a new chart
+            {/* Desktop: the single link that replaced "Cast it again"
+                (Sprint 22). Mobile frame 4 carries a second control beside
+                it (Sprint 20, R3) -- its own region rather than this one
+                restyled. Sprint 31, R3: both go to this reading's own date
+                page (where its chart, events and navigation live) instead
+                of /chart. The label names that destination and says nothing
+                about steps or casting. */}
+            <Link
+              href={dateLink.datePageHref}
+              className={`${styles.castButton} ${styles.desktopOnly}`}
+            >
+              {DATE_PAGE_LINK_LABEL}
             </Link>
             <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
-              <Link href="/chart" className={styles.castButton}>
-                Cast a new chart
+              <Link href={dateLink.datePageHref} className={styles.castButton}>
+                {DATE_PAGE_LINK_LABEL}
               </Link>
               <CopyLinkButton />
             </div>

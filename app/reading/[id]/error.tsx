@@ -22,8 +22,11 @@ import styles from "./unavailable.module.css";
  * missing (that is still the 404, R4). Nothing here is derived from the
  * requested id: no params read, no error text rendered.
  *
- * Step 1 works with the database down (R6), so the one way forward offered
- * is casting a chart.
+ * Sprint 31, R4: the one way forward offered is `/`, which lands on today's
+ * date page. That page still renders its chart and events with the database
+ * down (Sprint 28, R6), so the link works in exactly the situation this
+ * boundary is shown for. The label promises a date, not a chart or a reading,
+ * because a saved horoscope may be what's unavailable.
  */
 export default function ReadingUnavailable() {
   return (
@@ -34,8 +37,8 @@ export default function ReadingUnavailable() {
         <p className={styles.text}>
           Something went wrong on our side. Try this link again in a few minutes.
         </p>
-        <Link href="/chart" className={styles.link}>
-          Cast a new chart
+        <Link href="/" className={styles.link}>
+          Go to today
         </Link>
       </main>
     </div>

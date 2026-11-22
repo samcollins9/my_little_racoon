@@ -24,8 +24,11 @@ import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/
  */
 export async function generateReadingHoroscope(formData: FormData) {
   const readingId = formData.get("readingId");
+  // Sprint 31, R3: with no id there is no reading to go back to, so this
+  // goes to the front door (today's date page) rather than the retired
+  // /chart.
   if (typeof readingId !== "string" || !readingId) {
-    redirect("/chart");
+    redirect("/");
   }
 
   const anon = createAnonClient();

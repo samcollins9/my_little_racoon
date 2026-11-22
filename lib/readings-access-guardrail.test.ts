@@ -139,8 +139,8 @@ describe("findUnfilteredReadingsQueries", () => {
 
   it("does not flag a file where the only readings access is insert-only", () => {
     const dir = writeFixture({
-      "app/chart/actions.ts": `
-        export async function saveReading(anon, id, positions) {
+      "app/example/actions.ts": `
+        export async function insertOnly(anon, id, positions) {
           return anon.from("readings").insert({ id, positions });
         }
       `,

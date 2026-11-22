@@ -15,8 +15,8 @@ export const dynamic = "force-dynamic";
 const SCHEMA_MISSING_CODES = new Set(["42P01", "PGRST205"]);
 
 export async function GET() {
-  // Sprint 11: this is the deployed-commit observable now that `/`
-  // redirects straight to `/chart` and no longer renders it. Included in
+  // Sprint 11: this is the deployed-commit observable. No page renders it:
+  // `/` redirects to today's date page (Sprint 28). Included in
   // every branch below, not just the healthy one -- which build is live
   // is exactly what you need to know when the database check is failing,
   // not only when it's passing.

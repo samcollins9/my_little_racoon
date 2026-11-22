@@ -1,8 +1,9 @@
 /*
  * Sprint 25, R3: the unavailable state's own small layout. Existing --om-*
  * tokens and fonts only (Out of Scope: no restyle beyond the existing
- * tokens); the values mirror app/chart/chart.module.css's card and button
- * rather than inventing new ones. max-width rather than a fixed width, so
+ * tokens); the values mirrored the retired /chart page's card and button
+ * (removed in Sprint 31) rather than inventing new ones. max-width rather
+ * than a fixed width, so
  * it never forces a horizontal scroll below 900px.
  */
 

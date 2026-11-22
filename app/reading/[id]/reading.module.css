@@ -103,11 +103,11 @@
   text-align: right;
 }
 
-/* ---- Flow indicator (Sprint 24) ---- */
+/* ---- Strip below the date band (Sprint 24) ---- */
 
-/* Spacing wrapper only -- the indicator itself
-   (app/components/flow-indicator.module.css) carries no page-specific
-   layout, so each route supplies its own surrounding gap/border. */
+/* Spacing wrapper only, around whatever ReadingView's belowDateBand holds.
+   Added for Sprint 24's flow indicator; since Sprint 31 only the date page
+   fills it (its picker and navigation), and /reading/[id] renders no strip. */
 .flowSlot {
   padding: 14px 40px;
   border-bottom: 1px solid var(--om-rule);

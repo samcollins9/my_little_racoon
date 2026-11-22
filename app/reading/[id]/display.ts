@@ -1,6 +1,6 @@
 // Relative, not "@/" -- vitest doesn't resolve the tsconfig alias for
-// testable files under app/ (same reason app/chart/constellation.ts uses
-// relative imports, Sprint 13).
+// testable files under app/ (same reason constellation.ts uses relative
+// imports, Sprint 13).
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 
 /**
