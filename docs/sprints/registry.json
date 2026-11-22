@@ -172,8 +172,8 @@
     "29": {
       "title": "Browse dates that have readings",
       "epic": "Date pages",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-29_browse-dates-that-have-readings.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-29_browse-dates-that-have-readings.md"
     }
   }
 }
