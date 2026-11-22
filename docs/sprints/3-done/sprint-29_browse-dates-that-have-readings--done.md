@@ -2,7 +2,7 @@
 id: 29
 title: "Browse dates that have readings"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-22T13:44:02+00:00
 ---
 

@@ -1,7 +1,7 @@
 {
   "id": 29,
   "title": "Browse dates that have readings",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "2f1a266ebcffb1c8bbe857e562c0dbc8e3e9d09ca031aef308f741d08e6967bd",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 1,
   "started": "2026-11-22T14:28:19+00:00",
-  "completed": null,
+  "completed": "2026-11-22T15:06:20+00:00",
   "history": [
     {
       "ts": "2026-11-22T14:28:19+00:00",
@@ -44,11 +44,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 1). Tested on 2026-11-22 against https://my-little-racoon.vercel.app.\nShipped commit 3568b56. Production serves the pushed bookkeeping tip 6c1f89b: /api/health/db\nreports status ok, migrationVersion 20261122142918_reading_date_navigation, commit 6c1f89b.\ngit diff --stat 3568b56 6c1f89b touches only docs/sprints/state/sprint-29.json.\nTools: headless Chromium (Playwright 1.57, real link clicks), curl, gh run view --log.\n\nCI: runs 45034516835 (3568b56) and 45034972492 (6c1f89b). build, rls-tests and migrate all\nsucceed in both. Unit tests 260 passed (25 files). The RLS suite passed 30/30, including\nreading-date-navigation.test.ts with 13 tests. migrate applied 20261122142918 in the first run\nand printed \"Remote database is up to date.\" in the second. \"No drift detected.\" in both.\n\nSTEP 1, seeding: not needed. Production already had 32 dates with a horoscope. That is more\nthan the 20 cap, so the cap is exercised by real data.\n\nSTEP 2, prev/next: PASS. I followed the links with real clicks from /date/2026-11-22 back to\nthe start and forward to the end. The chain covers 32 dates (all with a horoscope) and is consistent both ways: each\npage's next is the page it was reached from. Every page I landed on shows \"The reading /\nWRITTEN\" with its saved text. A middle example: /date/2026-11-19 shows prev 16 November 2026\n(/date/2026-11-16) and next 16 December 2026 (/date/2026-12-16).\n\nSTEP 3, edges: PASS. /date/1776-07-04 has prev null and shows only \"NEXT READING -> 1 January\n1900\". /date/2100-12-31 has next null and shows only \"PREVIOUS READING\". Neither page has a\nplaceholder, aria-disabled element or disabled button (checked in the DOM and on screenshots).\n\nSTEP 4, recent list: PASS. There are exactly 20 entries, labelled in long-date format (for\nexample \"16 December 2026\"), each linking to /date/YYYY-MM-DD. On its own page the current\ndate renders as a SPAN with aria-current=\"page\", not a link. This held for 29 February 1984,\n16 December 2026 and 4 July 1776. Every entry is a page in the step-2 walk, and each returned\n200 with a written horoscope.\nLimit: the site never shows when a horoscope was written, so ordering past the top entry can't\nbe checked from the UI. Step 5 shows that the newest one goes first.\n\nSTEP 5, freshness: PASS. I cast one LiveQA seeding horoscope on 2050-06-15 through the date\npage's \"Write the horoscope\" button, at about 15:00:51Z. It went WRITING and then WRITTEN, and\nthe saved text begins \"On June 15, 2050, Venus was in conjunction with Jupiter.\" That is a\npermanent production row, recorded here so it isn't mistaken for organic use. Before the cast,\n16 December 2026's next link was 31 December 2100 and the top of the recent list was 19\nNovember 2026.\nAfter reloading OTHER pages:\n- /date/1984-02-29: the recent list starts \"15 June 2050, 19 November 2026, ...\", still 20\n  entries, and 8 May 1945 has dropped off.\n- /date/2026-12-16: next is now \"15 June 2050\".\n- /date/2100-12-31: previous is now \"15 June 2050\".\n\nSTEP 6, dates only: PASS. Called directly with the anon/publishable key against\nrzlojpwlhbcfzpohbwso.supabase.co.\n- The key is NOT in any deployed client bundle. I fetched every _next/static chunk for the\n  date page and /chart and found no supabase URL, eyJ token or sb_publishable_ key. The step\n  says \"from the deployed bundle\", but the app only uses the key server-side. The user\n  supplied the publishable key from the dashboard.\n- rpc get_adjacent_reading_dates {\"reading_date\":\"2026-12-16\"} returned HTTP 200\n  [{\"previous_date\":\"2026-11-19\",\"next_date\":\"2050-06-15\"}].\n- Called for 1776-07-04 it returned [{\"previous_date\":null,\"next_date\":\"1900-01-01\"}]. For\n  2100-12-31 it returned [{\"previous_date\":\"2050-06-15\",\"next_date\":null}].\n- rpc get_recent_reading_dates {} returned HTTP 200: 20 objects, each only {\"event_date\":...},\n  starting 2050-06-15 and ending 1776-07-04. This is the same order the page shows.\n- get_recent_reading_dates with {\"limit\":100} returned HTTP 404 PGRST202 \"Could not find the\n  function public.get_recent_reading_dates(limit)\". No argument can raise the cap.\n- Direct anon GET /rest/v1/readings?select=* returned HTTP 200 []. select=horoscope also\n  returned []. RLS exposes no rows, even though 33 dates with horoscopes exist after the cast.\n- No horoscope text, id or events appear in any response. I did not attempt an anon insert\n  against production, because the step doesn't require it and a success would write a row.\n  The insert denial is covered by CI's RLS suite.\n\nSTEP 7, 390px: PASS. I used isMobile at 390x844 on /date/2026-12-16, /date/1776-07-04,\n/date/2100-12-31 and /date/2026-11-22. scrollWidth is 390 both with the \"RECENTLY WRITTEN (20)\"\ndisclosure closed and with it open. With it open there are 20 items and no element extends\npast 390px. Prev and next sit side by side under the date picker.\n\nSTEP 8, other routes: PASS. / returns 307 to /date/2026-11-22. /chart and\n/chart?date=1969-07-20 return 200. /reading/047e8dbd-385c-4ce0-adc3-acbf7bd9856d returns 200\nand renders its 3-step page as before. /reading/abc returns 404. Neither /chart nor /reading\ncontains \"Previous reading\", \"Next reading\", \"Recently written\" or \"Dates with readings\".\n\nNo console errors or page errors on the date pages."
+    },
+    {
+      "ts": "2026-11-22T15:06:20+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=complete the sprint"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-22T15:04:48+00:00"
+    "claude_session_id": "de011f50-3c2a-46e7-ac41-6a86544cf001",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-22T15:06:20+00:00"
   }
 }
