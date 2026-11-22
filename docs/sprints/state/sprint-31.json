@@ -1,16 +1,16 @@
 {
   "id": 31,
   "title": "Retire /chart and the step flow",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "204b4afc77f3b2c20c6d5731eabc7290f070313acd88e1f1a830d9dd3af29bc7",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "4e4abfdd4f543641f3280e4409be8bf8d4fb78007b1731e83a7c228e652ef3e4",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-22T15:26:17+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-22T15:47:47+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate 1, round 1: PASS. Audited 3b48ff5 on devteam2/sprint-31, in worktree ../my_little_raccoon-devteam2-sprint-31. The diff covers 6a62fc9..HEAD: the Sprint 31 work in 3562dc3 and 3b48ff5, plus the start bookkeeping.\n\nI re-read the sprint file fresh in the worktree. It differs from main's copy only in the lifecycle-owned status: line. No criterion asserts anything between versions.\n\nR1 Met.\n- app/chart/route.ts GET returns NextResponse.redirect with an explicit 307, built from request.url, so it stays on the requesting origin.\n- The target comes from chartRedirectTarget in redirect-target.ts: exactly one date value that passes parseDatePageParam goes to datePagePath. Anything else goes to /. params.ts is imported unchanged, with no new export needed. Traced each R7 input:\n  - 1969-07-20 goes to /date/1969-07-20.\n  - 1700-01-01 and 2100-12-31 go to their own date pages.\n  - garbage, 2024-02-30, 1969-7-20 and other malformed values go to /.\n  - 1699-12-31, 2101-01-01 and 2200-01-01 go to /.\n  - No date and an empty date go to /.\n  - A repeated date goes to /, consistent with how /date handles an array.\n- The build lists /chart as dynamic.\n\nR2 Met.\n- app/chart/page.tsx, actions.ts and chart.module.css are deleted, and so are FlowIndicator.tsx, its test and flow-indicator.module.css.\n- grep for FlowIndicator, saveReading and app/chart across app/ and lib/ returns nothing.\n- Nothing is orphaned. Every import of the deleted files still has another user: MIN_SUPPORTED_DATE in DatePicker, MAX_SUPPORTED_DATE in DatePicker and generate, CALCULATION_HOUR_UTC in params and ReadingView, and fetchDayEvents and availability in lib/date-page. constellation.ts already lives in app/reading/[id].\n- insertReading survives, and its only callers are lib/date-page/cast.ts and lib/readings/insert.test.ts.\n\nR3 Met.\n- /reading/[id]/page.tsx drops the FlowIndicator and belowDateBand and passes datePageHref = datePagePath(reading.event_date). event_date is the stored row's, not a request value.\n- In ReadingPanel, both links (desktop and mobile) go to datePageHref with the label \"Go to this date\". A discriminated union makes datePageHref required whenever the link renders. The date page's offerNewChart={false} call is unchanged and still renders no link.\n- The \"Write the horoscope\" and \"Try again\" branches are untouched, and the 404 and outage paths are untouched.\n- actions.ts's missing-id redirect now goes to /.\n\nR4 Met. error.tsx links to / with the label \"Go to today\". Its comment no longer says \"step 1\".\n\nR5 Met. The layout.tsx description is rewritten for the date-page app. The README describes /chart as a 307 redirect, and its no-env Local validation list checks the /chart redirects with curl -sI. The health route's comment is updated. A grep of app/ and lib/ source (non-test) for cast a new chart, cast the chart, save this reading, see the full reading and step labels returns nothing.\n\nR6 Met in substance, with one finding against the sprint file itself.\n- Nothing under supabase/ changes. params.ts is unchanged.\n- app/date/[date]/page.tsx, app/date/[date]/date.module.css and lib/date-page/cast.ts change in COMMENTS ONLY, to remove references to app/chart and saveReading. There is no code, class or behaviour change.\n- R2's grep (app/ and lib/, must find nothing) and R6's wording (no change under app/date/ or lib/date-page/ except for the params reuse) cannot both hold. Those files' comments named app/chart. Dev Team satisfied R2 with comment-only edits, which is the right call. For Master Controller: a future sprint pairing a repo-wide grep with a frozen directory should exempt comments explicitly.\n\nR7 Met.\n- redirect.test.ts covers every listed target, including both boundaries, malformed, out-of-range and no-date cases, and the route itself: status 307, Location, same origin, and the query string dropped.\n- ReadingPanel.test.ts is new. It covers the /reading/[id] link target on both breakpoints, no retired copy and no /chart, the date page rendering no link, and the Write the horoscope and Try again branches.\n- Removed tests: FlowIndicator.test.ts only, which exercised only deleted code.\n- lib/readings-access-guardrail.test.ts changed one fixture's path and function name, from app/chart/actions.ts and saveReading to app/example/actions.ts and insertOnly, to clear R2's grep. The assertion is the same, and the guardrail module itself is unchanged. That is not a weakening.\n\nRan these myself in the worktree:\n- npm test: 26 files, 291 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean.\nThe RLS suite is untouched by this diff. I could not run test:rls (no docker in this WSL distro), and CI's rls-tests job covers it.\n\nFor Pipeman, informational: the branch forks at 6a62fc9 and does not contain Sprint 30's commits or 5d63055 (the CLAUDE.md block) from main. The two sprints share no source files, so the merge should touch only bookkeeping such as registry.json. Audited tree hash is this branch's HEAD content.\n\nLow, non-blocking: the ReadingPanel prop is still named offerNewChart, a name with no \"new chart\" behind it anymore. Dev Team kept it deliberately to avoid editing app/date under R6, and documented that. Rename it in a later sprint.\n\nNo Human Prerequisites. No test was labelled known-failing."
     }
   ],
   "last_claim": {
-    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
-    "claude_agent": "dev-team-2",
-    "ts": "2026-11-22T15:26:17+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-22T15:47:47+00:00"
   }
 }
