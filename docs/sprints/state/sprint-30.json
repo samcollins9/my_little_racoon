@@ -1,16 +1,16 @@
 {
   "id": 30,
   "title": "Date navigation lists exact-date readings only",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "7252cf7a2d41415fc41b4447d1589c4a24ab64e5fafb7d52cc12059badf33f3b",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "9afda2ef9b35d9f571755518496f9c8ac28b0e60098a44484685151c70cc1887",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-22T15:26:11+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-22T15:33:49+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate 1, round 1: PASS. Audited commit c828bc0 against the current sprint file, re-read fresh.\n\nThe status warning reports that the devteam2 sprint-31 worktree has a different copy of the sprint file. I diffed the two: the only difference is the lifecycle-owned status: line (todo there, in_progress here). There is no requirement drift. No criterion asserts anything between versions.\n\nR1 Met. Migration 20261122152710_navigation_exact_date_readings.sql.\n- displayed_readings() is the only place the displayed-row rule is written. It filters horoscope is not null, then takes distinct on (event_date) ordered by event_date, horoscope_generated_at desc nulls last, created_at desc, id desc. Within each date, that tiebreak is exactly 20261115211107's.\n- get_reading_by_date is create-or-replaced on top of it: select d.* where event_date = reading_date, limit 1, with the same signature, the same setof readings return, security definer and the same search_path. Drift is prevented by sharing the rule, not by a second copy.\n- The predicate is events -> 'matchedYear' = 'true'::jsonb, written once in navigable_reading_dates(). Checked against each R1 case:\n  - events null gives null, so the row is excluded.\n  - A missing key gives null, so it is excluded.\n  - JSON null or false is not equal to 'true'::jsonb, so it is excluded.\n  - The string \"true\" is '\"true\"'::jsonb, a different jsonb value, so it is excluded.\n  - Only the JSON boolean true passes.\n- The filter is applied to the displayed row per date, never to any row on the date.\n\nR2 Met.\n- Both Sprint 29 functions are create-or-replaced, not dropped, so the ACL from 20261122142918 is preserved: anon and authenticated only, revoked from PUBLIC and service_role.\n- Names and signatures are unchanged.\n- Return types are still table (previous_date date, next_date date) and table (event_date date).\n- Both are still security definer with a pinned search_path.\n- Adjacency is strict < and > over the qualifying set, so a non-qualifying date is skipped over.\n- The recent list orders by the displayed row's horoscope_generated_at desc nulls last, then event_date desc. limit 20 applies after the filter.\n- Both helpers have execute revoked from public, anon, authenticated and service_role. Neither is security definer. Callers reach them through the owner rights of the security definer functions.\n- The migration ends with its schema_migrations insert.\n\nR3 and R4 Met. There is no diff under app/ or lib/ between 3568b56 and c828bc0; the only other commit in between is CLAUDE.md. The page lookup's row selection is semantically identical.\n\nR5 Met. reading-date-navigation-exact-year.test.ts covers:\n- matchedYear true is listed and is a neighbour on both sides;\n- false, null events, a missing key and the string \"true\" are each excluded and skipped, plus JSON null as an extra case;\n- both subtlety cases, named as such, each also asserting what get_reading_by_date shows;\n- the R3 case: a non-qualifying page still returns its reading;\n- the cap: 22 qualifying casts interleaved with newer non-qualifying ones, expecting exactly the last 20 qualifying dates, newest first, which proves the cap applies after the filter;\n- adjacency skipping three different non-qualifying dates, including from inside the gap;\n- anon rpc to both helpers erroring.\nThe Sprint 29 suite changed in seed data only: an EXACT_YEAR_EVENTS payload in insertReading and in the nulls-last fixture insert. No assertion changed.\n\nRan these myself:\n- npm test: 25 files, 260 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean, /date/[date] dynamic.\nI could NOT run test:rls: no docker in this WSL distro. CI's rls-tests job is its first real run, and Pipeman's push report must show it green.\n\nLow, non-blocking:\n(a) displayed_readings has a SET search_path clause, so Postgres won't inline it. get_reading_by_date now does a distinct-on over every horoscope row on each page view, and get_adjacent_reading_dates evaluates the helper twice. This is fine at this table size, the cost the sprint file's own Risks accept. Revisit with an index or rewrite if readings grow.\n(b) Same shape as Sprint 29's note (a): the clusters are random 5-day spans in 2200-2790, about 12 per run. Within one run, the chance two collide is roughly 0.3%. It grows on a persistent local database. Not blocking, but a CI flake there is this, not a defect.\n\nNo new Human Prerequisites beyond the sprint file's. No test was labelled known-failing."
     }
   ],
   "last_claim": {
-    "claude_session_id": "de011f50-3c2a-46e7-ac41-6a86544cf001",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-22T15:26:11+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-22T15:33:49+00:00"
   }
 }
