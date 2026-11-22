@@ -1,16 +1,16 @@
 {
   "id": 29,
   "title": "Browse dates that have readings",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "2f1a266ebcffb1c8bbe857e562c0dbc8e3e9d09ca031aef308f741d08e6967bd",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "875c3745f1b6d6209d8157a1c286b98019a19701ddefe0eee9255c2940c47763",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-22T14:28:19+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-22T14:38:09+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate 1, round 1: PASS. Audited commit 3568b56 against the current sprint file. I re-read it fresh; it is unchanged since commit 84c5fb2, and no criterion asserts anything between versions.\n\nR1 Met. Migration 20261122142918_reading_date_navigation.sql:\n- Both functions are security definer, language sql, stable, with set search_path = public, and both filter horoscope is not null.\n- Return types are declared column by column. get_adjacent_reading_dates returns table (previous_date date, next_date date). get_recent_reading_dates returns table (event_date date). No setof readings and no other column.\n- R1a uses strict < and > inside max/min subqueries, so it returns exactly one row with null sides.\n- R1b uses group by event_date, order by max(horoscope_generated_at) desc nulls last, event_date desc, then limit 20. The function takes no parameter, so nothing can raise the cap.\n- Grants: execute is revoked from PUBLIC and service_role and granted to anon and authenticated only. That is stricter than get_reading_by_date, which only grants, and it is safe because the page reads as anon.\n- There is no new policy, and the file ends with the schema_migrations insert.\n\nR2 and R3 Met. DateNavigation.tsx:\n- Links use datePagePath, so they go to /date/YYYY-MM-DD, labelled with formatLongDate as \"D Month YYYY\".\n- An absent side renders nothing.\n- The current date renders as a span with aria-current=\"page\", not a link.\n- When there are no dates at all, the component returns null.\n\nR4 Met.\n- loadDateNavigation classifies both RPCs with isDatabaseUnavailable(\"dateLookup\"), which excepts no code. That is correct because the date is pre-validated.\n- Each failure is logged in full under its own label.\n- If either lookup fails, the result is kind \"unavailable\", and the component renders null with no notice of its own.\n- Traced the double-failure case: page.tsx renders SavedHoroscopesUnavailable once, from page.saved, and the navigation adds nothing.\n- The lookup runs in Promise.all beside loadDatePage, not inside it. supabase-js returns errors and does not reject, so the chart and events can't be blanked by it.\n\nR5 Met. The GET path has two .rpc reads on the anon client only. There is no insert, no set_reading_horoscope, no admin client and no OpenAI client. connection() is still in place, and there is no revalidate or force-static under app/date. The build lists /date/[date] as dynamic.\n\nR6 Met statically. The navigation renders inside belowDateBand, right under DatePicker. It is all flex-wrap with min-width 0 and no fixed widths. On mobile, the list sits behind a native details element, and visibility uses reading.module.css desktopOnly/mobileOnly, which exist. Every CSS token used is defined in globals.css. Real 390px layout is LiveQA's step 7.\n\nR7 Met. git diff 3568b56~1 3568b56 -- app/reading app/chart is empty. availability.ts changed in its doc comment only.\n\nR8 Met as written.\n- The RLS suite covers every listed R1a and R1b case, the shape of both results, the no-limit-argument case, and the anon select and insert denial.\n- The unit suite covers no previous or next, the current date in the list, an empty list, and adjacent, recent and both unavailable, logged in full.\n- vitest.rls.config.ts sets fileParallelism false so the order assertions hold.\n- I ran these myself:\n  - npm test: 25 files, 260 tests, green.\n  - typecheck: clean.\n  - lint: clean.\n  - build: clean.\n- I could NOT run test:rls: there is no docker in this WSL distro. The RLS suite's first real run is CI's rls-tests job, so Pipeman's push report must show it green, as the sprint file says.\n\nLow, non-blocking:\n(a) The adjacency clusters pick a random base in 3000-3900. On a persistent local database that accumulates runs, two clusters within about 17 days of each other would collide and flake. That is negligible on CI's fresh database.\n(b) The recent list is in the DOM twice, once per breakpoint, the same pattern ReadingView already uses. The hidden copy is display:none, so it is out of the accessibility tree.\n\nNo Human Prerequisites beyond the sprint file's own: Supabase must be awake for migrate and for LiveQA.\n\nThe working tree has an uncommitted CLAUDE.md change: the Next.js agent-rules block that next build re-adds. It is not part of 3568b56 and not audited.\n\nNo test was labelled known-failing."
     }
   ],
   "last_claim": {
-    "claude_session_id": "de011f50-3c2a-46e7-ac41-6a86544cf001",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-22T14:28:19+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-22T14:38:09+00:00"
   }
 }
