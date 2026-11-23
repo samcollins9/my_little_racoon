@@ -226,9 +226,10 @@
 
 /* ============================================================
    Phones -- the same single breakpoint as reading.module.css.
-   The chart panel there is a fixed 300px-high figure above a scrolling
-   reading column, so the key panels take that same height and scroll
-   vertically inside it, rather than pushing the page's own layout.
+   Sprint 38: the page scrolls as one document there, so every panel,
+   and the stacked fallback, takes its natural height in that scroll.
+   Nothing here is a scroll area of its own; switching tabs can change
+   the page's length.
    ============================================================ */
 
 @media (max-width: 900px) {
@@ -241,20 +242,7 @@
   }
 
   .enhanced .keyPanel {
-    height: 300px;
-    overflow-y: auto;
     padding: 12px 24px 16px;
-  }
-
-  /* Without JavaScript every section is stacked; cap the whole stack so the
-     events and reading below are still reachable. */
-  .stacked {
-    max-height: 50vh;
-    overflow-y: auto;
-    /* The phone chart is a fixed 390px figure; once the stack's own
-       scrollbar narrows the box it would overflow by that much and add a
-       sideways scrollbar. Clip it instead, as the page body already does. */
-    overflow-x: hidden;
   }
 
   .stacked .keyPanel {

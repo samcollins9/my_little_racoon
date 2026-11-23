@@ -529,9 +529,13 @@
     padding: 0;
   }
 
+  /* Sprint 38: the whole page scrolls as one document on phones. The card
+     is at least a screen tall, never exactly one: Sprint 20's fixed
+     100vh card with a single scrolling column is gone. */
   .card {
     width: 100%;
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     border: none;
     box-shadow: none;
     display: flex;
@@ -542,7 +546,6 @@
      neither mobile frame shows them. */
   .dateBand {
     padding: 14px 24px 16px;
-    flex-shrink: 0;
   }
 
   .dateHeading {
@@ -558,37 +561,37 @@
     display: none;
   }
 
-  /* Sprint 24: same treatment as .dateBand above -- a fixed-height flex
-     column (mobile .card, R9/Sprint 20) needs every header region to
-     declare flex-shrink: 0 or the scrollable .rightColumn squeezes it. */
   .flowSlot {
     padding: 10px 24px;
-    flex-shrink: 0;
   }
 
+  /* flex: 1 here and on .rightColumn only fill a short page down to the
+     bottom of the screen; nothing on the main axis clips or scrolls. */
   .body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden;
   }
 
+  /* The phone chart is a fixed 390px-wide figure. On a phone narrower than
+     that it is clipped at the side rather than scrolling the page sideways
+     (R5). `clip`, not `hidden`: it creates no scroll container and leaves
+     the vertical axis alone. It also covers the stacked no-JavaScript
+     fallback (chartTabs.module.css). */
   .leftColumn {
     border-right: none;
-    flex-shrink: 0;
+    overflow-x: clip;
   }
 
   .balanceGrid {
     display: none;
   }
 
+  /* Sprint 38: no longer its own scroll area, so no fade mask either. The
+     mask only made sense while this column scrolled under a fixed footer
+     (Sprint 20, R6). */
   .rightColumn {
     flex: 1;
-    overflow-y: auto;
-    /* Long text fades under the fixed footer instead of being cut
-       mid-word (R6). */
-    mask-image: linear-gradient(to bottom, black calc(100% - 64px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 64px), transparent 100%);
   }
 
   .eventsSection {
@@ -636,7 +639,9 @@
   }
 
   /* R4: touch targets clear 44px at this size -- an accessibility floor,
-     not a style preference. */
+     not a style preference. Sticky against the page's own scroll (Sprint
+     38): it stays at the bottom of the screen while "The reading" is on
+     screen and rests at the end of that section otherwise. */
   .readingFooter {
     position: sticky;
     bottom: 0;
