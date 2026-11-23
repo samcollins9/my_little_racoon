@@ -1,16 +1,16 @@
 {
   "id": 34,
   "title": "Star chart tooltips",
-  "phase": "dev_agreed_done",
+  "phase": "qa1_audit",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "bf3eac5eb613a0c88ab3b707b8b01f39fcdd085554960c612f908efa40122ce9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
-  "qa1_audited_tree_hash": "d1a186b1aada6e7849c6f71a6476b909b492d28e114c3f8e5522d259269d5ee9",
+  "qa1_audited_tree_hash": "174012b043580740972ee933789d491a3c84bb323e616d4c043a61437e78c4e9",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 1,
+  "audit_rounds": 2,
   "live_test_rounds": 0,
   "started": "2026-11-23T02:17:31+00:00",
   "completed": null,
@@ -32,11 +32,23 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T02:31:34+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate 1, round 2: PASS. Audited HEAD = 3e63f94 on main. I re-read the sprint file fresh: it is unchanged since d1366fa, and the hash check at dev-done confirms it.\n\nWhy round 2: CI's build job failed lint on ff41550. app/reading/[id]/ReadingView.test.ts:18 passed children as a createElement prop, which react/no-children-prop rejects. I reproduced it: eslint on the ff41550 blob reports 1 error, exit 1.\n\nMy round-1 notes said lint was clean. That was wrong: I read the last line of the lint output instead of its exit status. I have corrected that record separately with /sprint-correct.\n\nThe fix, 3e63f94, changes test code only. ReadingView.test.ts is renamed to ReadingView.test.tsx, the createElement import is dropped, and the component renders with JSX: ReadingView with eventDate, positions and events={null}, and null as its children. A comment explains the rename.\n- The assertions and describe and it blocks are byte-identical. The file still runs 5 tests, and the suite total is unchanged at 349.\n- No production file changed between ff41550 and 3e63f94. The round-1 findings on R1-R5 stand as recorded.\n\nRe-ran these on 3e63f94, checking exit status this time:\n- npm run lint: exit 0.\n- npm test: 28 files, 349 tests, exit 0. ReadingView.test.tsx is collected and runs 5 tests.\n- npm run typecheck: exit 0.\n- npm run build: exit 0.\n\nNo Human Prerequisites. No test was labelled known-failing."
+    },
+    {
+      "ts": "2026-11-23T02:31:34+00:00",
+      "actor": "qa1",
+      "event": "correction",
+      "detail": "target_index=1 | target_event=audit | target_ts=2026-11-23T02:22:20+00:00 | Correction to my round-1 notes: the line \"lint: clean\" was false. On ff41550, eslint fails with 1 error, react/no-children-prop at app/reading/[id]/ReadingView.test.ts:18, exit status 1. I reproduced it by linting that commit's blob directly. CI's build job caught it.\n\nMy check read only the last line of the lint output, not its exit status. The other three results in that line were real: npm test, typecheck and build all passed.\n\nThe defect is fixed in 3e63f94, and round 2 re-audited that commit with exit statuses checked. The R1-R5 code findings in round 1 are unaffected, because the error was in a test file's call shape, not in the shipped code."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T02:23:10+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-23T02:31:34+00:00"
   }
 }
