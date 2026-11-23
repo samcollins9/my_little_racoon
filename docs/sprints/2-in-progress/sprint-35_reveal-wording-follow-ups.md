@@ -2,7 +2,7 @@
 id: 35
 title: "Reveal wording follow-ups"
 epic: "Date pages"
-status: todo
+status: in_progress
 created: 2026-11-23T03:13:07+00:00
 ---
 
