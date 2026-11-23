@@ -791,10 +791,26 @@
 
   /* .readingFooter is sticky on phones, but inside the summary its
      containing block is the summary itself, so it would never stick.
-     The folded summary sticks instead, over the same background. */
-  .reveal:not([open]) > .revealSummary {
+
+     Sprint 38, LiveQA round 1: the summary can't be the sticky element
+     either. Its containing block is the folded <details>, which is only as
+     tall as the summary, so sticky had no room to move it. The folded
+     <details> sticks instead. Its parent spans the whole reading section,
+     header and idle text included: the <form> on a page that can generate,
+     .readingSection itself on one that can't. That's the same box the
+     unsaved state's sticky .readingFooter moves within. Open, the <details>
+     is ordinary flow again, and its own .readingFooter sticks as before.
+     The summary keeps the footer background, which covers what scrolls
+     beneath it. No gap while folded: the closed <details> still lays out
+     its hidden content slot, and the gap before it would leave an
+     uncovered strip under the bar at the screen's edge. */
+  .reveal:not([open]) {
     position: sticky;
     bottom: 0;
+    gap: 0;
+  }
+
+  .reveal:not([open]) > .revealSummary {
     background: var(--om-ink-footer);
   }
 
