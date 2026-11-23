@@ -208,8 +208,8 @@
     "35": {
       "title": "Reveal wording follow-ups",
       "epic": "Date pages",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-35_reveal-wording-follow-ups.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-35_reveal-wording-follow-ups--done.md"
     },
     "36": {
       "title": "One verify command with an explicit exit code",
