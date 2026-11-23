@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
-import type { PlanetPosition } from "../../../lib/ephemeris/adapter";
+import { PLANET_NAMES, type PlanetPosition } from "../../../lib/ephemeris/adapter";
+import { ZODIAC_SIGNS } from "../../../lib/ephemeris/zodiac";
 import {
   STAR_FIELD,
   computeBodies,
   computeMoonPhaseGeometry,
   computeSectors,
+  degreesAndMinutes,
+  planetTooltip,
+  sectorTooltip,
 } from "./constellation";
 
 function position(overrides: Partial<PlanetPosition> = {}): PlanetPosition {
@@ -106,5 +110,109 @@ describe("computeMoonPhaseGeometry", () => {
     const { path } = computeMoonPhaseGeometry(positions, 100, 200, 5);
     expect(path).toContain("M 100 195");
     expect(path).toContain("A 5 5 0 0");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sprint 34: native SVG tooltip text (R1-R3, tested per R5).
+
+describe("degreesAndMinutes (R1: floored, never rounded)", () => {
+  it.each([
+    [0, 0, 0],
+    [12.5667, 12, 34],
+    [29.9999, 29, 59],
+    [29.999, 29, 59],
+    [12.5, 12, 30],
+    [7.0166667, 7, 1],
+  ])("%d -> %d°%d′", (input, degrees, minutes) => {
+    expect(degreesAndMinutes(input)).toEqual({ degrees, minutes });
+  });
+
+  it("can never produce 60 minutes or 30 degrees, even from the largest double below 30", () => {
+    const justUnder30 = 30 - Number.EPSILON * 16;
+    expect(justUnder30).toBeLessThan(30);
+    expect(degreesAndMinutes(justUnder30)).toEqual({ degrees: 29, minutes: 59 });
+    for (let tenths = 0; tenths < 300; tenths++) {
+      const { degrees, minutes } = degreesAndMinutes(tenths / 10 + 0.0999999);
+      expect(degrees).toBeLessThanOrEqual(29);
+      expect(minutes).toBeLessThanOrEqual(59);
+    }
+  });
+});
+
+describe("planetTooltip (R1)", () => {
+  it("names the planet, its sign and its degree, with two-digit minutes", () => {
+    expect(planetTooltip(position({ body: "Mars", sign: "Aries", degreeInSign: 12.5667 }))).toBe(
+      "Mars in Aries 12°34′"
+    );
+    expect(planetTooltip(position({ body: "Venus", sign: "Libra", degreeInSign: 0 }))).toBe(
+      "Venus in Libra 0°00′"
+    );
+    expect(planetTooltip(position({ body: "Pluto", sign: "Capricorn", degreeInSign: 29.9999 }))).toBe(
+      "Pluto in Capricorn 29°59′"
+    );
+  });
+
+  it("appends \", retrograde\" only when the planet is retrograde", () => {
+    expect(planetTooltip(position({ body: "Mars", sign: "Aries", degreeInSign: 12.5667, retrograde: true }))).toBe(
+      "Mars in Aries 12°34′, retrograde"
+    );
+    expect(planetTooltip(position({ body: "Mars", retrograde: false }))).not.toMatch(/retrograde/);
+  });
+
+  it("never calls the Sun or the Moon retrograde, even if the record says so", () => {
+    expect(planetTooltip(position({ body: "Sun", retrograde: true }))).toBe("Sun in Aries 0°00′");
+    expect(planetTooltip(position({ body: "Moon", retrograde: true }))).toBe("Moon in Aries 0°00′");
+  });
+
+  it("spells every planet and sign exactly as the app's own name lists do", () => {
+    for (const body of PLANET_NAMES) {
+      for (const sign of ZODIAC_SIGNS) {
+        expect(planetTooltip(position({ body, sign, degreeInSign: 3.25 }))).toBe(`${body} in ${sign} 3°15′`);
+      }
+    }
+  });
+
+  it("matches the chart label's degree and minute for the same position", () => {
+    for (const degreeInSign of [0, 4.016, 12.5667, 17.35, 29.9999]) {
+      const [body] = computeBodies([position({ body: "Mars", sign: "Leo", degreeInSign })]);
+      const [, labelDeg, labelMin] = body.label.match(/^(\d+)°(\d+)'/)!;
+      const [, tipDeg, tipMin] = body.tooltip.match(/ (\d+)°(\d+)′/)!;
+      expect(Number(tipDeg)).toBe(Number(labelDeg));
+      expect(tipMin).toBe(labelMin);
+    }
+  });
+
+  it("computeBodies carries it as each body's tooltip", () => {
+    const [mars] = computeBodies([position({ body: "Mars", sign: "Aries", degreeInSign: 12.5667, retrograde: true })]);
+    expect(mars.tooltip).toBe("Mars in Aries 12°34′, retrograde");
+  });
+});
+
+describe("sectorTooltip (R2)", () => {
+  // Written out independently of lib/ephemeris/balance.ts's tables, so this
+  // checks them rather than restating them.
+  const EXPECTED: Record<(typeof ZODIAC_SIGNS)[number], string> = {
+    Aries: "Aries: Fire, Cardinal",
+    Taurus: "Taurus: Earth, Fixed",
+    Gemini: "Gemini: Air, Mutable",
+    Cancer: "Cancer: Water, Cardinal",
+    Leo: "Leo: Fire, Fixed",
+    Virgo: "Virgo: Earth, Mutable",
+    Libra: "Libra: Air, Cardinal",
+    Scorpio: "Scorpio: Water, Fixed",
+    Sagittarius: "Sagittarius: Fire, Mutable",
+    Capricorn: "Capricorn: Earth, Cardinal",
+    Aquarius: "Aquarius: Air, Fixed",
+    Pisces: "Pisces: Water, Mutable",
+  };
+
+  it.each(ZODIAC_SIGNS)("%s has the right element and modality", (sign) => {
+    expect(sectorTooltip(sign)).toBe(EXPECTED[sign]);
+  });
+
+  it("computeSectors carries it for all twelve sectors, in wheel order", () => {
+    const sectors = computeSectors([]);
+    expect(sectors.map((s) => s.tooltip)).toEqual(ZODIAC_SIGNS.map((sign) => EXPECTED[sign]));
   });
 });

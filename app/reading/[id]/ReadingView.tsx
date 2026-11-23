@@ -140,6 +140,8 @@ export function ReadingView({
                     fill={sector.occupied ? "oklch(0.72 0.09 145)" : "oklch(0.34 0.02 288)"}
                     fontFamily="var(--font-mono), monospace"
                   >
+                    {/* Sprint 34, R2: the native tooltip, first child of the glyph it names. */}
+                    <title>{sector.tooltip}</title>
                     {sector.glyph}
                   </text>
                 </g>
@@ -162,6 +164,9 @@ export function ReadingView({
               ))}
               {bodies.map((body) => (
                 <g key={body.key}>
+                  {/* Sprint 34, R1: first child, so hovering the halo, dot,
+                      glyph or label anywhere in this group shows it. */}
+                  <title>{body.tooltip}</title>
                   <circle
                     cx={body.x}
                     cy={body.y}

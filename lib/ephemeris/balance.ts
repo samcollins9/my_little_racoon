@@ -37,6 +37,16 @@ const MODALITY_BY_SIGN: Record<ZodiacSign, Modality> = {
   Pisces: "Mutable",
 };
 
+/** Sprint 34, R2: one sign's element, from the same table the balance counts use. */
+export function elementOfSign(sign: ZodiacSign): Element {
+  return ELEMENT_BY_SIGN[sign];
+}
+
+/** Sprint 34, R2: one sign's modality, from the same table the balance counts use. */
+export function modalityOfSign(sign: ZodiacSign): Modality {
+  return MODALITY_BY_SIGN[sign];
+}
+
 function zeroCounts<K extends string>(keys: readonly K[]): Record<K, number> {
   return Object.fromEntries(keys.map((k) => [k, 0])) as Record<K, number>;
 }

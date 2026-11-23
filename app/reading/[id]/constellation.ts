@@ -1,5 +1,6 @@
 import type { PlanetName, PlanetPosition } from "../../../lib/ephemeris/adapter";
 import type { Aspect } from "../../../lib/ephemeris/aspects";
+import { elementOfSign, modalityOfSign } from "../../../lib/ephemeris/balance";
 import { computeMoonPhase, type PhaseName } from "../../../lib/ephemeris/moon-phase";
 import type { ZodiacSign } from "../../../lib/ephemeris/zodiac";
 
@@ -112,11 +113,49 @@ export const ASPECT_COLOR: Record<Aspect["aspect"], string> = {
   sextile: COLOR_VERDIGRIS,
 };
 
+/**
+ * Whole degrees and whole minutes within a sign, both floored -- never
+ * rounded, so 29.9999 is 29°59', not 30°00' (Sprint 34, R1). The chart's
+ * own label and the planet tooltip both read this, so they can't disagree.
+ *
+ * `degreeInSign` is in [0, 30) by construction
+ * (lib/ephemeris/zodiac.ts's zodiacPositionFromLongitude). The two clamps
+ * below change nothing for such a value; they only make "60 minutes" and
+ * "30 degrees" impossible outputs rather than merely unexpected ones.
+ */
+export function degreesAndMinutes(degreeInSign: number): { degrees: number; minutes: number } {
+  const degrees = Math.min(Math.floor(degreeInSign), 29);
+  const minutes = Math.min(Math.floor((degreeInSign - degrees) * 60), 59);
+  return { degrees, minutes };
+}
+
 /** "12°34'" -- degree and minute within the body's sign. */
 function dms(degreeInSign: number): string {
-  const deg = Math.floor(degreeInSign);
-  const min = Math.floor((degreeInSign - deg) * 60);
-  return `${String(deg).padStart(2, "0")}°${String(min).padStart(2, "0")}'`;
+  const { degrees, minutes } = degreesAndMinutes(degreeInSign);
+  return `${String(degrees).padStart(2, "0")}°${String(minutes).padStart(2, "0")}'`;
+}
+
+/** The Sun and Moon are never retrograde, whatever a position record says (R1). */
+const NEVER_RETROGRADE: ReadonlySet<PlanetName> = new Set(["Sun", "Moon"]);
+
+/**
+ * Sprint 34, R1: a planet's native SVG tooltip, "Mars in Aries 12°34′" with
+ * ", retrograde" appended when it is. Names are the app's own: PlanetName
+ * (lib/ephemeris/adapter.ts) and ZodiacSign (lib/ephemeris/zodiac.ts).
+ */
+export function planetTooltip(
+  position: Pick<PlanetPosition, "body" | "sign" | "degreeInSign" | "retrograde">
+): string {
+  const { degrees, minutes } = degreesAndMinutes(position.degreeInSign);
+  const retrograde = position.retrograde && !NEVER_RETROGRADE.has(position.body);
+  return `${position.body} in ${position.sign} ${degrees}°${String(minutes).padStart(2, "0")}′${
+    retrograde ? ", retrograde" : ""
+  }`;
+}
+
+/** Sprint 34, R2: a zodiac sector's native SVG tooltip, "Aries: Fire, Cardinal". */
+export function sectorTooltip(sign: ZodiacSign): string {
+  return `${sign}: ${elementOfSign(sign)}, ${modalityOfSign(sign)}`;
 }
 
 export type BodyRender = {
@@ -133,6 +172,8 @@ export type BodyRender = {
   labelY: number;
   labelAnchor: "start" | "end";
   label: string;
+  /** Sprint 34, R1: the planet group's <title>. */
+  tooltip: string;
   color: string;
 };
 
@@ -163,6 +204,7 @@ export function computeBodies(positions: PlanetPosition[]): BodyRender[] {
       labelY: CY + (r + 16) * sin,
       labelAnchor: cos < 0 ? "end" : "start",
       label: `${dms(p.degreeInSign)} ${SIGN_GLYPHS[p.sign]}${p.retrograde ? "  ℞" : ""}`,
+      tooltip: planetTooltip(p),
       color: luminary
         ? BODY_COLOR_LUMINARY
         : p.retrograde
@@ -216,6 +258,8 @@ export type SectorRender = {
   glyphX: number;
   glyphY: number;
   glyph: string;
+  /** Sprint 34, R2: the sector glyph's <title>. */
+  tooltip: string;
   occupied: boolean;
 };
 
@@ -233,6 +277,7 @@ export function computeSectors(bodies: BodyRender[]): SectorRender[] {
       glyphX: CX + 306 * Math.cos(midAngle),
       glyphY: CY + 306 * Math.sin(midAngle),
       glyph: SIGN_GLYPHS[sign],
+      tooltip: sectorTooltip(sign),
       occupied: occupiedSigns.has(sign),
     };
   });
