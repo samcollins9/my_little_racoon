@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { IdleBlock } from "./HoroscopeReveal";
 import { ReadingPanel } from "./ReadingPanel";
+import { DisabledReadingSection } from "./ReadingView";
 
 // Sprint 31, R3: the written state's link. Rendered on the server, the same
 // way the page first reaches a visitor, with no form submission pending.
@@ -10,10 +12,11 @@ import { ReadingPanel } from "./ReadingPanel";
 
 type PanelProps = Parameters<typeof ReadingPanel>[0];
 
-const BASE: Pick<PanelProps, "paragraphs" | "aspectCount" | "errorMessage"> = {
+const BASE: Pick<PanelProps, "paragraphs" | "aspectCount" | "errorMessage" | "revealed"> = {
   paragraphs: ["The sky held its breath."],
   aspectCount: 7,
   errorMessage: null,
+  revealed: false,
 };
 
 function render(props: PanelProps): string {
@@ -49,10 +52,10 @@ describe("ReadingPanel's written-state link (R3)", () => {
     expect(html).not.toContain("Go to this date");
   });
 
-  it("an unwritten reading still offers \"Write the horoscope\" and no link (R3: unchanged)", () => {
+  it("an unwritten reading offers the generate button and no link (R3; Sprint 33 renamed it)", () => {
     const html = render({ ...BASE, hasHoroscope: false, paragraphs: [], datePageHref: "/date/1969-07-20" });
 
-    expect(html).toContain("Write the horoscope");
+    expect(html).toContain("Reveal the horoscope");
     expect(hrefs(html)).toEqual([]);
   });
 
@@ -66,5 +69,181 @@ describe("ReadingPanel's written-state link (R3)", () => {
 
     expect(html).toContain("Try again");
     expect(hrefs(html)).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sprint 33: the reveal step. Every assertion is on the server-rendered HTML,
+// which is also what a visitor with JavaScript disabled gets.
+
+const SAVED_TEXT = "Mars leans on the door.";
+const SAVED: PanelProps = {
+  ...BASE,
+  hasHoroscope: true,
+  paragraphs: ["The sky held its breath.", SAVED_TEXT],
+  offerNewChart: false,
+};
+const UNSAVED: PanelProps = { ...BASE, hasHoroscope: false, paragraphs: [], offerNewChart: false };
+
+/** R1: no user-visible "write" wording survives in the panel. */
+const RETIRED_WRITE_COPY = [/write the horoscope/i, /nothing has been written/i, /being written/i, /not written yet/i];
+const IDLE_SENTENCE = "Nothing has been revealed about it yet";
+const IDLE_HTML = renderToStaticMarkup(createElement(IdleBlock));
+
+/** The control's markup: any element whose class includes castButton, labelled "Reveal the horoscope". */
+const REVEAL_CONTROL = /<(button|span) [^>]*class="[^"]*castButton[^"]*"[^>]*>Reveal the horoscope<\/\1>/;
+
+/** The <details> element's opening tag, and everything inside it. */
+function disclosure(html: string): { openTag: string; inner: string } | null {
+  const match = html.match(/(<details[^>]*>)([\s\S]*)<\/details>/);
+  return match ? { openTag: match[1], inner: match[2] } : null;
+}
+
+/** What a sighted visitor sees before revealing: everything outside the details, plus its summary. */
+function visibleWhileFolded(html: string): string {
+  return html.replace(/(<details[^>]*>[\s\S]*?<\/summary>)[\s\S]*<\/details>/, "$1");
+}
+
+describe("Sprint 33: a saved horoscope opens folded (R2/R3)", () => {
+  it("renders a native <details>, closed, with the reveal control as its summary", () => {
+    const d = disclosure(render(SAVED));
+
+    expect(d).not.toBeNull();
+    expect(d!.openTag).not.toMatch(/\sopen/);
+    expect(d!.inner).toMatch(/<summary[^>]*>[\s\S]*Reveal the horoscope[\s\S]*<\/summary>/);
+  });
+
+  it("keeps every saved paragraph inside the disclosure, after the summary, never outside it", () => {
+    const html = render(SAVED);
+    const d = disclosure(html)!;
+    const afterSummary = d.inner.slice(d.inner.indexOf("</summary>"));
+
+    for (const paragraph of SAVED.paragraphs) expect(afterSummary).toContain(paragraph);
+    expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
+  });
+
+  it("shows R1's idle sentence and wording, and none of the old 'write' copy", () => {
+    const html = render(SAVED);
+
+    expect(html).toContain(IDLE_SENTENCE);
+    expect(html).toContain("reveal the horoscope</span> when you want the sky held");
+    expect(html).toContain("not revealed yet");
+    for (const phrase of RETIRED_WRITE_COPY) expect(html).not.toMatch(phrase);
+  });
+
+  it("reveals in place: no submit button and no link to anywhere else on the date page", () => {
+    const html = render(SAVED);
+
+    expect(html).not.toContain('type="submit"');
+    expect(hrefs(html)).toEqual([]);
+  });
+
+  it("the summary's folded-state note is hidden from screen readers, so it isn't part of the control's name", () => {
+    const summary = render(SAVED).match(/<summary[\s\S]*?<\/summary>/)![0];
+
+    expect(summary).toMatch(/aria-hidden="true"[^>]*>Written on request from 10 positions and 7 aspects\.</);
+  });
+
+  it("offers a fold-back control once open", () => {
+    expect(render(SAVED)).toContain("Fold the horoscope away");
+  });
+});
+
+describe("Sprint 33: the landing after a successful generation (R4)", () => {
+  it("revealed: the same disclosure, already open, with the text inside it", () => {
+    const d = disclosure(render({ ...SAVED, revealed: true }));
+
+    expect(d!.openTag).toMatch(/\sopen=""/);
+    expect(d!.inner).toContain(SAVED_TEXT);
+  });
+
+  it("revealed on a reading with no horoscope: just the folded generate state, nothing to open", () => {
+    const html = render({ ...UNSAVED, revealed: true });
+
+    expect(html).not.toContain("<details");
+    expect(html).toMatch(REVEAL_CONTROL);
+    expect(html).toContain(IDLE_SENTENCE);
+  });
+});
+
+describe("Sprint 33: no saved horoscope, generation enabled (R1/R2/R4)", () => {
+  it("shows the idle sentence and a submit button labelled \"Reveal the horoscope\"", () => {
+    const html = render(UNSAVED);
+
+    expect(html).toMatch(/<button type="submit"[^>]*>Reveal the horoscope<\/button>/);
+    expect(html).toContain(IDLE_SENTENCE);
+    expect(html).toContain("not revealed yet");
+    expect(html).not.toContain("<details");
+    for (const phrase of RETIRED_WRITE_COPY) expect(html).not.toMatch(phrase);
+  });
+
+  it("folded, it can't be told apart from a saved horoscope: same idle block, status, control label and classes, same note", () => {
+    const saved = visibleWhileFolded(render(SAVED));
+    const unsaved = render(UNSAVED);
+
+    for (const html of [saved, unsaved]) {
+      expect(html).toContain(IDLE_HTML);
+      expect(html).toContain("not revealed yet");
+      expect(html).toMatch(REVEAL_CONTROL);
+      expect(html).toContain("Written on request from 10 positions and 7 aspects.");
+    }
+    // The same classes on the control, whichever element carries them.
+    const controlClass = (html: string) => html.match(REVEAL_CONTROL)![0].match(/class="([^"]*)"/)![1];
+    expect(controlClass(saved)).toBe(controlClass(unsaved));
+  });
+});
+
+describe("Sprint 33: a failed generation (R4)", () => {
+  it("no saved horoscope: the error and \"Try again\", folded idle state", () => {
+    const html = render({ ...UNSAVED, errorMessage: "Horoscope generation failed, try again." });
+
+    expect(html).toMatch(/<button type="submit"[^>]*>Try again<\/button>/);
+    expect(html).toContain("Horoscope generation failed, try again.");
+    expect(html).toContain(IDLE_SENTENCE);
+    expect(html).not.toContain("<details");
+  });
+
+  it("with a saved horoscope: the text stays folded, and \"Try again\" sits in its unfolded footer", () => {
+    const html = render({ ...SAVED, errorMessage: "Horoscope generation failed, try again." });
+    const d = disclosure(html)!;
+
+    expect(d.openTag).not.toMatch(/\sopen/);
+    expect(d.inner).toMatch(/<button type="submit"[^>]*>Try again<\/button>/);
+    expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
+  });
+});
+
+describe("Sprint 33: generation disabled (R5)", () => {
+  function renderDisabled(horoscope: string | null, revealed = false): string {
+    return renderToStaticMarkup(createElement(DisabledReadingSection, { horoscope, revealed }));
+  }
+
+  it("no saved horoscope: the idle block and the disabled note, with no reveal control and no form", () => {
+    const html = renderDisabled(null);
+
+    expect(html).toContain(IDLE_SENTENCE);
+    expect(html).toContain("Horoscope generation is currently disabled.");
+    expect(html).not.toContain("Reveal the horoscope</");
+    expect(html).not.toContain("<details");
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain("<form");
+  });
+
+  it("a saved horoscope: the reveal works, folded, with no generate button and no form", () => {
+    const html = renderDisabled(`The sky held its breath.\n${SAVED_TEXT}`);
+    const d = disclosure(html)!;
+
+    expect(d.openTag).not.toMatch(/\sopen/);
+    expect(html).toMatch(REVEAL_CONTROL);
+    expect(d.inner.slice(d.inner.indexOf("</summary>"))).toContain(SAVED_TEXT);
+    expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
+    expect(html).toContain("Horoscope generation is currently disabled.");
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain("<form");
+  });
+
+  it("a saved horoscope on the landing-revealed URL opens; with none it has nothing to open", () => {
+    expect(disclosure(renderDisabled(SAVED_TEXT, true))!.openTag).toMatch(/\sopen=""/);
+    expect(renderDisabled(null, true)).not.toContain("<details");
   });
 });

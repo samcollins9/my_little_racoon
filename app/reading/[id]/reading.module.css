@@ -673,3 +673,126 @@
     width: 100%;
   }
 }
+
+/* ============================================================
+   Sprint 33: a saved horoscope, folded behind a native <details>
+   (HoroscopeReveal.tsx). Folded, it must look exactly like the
+   unsaved state's idle block and footer (R2).
+   ============================================================ */
+
+/* The panel's own wrapper adds no box: header, idle block and
+   <details> stay direct flex items of .readingSection, spaced by its
+   gap, exactly as the unsaved state's children are. It exists only
+   so :has() below can follow the open state. */
+.revealPanel {
+  display: contents;
+}
+
+.whenRevealed {
+  display: none;
+}
+
+.revealPanel:has(> details[open]) .whenFolded {
+  display: none;
+}
+
+.revealPanel:has(> details[open]) .whenRevealed {
+  display: inline;
+}
+
+/* flex: 1 plus the summary's margin-top: auto puts the folded control
+   at the bottom of the section, where .readingFooter's own margin-top:
+   auto puts the unsaved state's footer. Open, the footer inside does
+   the same. */
+.reveal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.revealSummary {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.revealSummary::-webkit-details-marker {
+  display: none;
+}
+
+.reveal[open] > .revealSummary {
+  margin-top: 0;
+}
+
+/* The summary is the focusable control, so its focus ring goes on the
+   button-styled span inside it, not round the whole footer row. */
+.revealSummary:focus-visible {
+  outline: none;
+}
+
+.revealSummary:focus-visible .castButton {
+  outline: 2px solid var(--om-verdigris);
+  outline-offset: 2px;
+}
+
+.revealSummary:hover .castButton,
+.revealSummary:focus-visible .castButton {
+  border-color: var(--om-verdigris);
+  color: var(--om-verdigris-light);
+}
+
+.revealFold {
+  display: none;
+}
+
+.reveal[open] .revealFolded {
+  display: none;
+}
+
+.reveal[open] .revealFold {
+  display: inline-block;
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+  padding: 6px 0;
+}
+
+.revealSummary:hover .revealFold,
+.revealSummary:focus-visible .revealFold {
+  color: var(--om-verdigris-light);
+}
+
+.revealSummary:focus-visible .revealFold {
+  outline: 2px solid var(--om-verdigris);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .reveal {
+    gap: 14px;
+  }
+
+  /* .readingFooter is sticky on phones, but inside the summary its
+     containing block is the summary itself, so it would never stick.
+     The folded summary sticks instead, over the same background. */
+  .reveal:not([open]) > .revealSummary {
+    position: sticky;
+    bottom: 0;
+    background: var(--om-ink-footer);
+  }
+
+  .revealFolded {
+    position: static;
+  }
+
+  /* R4 (Sprint 20): touch targets clear 44px at this size. */
+  .reveal[open] .revealFold {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

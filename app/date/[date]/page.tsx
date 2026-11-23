@@ -9,6 +9,7 @@ import { createAnonClient } from "@/lib/supabase/anon-client";
 import { horoscopeParagraphs } from "@/app/reading/[id]/display";
 import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
 import { DisabledReadingSection, ReadingView } from "@/app/reading/[id]/ReadingView";
+import { isLandingRevealed } from "@/app/reading/[id]/reveal";
 import readingStyles from "@/app/reading/[id]/reading.module.css";
 import { castHoroscope } from "./actions";
 import { DateNavigation } from "./DateNavigation";
@@ -38,11 +39,11 @@ export default async function DatePage({
   searchParams,
 }: {
   params: Promise<{ date: string }>;
-  searchParams: Promise<{ error?: string | string[] }>;
+  searchParams: Promise<{ error?: string | string[]; revealed?: string | string[] }>;
 }) {
   await connection();
   const { date } = await params;
-  const { error } = await searchParams;
+  const { error, revealed: revealedParam } = await searchParams;
 
   // R1: a malformed or out-of-range date gets the same bare 404 an unknown
   // reading id gets.
@@ -59,6 +60,9 @@ export default async function DatePage({
   ]);
   const horoscope = page.saved.kind === "found" ? page.saved.reading.horoscope : null;
   const castError = typeof error === "string" && error ? error : null;
+  // Sprint 33, R4: presentation only -- it opens an already-saved horoscope's
+  // disclosure and nothing else. Nothing on this render path writes (R3).
+  const revealed = isLandingRevealed(revealedParam);
 
   return (
     <ReadingView
@@ -82,11 +86,12 @@ export default async function DatePage({
             paragraphs={horoscopeParagraphs(horoscope)}
             aspectCount={composeChart(page.eventDate, page.positions).aspects.length}
             errorMessage={castError}
+            revealed={revealed}
             offerNewChart={false}
           />
         </form>
       ) : (
-        <DisabledReadingSection horoscope={horoscope} />
+        <DisabledReadingSection horoscope={horoscope} revealed={revealed} />
       )}
     </ReadingView>
   );

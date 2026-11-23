@@ -5,6 +5,7 @@ import { castHoroscopeForDate } from "@/lib/date-page/cast";
 import { datePagePath, parseDatePageParam } from "@/lib/date-page/params";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createAnonClient } from "@/lib/supabase/anon-client";
+import { withRevealed } from "@/app/reading/[id]/reveal";
 
 /**
  * R5: "Write the horoscope" on the date page. The only way the date page
@@ -15,7 +16,9 @@ import { createAnonClient } from "@/lib/supabase/anon-client";
  *
  * Always returns the visitor to the date page, never to /reading/[id]: on
  * success that page now finds the horoscope through R4's lookup; on failure
- * it shows the message, and the form offers "Try again".
+ * it shows the message, and the form offers "Try again". Sprint 33, R4: the
+ * success redirect carries the landing-revealed parameter, so the new
+ * horoscope arrives unfolded. That redirect target is the only change here.
  */
 export async function castHoroscope(formData: FormData) {
   const isoDate = parseDatePageParam(formData.get("date"));
@@ -34,7 +37,7 @@ export async function castHoroscope(formData: FormData) {
 
   redirect(
     result.ok
-      ? datePagePath(isoDate)
+      ? withRevealed(datePagePath(isoDate))
       : `${datePagePath(isoDate)}?error=${encodeURIComponent(result.message)}`
   );
 }

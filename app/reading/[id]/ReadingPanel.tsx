@@ -3,10 +3,19 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import {
+  IdleBlock,
+  REVEALING_LABEL,
+  REVEAL_LABEL,
+  ReadingHeader,
+  SavedHoroscope,
+  aspectsNoteText,
+} from "./HoroscopeReveal";
 import styles from "./reading.module.css";
 
 const SKELETON_WIDTHS = ["96%", "89%", "93%", "61%", "91%", "74%"];
-const PARAGRAPH_RISE_STAGGER_S = 0.45;
+/** Sprint 24, R7: a retry of a failed generation, not a step in the sequence. Unchanged by Sprint 33. */
+const TRY_AGAIN_LABEL = "Try again";
 /** Sprint 31, R3: the written state's link to the reading's own date page. */
 const DATE_PAGE_LINK_LABEL = "Go to this date";
 
@@ -15,6 +24,8 @@ type Props = {
   paragraphs: string[];
   aspectCount: number;
   errorMessage: string | null;
+  /** Sprint 33, R4: the page was reached through the landing-revealed URL (./reveal.ts). */
+  revealed: boolean;
 } & DateLinkProps;
 
 /**
@@ -41,9 +52,11 @@ type DateLinkProps =
  * inside the <form> it reports on (R7) -- page.tsx renders this as the
  * form's child and stays a server component itself.
  *
- * `pending` (useFormStatus) decides idle/busy/written -- hasHoroscope is
+ * `pending` (useFormStatus) decides idle/busy/saved -- hasHoroscope is
  * computed server-side from reading.horoscope being null, never
- * duplicated client-side. A second, small state variable (`justWrote`,
+ * duplicated client-side. Sprint 33: a saved horoscope renders folded,
+ * through SavedHoroscope (./HoroscopeReveal.tsx), whose disclosure needs
+ * no client state at all. A second, small state variable (`justWrote`,
  * below) exists only to gate the rise animation; see its own comment for
  * why that isn't the one-state-variable design the handoff describes.
  */
@@ -52,6 +65,7 @@ export function ReadingPanel({
   paragraphs,
   aspectCount,
   errorMessage,
+  revealed,
   ...dateLink
 }: Props) {
   const { pending } = useFormStatus();
@@ -91,94 +105,91 @@ export function ReadingPanel({
     }
   }
 
-  const showWritten = !pending && hasHoroscope;
+  // Sprint 33, R2: one note for both folded states -- the error if a
+  // generation just failed, otherwise the aspects note the panel has always
+  // shown.
+  const note = errorMessage
+    ? { text: errorMessage, className: styles.errorNote }
+    : { text: aspectsNoteText(aspectCount), className: `${styles.footerNote} ${styles.desktopOnly}` };
+  const noteElement = <p className={note.className}>{note.text}</p>;
 
-  const statusLabel = pending ? "writing" : hasHoroscope ? "written" : "not written yet";
-  const statusClass = pending
-    ? styles.statusBusy
-    : hasHoroscope
-      ? styles.statusWritten
-      : styles.statusIdle;
+  // Sprint 33, R2/R3: a saved horoscope is folded on every page load, behind
+  // a native disclosure (SavedHoroscope), and unfolds in place. `revealed`
+  // (R4) is the landing after a successful generation; it only ever opens a
+  // horoscope that is already saved. Sprint 22's rule carries over to the
+  // unfolded footer: no regenerate control, a plain link instead, except that
+  // a failed generation (R5) still offers "Try again".
+  if (!pending && hasHoroscope) {
+    return (
+      <SavedHoroscope
+        paragraphs={paragraphs}
+        revealed={revealed}
+        rise={justWrote}
+        foldedNote={note}
+        footer={
+          <div className={styles.readingFooter}>
+            {errorMessage ? (
+              <button type="submit" className={styles.castButton}>
+                {TRY_AGAIN_LABEL}
+              </button>
+            ) : (
+              <DateLinks {...dateLink} />
+            )}
+            {noteElement}
+          </div>
+        }
+      />
+    );
+  }
 
-  // Sprint 22: no regenerate control. A written reading with no error
-  // shows a plain link instead of a submit button -- a visitor wanting
-  // another reading is sent elsewhere, not offered a control that re-rolls
-  // the one they're looking at. Sprint 31: that link now goes to the
-  // reading's own date page rather than the retired /chart. R5: a failed
-  // generation still offers "Try again", re-enabled, regardless of
-  // hasHoroscope -- that's a retry of the failed attempt, not a
-  // regeneration of a successful one. Sprint 24, R1: the idle-state
-  // generate button renamed "Read the chart" -> "Write the horoscope" --
-  // it names the destination (the generated text), not the jargon verb
-  // for what the code does; "Try again" (R7) is unchanged, that's a retry
-  // of a failed generation, not a step in the sequence.
-  const showButton = pending || !!errorMessage || !hasHoroscope;
-  const buttonLabel = errorMessage ? "Try again" : "Write the horoscope";
-
+  // No saved horoscope, or one being generated. R1: the generate button reads
+  // "Reveal the horoscope", "Revealing…" while pending, and "Try again" after
+  // a failure (Sprint 24's R7, unchanged). R4: the form posts to the
+  // existing server action, which is unchanged apart from where it redirects.
   return (
     <>
-      <div className={styles.readingHeader}>
-        <h3 className={styles.sectionTitle}>The reading</h3>
-        <span className={`${styles.readingStatus} ${statusClass}`}>{statusLabel}</span>
-      </div>
-
-      {pending ? (
-        <BusyBlock />
-      ) : showWritten ? (
-        <div className={styles.writtenBlock}>
-          {paragraphs.map((paragraph, i) => (
-            <p
-              key={i}
-              className={justWrote ? `${styles.paragraph} ${styles.paragraphRise}` : styles.paragraph}
-              style={justWrote ? { animationDelay: `${i * PARAGRAPH_RISE_STAGGER_S}s` } : undefined}
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      ) : (
-        <IdleBlock />
-      )}
-
+      <ReadingHeader status={pending ? "busy" : "idle"} />
+      {pending ? <BusyBlock /> : <IdleBlock />}
       <div className={styles.readingFooter}>
-        {showButton ? (
-          <button type="submit" disabled={pending} className={styles.castButton}>
-            {buttonLabel}
-          </button>
-        ) : dateLink.offerNewChart === false ? (
-          <div className={styles.mobileOnly}>
-            <CopyLinkButton />
-          </div>
-        ) : (
-          <>
-            {/* Desktop: the single link that replaced "Cast it again"
-                (Sprint 22). Mobile frame 4 carries a second control beside
-                it (Sprint 20, R3) -- its own region rather than this one
-                restyled. Sprint 31, R3: both go to this reading's own date
-                page (where its chart, events and navigation live) instead
-                of /chart. The label names that destination and says nothing
-                about steps or casting. */}
-            <Link
-              href={dateLink.datePageHref}
-              className={`${styles.castButton} ${styles.desktopOnly}`}
-            >
-              {DATE_PAGE_LINK_LABEL}
-            </Link>
-            <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
-              <Link href={dateLink.datePageHref} className={styles.castButton}>
-                {DATE_PAGE_LINK_LABEL}
-              </Link>
-              <CopyLinkButton />
-            </div>
-          </>
-        )}
-        {errorMessage ? (
-          <p className={styles.errorNote}>{errorMessage}</p>
-        ) : (
-          <p className={`${styles.footerNote} ${styles.desktopOnly}`}>
-            Written on request from 10 positions and {aspectCount} aspects.
-          </p>
-        )}
+        <button type="submit" disabled={pending} className={styles.castButton}>
+          {pending ? REVEALING_LABEL : errorMessage ? TRY_AGAIN_LABEL : REVEAL_LABEL}
+        </button>
+        {noteElement}
+      </div>
+    </>
+  );
+}
+
+/**
+ * The unfolded footer's links (Sprint 31, R3). The date page passes
+ * `offerNewChart={false}` and gets only the mobile copy-link control;
+ * /reading/[id] gets the link to its own date page as well.
+ */
+function DateLinks(dateLink: DateLinkProps) {
+  if (dateLink.offerNewChart === false) {
+    return (
+      <div className={styles.mobileOnly}>
+        <CopyLinkButton />
+      </div>
+    );
+  }
+  return (
+    <>
+      {/* Desktop: the single link that replaced "Cast it again"
+          (Sprint 22). Mobile frame 4 carries a second control beside
+          it (Sprint 20, R3) -- its own region rather than this one
+          restyled. Sprint 31, R3: both go to this reading's own date
+          page (where its chart, events and navigation live) instead
+          of /chart. The label names that destination and says nothing
+          about steps or casting. */}
+      <Link href={dateLink.datePageHref} className={`${styles.castButton} ${styles.desktopOnly}`}>
+        {DATE_PAGE_LINK_LABEL}
+      </Link>
+      <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
+        <Link href={dateLink.datePageHref} className={styles.castButton}>
+          {DATE_PAGE_LINK_LABEL}
+        </Link>
+        <CopyLinkButton />
       </div>
     </>
   );
@@ -210,22 +221,6 @@ function CopyLinkButton() {
   );
 }
 
-export function IdleBlock() {
-  return (
-    <div className={styles.idleBlock}>
-      <svg viewBox="0 0 40 40" width="34" height="34" className={styles.idleSigil}>
-        <circle cx="20" cy="20" r="17" fill="none" stroke="oklch(0.30 0.02 288)" strokeWidth="1" />
-        <path d="M20 3 L34 28 L6 28 Z" fill="none" stroke="oklch(0.38 0.03 288)" strokeWidth="1" />
-      </svg>
-      <p className={styles.idleText}>
-        The chart stands as it is. Nothing has been written about it yet —{" "}
-        <span className={styles.idleAccent}>write the horoscope</span> when you want the sky held
-        to account for the day.
-      </p>
-    </div>
-  );
-}
-
 function BusyBlock() {
   return (
     <div className={styles.busyBlock}>
@@ -236,7 +231,7 @@ function BusyBlock() {
           <circle cx="20" cy="20" r="3" fill="oklch(0.70 0.13 145)" className={styles.busySigilDot} />
         </svg>
         <div className={styles.busyTextCol}>
-          <span className={styles.busyPhrase}>The reading is being written.</span>
+          <span className={styles.busyPhrase}>The horoscope is being revealed.</span>
           <span className={styles.busyDetail}>gpt-4o-mini · temperature 0.9</span>
         </div>
       </div>

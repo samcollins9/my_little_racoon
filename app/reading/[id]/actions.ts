@@ -9,6 +9,7 @@ import {
   logDatabaseUnavailable,
 } from "@/lib/supabase/availability";
 import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/lib/llm/generate";
+import { withRevealed } from "./reveal";
 
 /**
  * R7: explicit, not automatic -- this only ever runs from the button's
@@ -62,5 +63,7 @@ export async function generateReadingHoroscope(formData: FormData) {
     redirect(`/reading/${readingId}?error=${encodeURIComponent(result.error)}`);
   }
 
-  redirect(`/reading/${readingId}`);
+  // Sprint 33, R4: land with the new horoscope unfolded. Only the redirect
+  // target changed; see ./reveal.ts.
+  redirect(withRevealed(`/reading/${readingId}`));
 }

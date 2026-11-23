@@ -12,7 +12,7 @@ import {
   computeSectors,
   computeThreads,
 } from "./constellation";
-import { IdleBlock } from "./ReadingPanel";
+import { IdleBlock, ReadingHeader, SavedHoroscope } from "./HoroscopeReveal";
 import styles from "./reading.module.css";
 
 type ReadingViewProps = {
@@ -364,37 +364,48 @@ export function ReadingView({
   );
 }
 
+const DISABLED_NOTE = "Horoscope generation is currently disabled.";
+
 /**
- * "The reading" section's contents when generation is disabled: the saved
- * horoscope if there is one, otherwise the idle block, plus the disabled
- * note -- no form, no button. Shared by /reading/[id] and the date page.
+ * "The reading" section's contents when generation is disabled, shared by
+ * /reading/[id] and the date page. No form and no generate button, ever.
+ *
+ * Sprint 33, R5:
+ * - With a saved horoscope, the same folded reveal as the enabled panel,
+ *   because revealing saved text isn't generation. The disabled note is the
+ *   footer in both the folded and unfolded states.
+ * - With none, the idle block and the disabled note, with no reveal control.
  */
-export function DisabledReadingSection({ horoscope }: { horoscope: string | null }) {
-  const paragraphs = horoscopeParagraphs(horoscope);
+export function DisabledReadingSection({
+  horoscope,
+  revealed,
+}: {
+  horoscope: string | null;
+  /** Sprint 33, R4: honoured for a saved horoscope, ignored otherwise. */
+  revealed: boolean;
+}) {
+  const disabledNote = (
+    <div className={styles.readingFooter}>
+      <p className={styles.disabledNote}>{DISABLED_NOTE}</p>
+    </div>
+  );
+
+  if (horoscope) {
+    return (
+      <SavedHoroscope
+        paragraphs={horoscopeParagraphs(horoscope)}
+        revealed={revealed}
+        foldedNote={{ text: DISABLED_NOTE, className: styles.disabledNote }}
+        footer={disabledNote}
+      />
+    );
+  }
+
   return (
     <>
-      <div className={styles.readingHeader}>
-        <h3 className={styles.sectionTitle}>The reading</h3>
-        <span
-          className={`${styles.readingStatus} ${horoscope ? styles.statusWritten : styles.statusIdle}`}
-        >
-          {horoscope ? "written" : "not written yet"}
-        </span>
-      </div>
-      {horoscope ? (
-        <div className={styles.writtenBlock}>
-          {paragraphs.map((paragraph, i) => (
-            <p key={i} className={styles.paragraph}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      ) : (
-        <IdleBlock />
-      )}
-      <div className={styles.readingFooter}>
-        <p className={styles.disabledNote}>Horoscope generation is currently disabled.</p>
-      </div>
+      <ReadingHeader status="idle" />
+      <IdleBlock />
+      {disabledNote}
     </>
   );
 }

@@ -11,6 +11,7 @@ import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { generateReadingHoroscope } from "./actions";
 import { horoscopeParagraphs } from "./display";
+import { isLandingRevealed } from "./reveal";
 import { ReadingPanel } from "./ReadingPanel";
 import { DisabledReadingSection, ReadingView } from "./ReadingView";
 import { datePagePath } from "@/lib/date-page/params";
@@ -36,10 +37,13 @@ export default async function ReadingPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; revealed?: string | string[] }>;
 }) {
   const { id } = await params;
-  const { error: generateError } = await searchParams;
+  const { error: generateError, revealed: revealedParam } = await searchParams;
+  // Sprint 33, R4: presentation only -- it opens an already-saved horoscope's
+  // disclosure and nothing else. See ./reveal.ts.
+  const revealed = isLandingRevealed(revealedParam);
 
   const anon = createAnonClient();
   // `status` is taken below (the events label), hence httpStatus here.
@@ -93,11 +97,12 @@ export default async function ReadingPage({
             paragraphs={horoscopeParagraphs(reading.horoscope)}
             aspectCount={composeChart(reading.event_date, reading.positions).aspects.length}
             errorMessage={generateError ?? null}
+            revealed={revealed}
             datePageHref={datePageHref}
           />
         </form>
       ) : (
-        <DisabledReadingSection horoscope={reading.horoscope} />
+        <DisabledReadingSection horoscope={reading.horoscope} revealed={revealed} />
       )}
     </ReadingView>
   );
