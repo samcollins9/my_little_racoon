@@ -2,7 +2,7 @@
 id: 38
 title: "Phone layout scrolls as one page"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-23T15:34:52+00:00
 ---
 
