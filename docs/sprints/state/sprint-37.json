@@ -1,12 +1,12 @@
 {
   "id": 37,
   "title": "Chart panel tabs: planets, signs and aspects key",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a63234f5d0cf8267c67c4e328c37654d8b9dd6e72be6f1555a2938bf3d40436f",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "d9c47256a5449619fe510b5088b5c177cd8262ccda3bc9e509ded42d4aef8fe9",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "27d1658d9c281d97073122ca429f586f3b03fc77",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T15:19:45+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=27d1658 | ci=green: 1 CI run(s) for 27d1658d9c281d97073122ca429f586f3b03fc77 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T15:13:45+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-23T15:19:45+00:00"
   }
 }
