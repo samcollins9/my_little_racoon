@@ -1,16 +1,16 @@
 {
   "id": 39,
   "title": "Only write horoscopes for dates with matched events",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "979ddda726621368cdfee822a035cf33dd0f8e0b7eb6d6a21f2dbe8188ae89c8",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "82405135dc1244f4b51d3e6f2dba3218acb5b93a870b62065b0cd5d55a2f268c",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-23T21:30:06+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T22:04:03+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: Gate-1 audit of d898448 (HEAD). Sprint file re-read fresh; unchanged since b60527f (planning) apart from 3f2b318's lifecycle status line and folder move. The prerequisite fast-lane fix (71b8e88, halos and long event words) landed first, as the Dependencies section requires.\n\nHANDOFF (new CLAUDE.md standard, 4ad01db): read with git show d898448:docs/handoffs/sprint-39.md. It is present at the audited commit, has a \"## Round 1\" section, and quotes \"VERIFY PASS (lint, typecheck, test, build) exit=0 (34 test files, 423 tests)\". QA1's own run at d898448 matches exactly: exit=0, 34 files, 423 tests. R12's screenshots are committed under docs/handoffs/sprint-39/: 12 PNGs, covering before and after for an unmatched date at desktop and at 390, JS off, a followed link, saved-unmatched, and /reading/[id] including null events. This is the first sprint where QA1 could check the handoff itself.\n\nTHE RULE: lib/events/matched.ts. hasMatchedEvents is true only for matchedYear === true, the same strictness as Sprint 30's SQL predicate; the string \"true\", null and a missing key are all rejected, and tested. unwritableReason gives null for writable, the R5 lead for null events, and the R3/R4 lead for unmatched. Every check reads this one rule: cast, generate, lookupSavedHoroscope, eventsLabel, eventsStatusLabel, EventYear, and horoscopeAvailability.\n\nR1 MET: EventYear in ReadingView links only when the payload is not matched AND linkableEventDate returns a date, using next/link with href=datePagePath(target). linkableEventDate rejects non-integer, negative and over-9999 years, pads to 4 digits, keeps isoDate's \"-MM-DD\", and lets parseDatePageParam decide range and leap days. eventDate is the page date, or the row's event_date on /reading/[id]. A grep of the code diff for a hand-built \"/date/\" path finds nothing (exit 1). Matched dates keep plain spans, and this is tested.\nR2 MET: an unmatched payload gives \"No recorded events for this day.\" The null and matched texts are byte-identical to before (checked in the diff). The rendered events label is only used for an empty list.\nR3, R4, R5 MET: unavailableMessage returns the leads and next sentences verbatim from the sprint file. Selection: lookupFailed for null; unmatched with hasLinkableYear (R3) only when at least one event year is linkable; otherwise R4, covering zero events, every event before 1700, and 29 February with no leap year in range. Each case is a named test against the exact text.\nR6 MET: on both pages, availability is checked first in the JSX ternary, ahead of the outage notice, the cast form, the disabled panel and the saved horoscope. It is decided from events alone, with no database call. HoroscopeUnavailableSection is a server component with no form, keeping the \"The reading\" heading and a status label. Tests cover HOROSCOPE_ENABLED off and a failed saved-lookup still showing the message, and check that no write form is present (only the picker's GET form remains).\nR7 MET, but see Q1 below. lookupSavedHoroscope reports a found row with unmatched or null events as \"none\", so loadDatePage falls through to a fresh fetchEvents, and availability then applies to that fetch. Every place a horoscope renders was enumerated by grep:\n- app/date/[date]/page.tsx line 98 (reached only when availability is writable, and the saved row is matched by construction);\n- app/reading/[id]/page.tsx line 105 (behind its own availability check);\n- ReadingView.tsx line 523, the DisabledReadingSection path, reached only after the availability branch on both pages.\napp/api contains only health, with no horoscope. There is no migration (supabase/ is unchanged at d898448), and the render path still only calls lookupSavedHoroscope's RPC and fetchEvents, so it writes nothing.\nR8 MET: in castHoroscopeForDate, unwritableReason(events) runs immediately after the server's own fetchEvents(isoDate) and before insertReading. It never reads the form. The order is: disabled, then existing lookup, then positions, then fetch, then REFUSE, then insert, then generate. The test asserts failure, fetchEvents called with the date, and writer.from, insert and rpc plus generate all not called, for both unmatched and null. It also asserts that a saved horoscope on an unmatched row does not short-circuit the cast to ok:true.\nR9 MET: generateAndPersistHoroscope refuses right after the disabled check, before buildReadingModel and generateHoroscope. /reading/[id]'s action reaches OpenAI only through it. The test spies on generateHoroscope and asserts it is never called, with no rpc, for unmatched, the string \"true\", and null.\nR10 MET: /reading/[id] computes availability from the row's stored events and event_date, ahead of the generate form and the disabled panel. Tests cover unmatched with linkable years (linked by the row's month and day), every event before 1700, null, and disabled.\nR11 MET: every listed case exists as a named test: years 1699 and 2101, the ends 1700 and 2100, 29 February in 1900, 1901, 1904 and 2000, years 999, 44 and 5 (padded), BC and fractional years, each message case, and both refusals. The handoff also reports a mutation check: removing each guard in turn fails its own tests.\nR12 MET: see HANDOFF above.\n\nCode quality: small, pure decision functions; one rule module; and no duplicated path, glyph or message text. The status-label override on ReadingHeader is minimal. CSS: a padded and negative-margin tap target, 45px on phones. Errors: refusals return through the existing failure path with nothing swallowed.\n\nANSWERS TO DEV TEAM'S QUESTIONS:\nQ1, the app-side R7 guard. It is acceptable against the SPRINT FILE: R7 says a matched reading \"may still be shown\" and leaves the route to Dev Team. But it does NOT fully match the user's recorded decision. docs/decisions.md, 23 Nov, item 2, says '\"Newest with a horoscope wins\" now applies among matched rows only.' Read literally, that requires showing the older matched horoscope in the mixed case.\n- What actually happens: get_reading_by_date returns only the newest row with a horoscope. If that row is unmatched, the app reports none, and an older matched horoscope is unreachable. If the fresh lookup is matched, the page then offers to write a duplicate.\n- I am not failing it. The sprint file is the audit spec and permits it, the handoff disclosed it plainly, and it needs pre-existing mixed data that the old one-per-date cast guard made rare.\n- ROUTED TO MASTER CONTROLLER: the sprint file and decisions.md disagree. If the user holds the decision literally, that is a follow-up sprint, needing a migration to displayed_readings() and updated Sprint 28/30 database tests. Not this one.\nQ2, straight quotes. Matching the sprint file's quoted text was correct: the acceptance criterion says \"matches the quoted wording exactly\". If the user wants curly typography to match the rest of the page, Master Controller amends the wording; it is not a code defect.\n\nHUMAN PREREQUISITE (already in the sprint file, restated so it isn't missed): the user runs the SQL query in the sprint file's Human Prerequisites and gives LiveQA one or two unmatched dates with a saved horoscope, and a reading id, for steps 5 and 6. LiveQA has no database access.\n\nNo known-failing tests."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T21:30:06+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-23T22:04:03+00:00"
   }
 }
