@@ -740,6 +740,35 @@ read only the tail of the output. From now on:
 - **Never pipe a check into `tail`, `head` or `grep` when its result is the
   evidence.** The pipe's exit status replaces the check's own.
 
+**Dev Team's handoff to QA1 is a committed file, not a chat message** (project
+standard, added 23 Nov 2026). QA1's own recorded notes for Sprints 26, 27, 36,
+37 and 38 each say "I did not see Dev Team's handoff". A handoff that exists
+only in Dev Team's chat reaches QA1 only if someone pastes it across, and it
+usually hasn't been pasted. That made the exit-code standard above impossible
+for QA1 to check. QA1 re-ran the checks itself and asked the user to confirm
+the rest, and Sprint 38's required screenshots were never seen by any gate.
+From now on:
+- **Before asking for any QA1 audit** (gate 1 or a live-loop fix round), Dev
+  Team writes `docs/handoffs/sprint-<N>.md` and commits it **in the commit QA1
+  is asked to audit**. For each round, add a new `## Round <k>` section and
+  leave earlier ones untouched. Each section holds:
+  - `npm run verify`'s final line, quoted, including `exit=0`;
+  - what changed and which requirements it addresses;
+  - anything the sprint file asks Dev Team to hand over, such as
+    screenshots. Commit evidence files under `docs/handoffs/sprint-<N>/` and
+    link them from the section. A path in a session scratchpad doesn't count,
+    because no other session can open it.
+- **The message to QA1 is then one line:** "Sprint N, audit commit `<hash>`,
+  handoff in `docs/handoffs/sprint-<N>.md`."
+- **QA1 reads the handoff at the audited commit**
+  (`git show <hash>:docs/handoffs/sprint-<N>.md`), not from chat. QA1 records
+  a FAIL if the file is missing at that commit, if it has no section for the
+  current round, or if that section lacks an `exit=0`. QA1 still re-runs
+  checks as it sees fit; the file doesn't replace QA1's own evidence, it
+  makes Dev Team's claims checkable.
+- `docs/handoffs/` sits outside `docs/sprints/` on purpose, so that nothing
+  in `sprint_lifecycle.py` reads it.
+
 ---
 
 <!-- BEGIN:nextjs-agent-rules -->
