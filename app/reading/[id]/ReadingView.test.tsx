@@ -68,6 +68,18 @@ describe("desktop chart tooltips (Sprint 34)", () => {
     expect(allTitles).toHaveLength(positions.length + ZODIAC_SIGNS.length);
   });
 
+  it("the centre date and hour labels, drawn above the planets, never take the pointer from them", () => {
+    // LiveQA round 1: on 1969-07-20 the Moon's glyph sits inside the centre
+    // date label, which is drawn after the planets and so took the hover.
+    const centreLabels = [...svg.matchAll(/<text x="320" y="(316|338)"[^>]*>/g)].map((m) => m[0]);
+    expect(centreLabels).toHaveLength(2);
+    for (const label of centreLabels) expect(label).toContain('pointer-events="none"');
+
+    // They are the only elements after the last planet group.
+    const afterPlanets = svg.slice(svg.lastIndexOf("</g>") + "</g>".length);
+    expect(afterPlanets.match(/<(?!\/)[a-z]+/g)).toEqual(["<text", "<text"]);
+  });
+
   it("the phone chart is unchanged: no tooltips there (optional, not added)", () => {
     const html = renderView(positions);
     const mobile = html.match(/<svg viewBox="110 110 420 420"[\s\S]*?<\/svg>/)![0];

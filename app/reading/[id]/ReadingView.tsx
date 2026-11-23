@@ -202,9 +202,15 @@ export function ReadingView({
                   </text>
                 </g>
               ))}
+              {/* Sprint 34, LiveQA round 1: the centre date and hour labels
+                  are drawn last, on top of the planets, and on some dates
+                  (1969-07-20) the Moon's glyph lands inside the date label.
+                  Click-through, so the planet underneath keeps its tooltip.
+                  Purely a hit-testing change; nothing about how they look. */}
               <text
                 x="320"
                 y="316"
+                pointerEvents="none"
                 textAnchor="middle"
                 fontSize="12"
                 fill="oklch(0.54 0.015 285)"
@@ -216,6 +222,7 @@ export function ReadingView({
               <text
                 x="320"
                 y="338"
+                pointerEvents="none"
                 textAnchor="middle"
                 fontSize="11"
                 fill="oklch(0.40 0.015 285)"
