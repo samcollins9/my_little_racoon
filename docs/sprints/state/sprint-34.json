@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "bf3eac5eb613a0c88ab3b707b8b01f39fcdd085554960c612f908efa40122ce9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "174012b043580740972ee933789d491a3c84bb323e616d4c043a61437e78c4e9",
-  "last_shipped_commit": "53229b913345338a0f0bf2d406b21047a113c405",
+  "last_shipped_commit": "4dbb98204c77c2dd42a48da588dc94b5fa708b06",
   "groundtruth_result": "CONDITIONAL",
   "live_loop_audit_trees": [
     {
@@ -75,11 +75,17 @@
       "actor": "qa1",
       "event": "live_loop_audit",
       "detail": "PASS: QA1 live-loop audit of fix commit 4dbb982 (LiveQA round 1 CONDITIONAL, R1 Moon glyph occluded): PASS.\n\nLiveQA's defect: the centre date label, text at x=320 y=316, and the hour label at y=338 are drawn after the planet groups with pointer-events auto. Where the Moon's glyph lands under the date label (1969-07-20), the label took the hover, and the Moon's title never showed.\n\nThe fix: 53229b9..4dbb982 changes app/reading/[id]/ReadingView.tsx (+7) and its test (+12), plus the state file.\n- Both centre text elements gain pointerEvents=\"none\", which React renders as pointer-events=\"none\", with a comment.\n- That is a hit-testing change only. Fill, font, position and paint order are unchanged, so there is no visual change and the R4 \"no visual change\" line holds.\n- The planet groups and their titles are untouched.\n- No \"use client\" or CSS change.\n\nIs it complete? The new test asserts that both centre labels carry pointer-events=\"none\". It also asserts that those two text elements are the ONLY elements after the last planet group in the desktop SVG, so no other later-drawn element can sit on top of a planet. Earlier siblings (sectors, aspect lines, rings) are painted beneath the planets and cannot occlude them.\n\nRe-ran these on 4dbb982, checking exit status:\n- lint: 0.\n- npm test: 350 tests, 0.\n- typecheck: 0.\n- build: 0.\n\nThis is a record against this commit's tree, for /sprint-reship's gate. It is not a fresh gate-1 pass and does not replace LiveQA's own retest of the Moon hover on 1969-07-20. | commit=4dbb98204c77c2dd42a48da588dc94b5fa708b06"
+    },
+    {
+      "ts": "2026-11-23T03:02:05+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=4dbb982 | ci=green: 1 CI run(s) for 4dbb98204c77c2dd42a48da588dc94b5fa708b06 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-23T02:55:21+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-23T03:02:05+00:00"
   }
 }
