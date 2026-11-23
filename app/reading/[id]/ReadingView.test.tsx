@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { calculationInstantForDate, computePositions } from "../../../lib/ephemeris/adapter";
 import { ZODIAC_SIGNS } from "../../../lib/ephemeris/zodiac";
@@ -10,12 +9,21 @@ import { ReadingView } from "./ReadingView";
 // rendered markup the way a browser receives it. 1969-07-20 has real
 // positions; the retrograde case is forced below so it doesn't depend on
 // which planets happened to be retrograde that day.
+//
+// JSX rather than createElement, unlike the rest of the suite's .ts tests:
+// ReadingView's `children` is a required prop, and createElement can only
+// satisfy that type by passing children as a prop, which
+// react/no-children-prop forbids. JSX passes them as children, as the page
+// does.
 
 const DATE = "1969-07-20";
 
 function renderView(positions = computePositions(calculationInstantForDate(DATE))): string {
+  // The reading section's contents aren't needed for the chart.
   return renderToStaticMarkup(
-    createElement(ReadingView, { eventDate: DATE, positions, events: null, children: null })
+    <ReadingView eventDate={DATE} positions={positions} events={null}>
+      {null}
+    </ReadingView>
   );
 }
 
