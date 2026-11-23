@@ -260,6 +260,9 @@
   line-height: 1.5;
   color: var(--om-bone-dim);
   text-wrap: pretty;
+  /* A long unbroken word (a URL, a compound name) wraps instead of
+     widening the page. */
+  overflow-wrap: anywhere;
 }
 
 .eventsEmpty {
@@ -491,6 +494,14 @@
    page.tsx (STAR_FIELD/thread tightness each need their own duration and
    delay) -- see this file's own top-of-file note on why these three are
    overridden rather than opt-in wrapped. */
+
+/* om-halo grows each halo with scale(). An SVG element's transform origin
+   defaults to the drawing's own top-left corner, so without these two the
+   halos drift toward it as they pulse; this scales each from its own centre. */
+.bodyHalo {
+  transform-box: fill-box;
+  transform-origin: center;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .star,
