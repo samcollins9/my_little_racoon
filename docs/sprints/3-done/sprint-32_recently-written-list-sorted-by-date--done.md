@@ -2,7 +2,7 @@
 id: 32
 title: "Recently written list sorted by date"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-23T00:36:58+00:00
 ---
 
