@@ -1,17 +1,17 @@
 {
   "id": 32,
   "title": "Recently written list sorted by date",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "e15c8a15906b113c3a91fb32ebff6ce43474d494f105ec5ad8ea2cd0aea7e83a",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "0ae4d60e3d0291b8c02f78e1f2bbaa8f0aa5d075fec95db5aa242c262f6be562",
   "last_shipped_commit": "95f4f3d5a296648c5311c008edaba3ae6cbe898d",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-23T00:50:16+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=95f4f3d | ci=green: 1 CI run(s) for 95f4f3d5a296648c5311c008edaba3ae6cbe898d all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-23T01:08:51+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Tested 2026-11-23, about 01:10 UTC, against\nhttps://my-little-racoon.vercel.app.\nShipped commit 95f4f3d. Production serves the pushed tip 92ebca9: /api/health/db reports\nstatus ok and commit 92ebca9. git diff --stat 95f4f3d 92ebca9 touches only\ndocs/sprints/state/sprint-32.json, and so does aca36fb..95f4f3d.\nCI: runs 45091664256 (95f4f3d) and 45092192530 (92ebca9). build, rls-tests and migrate all\nsucceed in both.\nTools: headless Chromium (Playwright 1.57, real clicks) at 1280x900 and at 390x844 with\nisMobile, plus curl against Supabase REST with the anon/publishable key.\n\nSTEP 1, oldest first on desktop and phone: PASS.\nOn /date/1984-02-29, 1969-07-20, 1776-07-04 and 2001-09-11, the \"Dates with readings\" list\nreads, in both layouts:\n1776-07-04, 1920-08-18, 1929-10-24, 1945-05-08, 1963-11-22, 1969-07-20, 1976-07-04,\n1977-08-16, 1986-03-31, 1991-06-12, 2001-09-11, 2021-01-06.\nThat is strictly ascending, and it mixes the 1700s with 20th- and 21st-century dates and\ndifferent months.\nOn the phone, the summary \"RECENTLY WRITTEN (12)\" opens to the same 12 items in the same\norder. scrollWidth is 390.\n\nSTEP 2, same set as the RPC: PASS. POST rpc/get_recent_reading_dates {} with the anon key\nreturned 12 dates in generation order: 2021-01-06, 1929-10-24, 1991-06-12, 2001-09-11,\n1969-07-20, 1977-08-16, 1976-07-04, 1920-08-18, 1776-07-04, 1945-05-08, 1963-11-22,\n1986-03-31. Compared programmatically: the sorted RPC set equals the rendered list exactly,\nand the RPC order differs from the rendered order. So the rows are the same and only the\norder changed.\n2021-01-06 is a new qualifying date since Sprint 31 (created 2026-11-23T00:55:51Z,\nmatchedYear true). It was not cast by LiveQA.\n\nSTEP 3, current marker and prev/next: PASS.\nThe current date is a SPAN with aria-current, not a link, at its sorted position:\n- 4 July 1776 first;\n- 20 July 1969 sixth;\n- 11 September 2001 eleventh.\nPrev and next are unchanged in shape:\n- 1984-02-29 shows 1977-08-16 and 1986-03-31.\n- 1969-07-20 shows 1963-11-22 and 1976-07-04.\n- 1776-07-04 shows null and 1920-08-18.\n- 2001-09-11 shows 1991-06-12 and 2021-01-06, the new date.\nReal clicks from /date/1984-02-29 landed as follows, on desktop and phone:\n- \"previous reading\" went to /date/1977-08-16, h1 \"16 August 1977\";\n- \"next reading\" went to /date/1986-03-31, h1 \"31 March 1986\".\n\nNo console or page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-23T01:01:45+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-23T01:08:51+00:00"
   }
 }
