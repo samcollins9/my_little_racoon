@@ -2,7 +2,7 @@
 id: 39
 title: "Only write horoscopes for dates with matched events"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-23T21:28:37+00:00
 ---
 
