@@ -226,8 +226,8 @@
     "38": {
       "title": "Phone layout scrolls as one page",
       "epic": "Date pages",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-38_phone-layout-scrolls-as-one-page.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-38_phone-layout-scrolls-as-one-page.md"
     }
   }
 }
