@@ -1,13 +1,13 @@
 {
   "id": 33,
   "title": "Reveal step for the horoscope",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "dd718b39edd535fac7bf7ca9aabb1e1b7be56658bd7c5c1622d3452056a116b6",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "9bef3e728fc41160655902a6c3d1b2efda14e9b50954b43f9ddeec1fa4ea46c5",
   "last_shipped_commit": "50af8820c6f2af6d0c56db2bd06e77378725af1e",
-  "groundtruth_result": "CONDITIONAL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-11-23T01:51:48+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-11-23T01:12:09+00:00",
   "completed": null,
   "history": [
@@ -63,11 +63,17 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=50af882 | ci=green: 1 CI run(s) for 50af8820c6f2af6d0c56db2bd06e77378725af1e all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-23T02:09:50+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 2). The round-1 defect (R2, desktop label alignment) is fixed live, and every\nround-1 check re-ran clean.\n\nReshipped commit 50af882 (\"centre the folded reveal control's label\"). Production serves the\npushed tip 902bb4c: /api/health/db reports status ok and commit 902bb4c, migrationVersion\nunchanged at 20261122152710.\n- git diff --stat 50af882 902bb4c touches only docs/sprints/state/sprint-33.json.\n- deb75ad..50af882 code change: app/reading/[id]/reading.module.css, +8 lines, plus state.\n- CI: runs 45096992439 (50af882) and 45097522756 (902bb4c). build, rls-tests and migrate all\n  succeed in both.\n- QA1's live-loop audit PASS for 50af882 is on record.\nTested 2026-11-23, about 02:05 UTC, in headless Chromium (Playwright 1.57).\n\nFIX VERIFIED. Folded control, computed styles:\n- Desktop 1280px:\n  - saved /date/1969-07-20: SPAN.castButton 186x52, text-align center, padding 11px 18px.\n  - unsaved /date/2031-05-09: BUTTON.castButton 186x52, text-align center, padding 11px\n    18px.\n  - Same colour lab(67.39 1.44 -5.45), border 1px solid lab(17.44 2.48 -7.04), IBM Plex\n    Mono 10.5px with 1.89px letter-spacing.\n- Phone 390px: both are 326x44, text-align center, padding 14px.\n- Screenshots s33-look-saved.png and s33-look-unsaved.png now show \"REVEAL THE / HOROSCOPE\"\n  centred identically in both.\n\nREGRESSION, re-run after the CSS change, all PASS.\n- Step 1 and step 5 (the saved date and /reading/0b01c79f-...), with JS on AND off:\n  - folded on load with 0 of 3 paragraphs visible, chart and \"What happened\" visible, copy\n    \"NOT REVEALED YET / Nothing has been revealed... / REVEAL THE HOROSCOPE\";\n  - clicking opens \"REVEALED / FOLD THE HOROSCOPE AWAY\" with 3 of 3 paragraphs and the URL\n    unchanged;\n  - zero requests during the reveal, except the two Next.js _rsc prefetches of \"Go to this\n    date\" on /reading with JS on, the same as round 1;\n  - no console or page errors.\n- Step 4, keyboard: Tab reached the summary (22 presses). Enter opened it (3 paragraphs),\n  Space closed it (0), Space opened it again (3). The AX tree shows DisclosureTriangle\n  \"REVEAL THE HOROSCOPE\" expanded=false, then \"FOLD THE HOROSCOPE AWAY\" expanded=true.\n- Step 6, 390px: scrollWidth is 390 folded and revealed on the date and reading pages, and\n  1280 on desktop.\n- Steps 2 and 3 were not repeated. The fix is CSS-only, and the generation path, ?revealed=1\n  and the server action are untouched. Round 1's evidence stands:\n  - the LiveQA cast on 2030-03-14 landed revealed at ?revealed=1;\n  - /date/2031-05-09?revealed=1 stayed folded with no POST, and anon RPC returned [].\n- Still open from round 1, not blocking: the user's dashboard confirmation that readings has\n  0 rows for event_date 2031-05-09. Anon can't see horoscope-less rows."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-23T01:58:21+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-23T02:09:50+00:00"
   }
 }
