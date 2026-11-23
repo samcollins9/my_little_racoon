@@ -32,3 +32,23 @@ the database:
 This reverses Sprint 4's "anon can insert readings" policy and Sprint 17's anon
 grant on `set_reading_horoscope`. Reads are unchanged: anon, through the `security
 definer` lookup functions only.
+
+## 23 Nov 2026: horoscopes only for dates with matched events (Sprint 39)
+
+Decided by the user. A horoscope pairs one date's sky with that date's events, and
+one written from another year's events isn't astrologically valid. So:
+
+1. **No horoscope can be written for a date whose events are unmatched**
+   (`events.matchedYear = false`) **or missing** (a failed Wikipedia lookup). The
+   server refuses before any row is inserted, as well as the page hiding the button.
+2. **Horoscopes saved earlier from unmatched or missing events aren't shown.** The
+   rows stay in the database, unchanged (decision 2 above still holds). "Newest with
+   a horoscope wins" now applies among matched rows only.
+3. **When the lookup fails, the page says to try again later,** not to pick another
+   date, because the date itself may be fine.
+4. **On an unmatched date, each other-year event's year links to the same month and
+   day in that year,** when the date page supports that date (1700 to 2100).
+
+Known consequence, accepted for now: today's date, the landing page, will usually be
+unmatched, so the front door will usually say a horoscope can't be written for it.
+Where `/` lands may be revisited separately.

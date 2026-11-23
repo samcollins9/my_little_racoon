@@ -1,5 +1,5 @@
 {
-  "next_id": 39,
+  "next_id": 40,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -228,6 +228,12 @@
       "epic": "Date pages",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-38_phone-layout-scrolls-as-one-page--done.md"
+    },
+    "39": {
+      "title": "Only write horoscopes for dates with matched events",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-39_only-write-horoscopes-for-dates-with-matched-events.md"
     }
   }
 }
