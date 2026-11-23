@@ -141,7 +141,7 @@ describe("Sprint 33: a saved horoscope opens folded (R2/R3)", () => {
   it("the summary's folded-state note is hidden from screen readers, so it isn't part of the control's name", () => {
     const summary = render(SAVED).match(/<summary[\s\S]*?<\/summary>/)![0];
 
-    expect(summary).toMatch(/aria-hidden="true"[^>]*>Written on request from 10 positions and 7 aspects\.</);
+    expect(summary).toMatch(/aria-hidden="true"[^>]*>Revealed on request from 10 positions and 7 aspects\.</);
   });
 
   it("offers a fold-back control once open", () => {
@@ -185,7 +185,7 @@ describe("Sprint 33: no saved horoscope, generation enabled (R1/R2/R4)", () => {
       expect(html).toContain(IDLE_HTML);
       expect(html).toContain("not revealed yet");
       expect(html).toMatch(REVEAL_CONTROL);
-      expect(html).toContain("Written on request from 10 positions and 7 aspects.");
+      expect(html).toContain("Revealed on request from 10 positions and 7 aspects.");
     }
     // The same classes on the control, whichever element carries them.
     const controlClass = (html: string) => html.match(REVEAL_CONTROL)![0].match(/class="([^"]*)"/)![1];

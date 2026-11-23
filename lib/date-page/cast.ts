@@ -8,7 +8,7 @@ import { lookupSavedHoroscope } from "./load";
 
 export const CAST_DISABLED_MESSAGE = "Horoscope generation is currently disabled.";
 export const CAST_UNAVAILABLE_MESSAGE =
-  "The horoscope can't be written right now because the service is unavailable. Try again in a few minutes.";
+  "The horoscope can't be revealed right now because the service is unavailable. Try again in a few minutes.";
 export const CAST_SAVE_FAILED_MESSAGE = "Could not start the reading, try again.";
 
 export type CastResult = { ok: true } | { ok: false; message: string };

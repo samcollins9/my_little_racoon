@@ -56,7 +56,7 @@ export function IdleBlock() {
 
 /** The footer's note when nothing is wrong: the same text the panel has always shown. */
 export function aspectsNoteText(aspectCount: number): string {
-  return `Written on request from 10 positions and ${aspectCount} aspects.`;
+  return `Revealed on request from 10 positions and ${aspectCount} aspects.`;
 }
 
 type SavedHoroscopeProps = {
