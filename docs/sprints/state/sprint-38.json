@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "a53a9aa620d39c72a65edb06d35488d64ce2b8b4dd6658d4ae931893e44a0298",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "4f955e5c7bc9a6c9a326c47b95cf0a22bd73e6a895938610785a317695507a24",
-  "last_shipped_commit": "69160e52cbff6608b915e0d8db019ac3ffedb0cc",
+  "last_shipped_commit": "22804b65af40596044c4447ae7dd5ae6d91c3247",
   "groundtruth_result": "CONDITIONAL",
   "live_loop_audit_trees": [
     {
@@ -57,11 +57,17 @@
       "actor": "qa1",
       "event": "live_loop_audit",
       "detail": "PASS: Live-loop audit of fix commit 22804b6, answering LiveQA round 1 (CONDITIONAL): the folded \"Reveal the horoscope\" bar never stuck to the bottom of the screen. Sprint file re-read; unchanged since my gate-1 audit.\n\nScope: compared with the shipped 69160e5, the code diff is reading.module.css only (the other changed file is the sprint-38 state file, which is bookkeeping). It is one hunk, inside the second @media (max-width:900px) block. Desktop is untouched (R6), and there is no .tsx or .ts change (R7).\n\nThe fix:\n- position:sticky and bottom:0 move from \".reveal:not([open]) > .revealSummary\" to \".reveal:not([open])\", the folded details element itself.\n- The summary keeps the footer background.\n- gap:0 is added while folded.\n\nWhy the old rule could not work: a sticky element only moves within its containing block. The summary's containing block is the folded details, which is exactly as tall as the summary, so there was no room to move. LiveQA's observation, the bar sitting at its in-flow position, is exactly that.\n\nWhy the new rule can work. I checked the comment's parent claim against the markup, because the details is not a direct child of the form in the source. In SavedHoroscope (HoroscopeReveal.tsx) the details sits inside div.revealPanel. However, .revealPanel is display:contents (reading.module.css line 692), so it creates no box. The details' containing block is therefore the next real box:\n- the form (app/date/[date]/page.tsx line 82; app/reading/[id]/page.tsx line 93) on pages that can generate;\n- section.readingSection (ReadingView.tsx line 198) on the disabled path.\nBoth span the reading header, the idle text and the details, so the sticky bar has the whole reading section to travel in. That is the same box the unsaved state's sticky .readingFooter uses.\n\nSide effects checked:\n- On the readingSection path, .reveal is flex:1 in a flex column, so it can be taller than the summary. Its bottom edge is still what bottom:0 pins, and the summary sits at its foot (the margin-top:auto rule), so the bar stays at the screen edge.\n- When open, the :not([open]) rules drop away, the details is in normal flow again, and its own .readingFooter sticks as before. LiveQA's revealed-state step 3 already passed and is not affected.\n- gap:0 while folded only removes the 20px/14px gap before the closed details' content slot, which would otherwise leave an uncovered strip under the bar.\n- Paint order: the details comes after the idle text in the DOM, so the bar paints over text scrolling beneath it.\n\nNothing else in the sticky ancestor chain changed since gate 1: no overflow on the form, readingSection, rightColumn, body or card.\n\nChecks: npm run verify at 22804b6 gave exit=0, last line \"VERIFY PASS (lint, typecheck, test, build) exit=0\".\n\nThis audit is the PASS that /sprint-reship 38 --commit 22804b6 needs. It does not replace LiveQA re-running step 3, which is the only real proof the bar now sticks, on both /date and /reading/[id].\n\nStill open from round 1, outside this fix and not mine to decide:\n- Step 8 (a real phone) was not done.\n- LiveQA's long-word probe confirmed my gate-1 watch item. An unbroken 78-character word in an event widens the document to 658px. No real content does this (the longest word across 25 dates was 18 characters).\nMaster Controller should decide whether the probe warrants an overflow-wrap follow-up. This fix neither adds nor removes that risk. | commit=22804b65af40596044c4447ae7dd5ae6d91c3247"
+    },
+    {
+      "ts": "2026-11-23T17:02:30+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=22804b6 | ci=green: 1 CI run(s) for 22804b65af40596044c4447ae7dd5ae6d91c3247 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-23T16:47:32+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-23T17:02:30+00:00"
   }
 }
