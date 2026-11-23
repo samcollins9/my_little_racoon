@@ -1,13 +1,13 @@
 {
   "id": 34,
   "title": "Star chart tooltips",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "bf3eac5eb613a0c88ab3b707b8b01f39fcdd085554960c612f908efa40122ce9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "174012b043580740972ee933789d491a3c84bb323e616d4c043a61437e78c4e9",
   "last_shipped_commit": "4dbb98204c77c2dd42a48da588dc94b5fa708b06",
-  "groundtruth_result": "CONDITIONAL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-11-23T02:55:21+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 2,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-11-23T02:17:31+00:00",
   "completed": null,
   "history": [
@@ -81,11 +81,17 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=4dbb982 | ci=green: 1 CI run(s) for 4dbb98204c77c2dd42a48da588dc94b5fa708b06 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-23T03:08:56+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 2). The round-1 defect (R1, the Moon glyph occluded by the centre date label) is\nfixed live, and every round-1 check re-ran clean.\n\nReshipped commit 4dbb982 (\"make the chart's centre labels click-through\"). Production serves\nthe pushed tip 00d7cb1: /api/health/db reports status ok and commit 00d7cb1.\n- git diff --stat 4dbb982 00d7cb1 touches only docs/sprints/state/sprint-34.json.\n- The fix touches ReadingView.tsx (+7) and its test (+12).\n- CI: runs 45103048557 (4dbb982) and 45103554525 (00d7cb1). build, rls-tests and migrate all\n  succeed in both.\n- QA1's live-loop audit PASS for 4dbb982 is on record.\nTested 2026-11-23, about 03:10 UTC, in headless Chromium (Playwright 1.57). This is the same\nmethod as round 1: the nearest titled ancestor of the element under a real mouse.move, the\nelementsFromPoint stacks, a 5x3 grid, and the accessibility tree.\n\nFIX VERIFIED.\n- On /date/1969-07-20 and /date/2026-12-16, the 5x3 grid on the Moon's glyph and dot now has\n  no misses. In round 1 the glyph scored 5/15 on both pages, with \"1969 \u00b7 07 \u00b7 20\" or\n  \"2026 \u00b7 12 \u00b7 16\" on top.\n- A real mouse hover on the \u263d glyph now resolves to \"Moon in Libra 3\u00b029\u2032\" and \"Moon in Pisces\n  16\u00b001\u2032\".\n- /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d: the Moon's circle, halo, glyph and label all\n  hit \"Moon in Libra 3\u00b029\u2032\". In round 1 the glyph hit an untitled text element.\n\nREGRESSION, all PASS.\n- Real hovers on 6 dates (2026-12-16, 1969-07-20, 1776-07-04, 2001-09-11, 1945-05-08 and\n  2030-03-14), 52 points each. The only remaining misses are the planet-over-planet and\n  planet-over-sector overlaps documented in round 1 as not a defect, for example:\n  - Jupiter's 00\u00b041' label under Uranus 00\u00b040';\n  - the Sun's dot under Mercury's;\n  - the Aquarius glyph under Neptune or Pluto, which is the planet winning, as step 3\n    requires.\n- The grid tool still flags Pluto's dot on 1969-07-20 and 1945-05-08 as a rect. I re-checked\n  with elementsFromPoint and a real :hover: the top element is Pluto's own r=2.6 circle inside\n  the g titled \"Pluto in Virgo 22\u00b059\u2032\" and \"Pluto in Leo 7\u00b058\u2032\". That is the same mouse\n  placement artefact as round 1, not a defect.\n- Titles are unchanged: 22 per page, each the first child of its element. The 10 planet\n  titles on 2026-12-16 match the positions table, with retrograde on Jupiter and Uranus only.\n  The 12 sector strings are correct. The AX tree exposes 22 names.\n- Visual check, pixelmatch at threshold 0.1 against the pre-sprint screenshot on 902bb4c:\n  - desktop: 1894 differing pixels;\n  - 1890 of them are the \"Recently written\" band at y359-370, the three new dates from round 1;\n  - the rest is a 2-pixel spot at x420-421 y756-761 that also differs between two\n    back-to-back current runs, so it is run-to-run noise, not a change.\n  - The pointer-events fix has no visual effect.\n- Phone at 390px: 10 differing pixels, anti-aliasing noise, the same as round 1.\n- No console or page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-23T03:02:05+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-23T03:08:56+00:00"
   }
 }
