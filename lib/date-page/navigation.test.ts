@@ -29,8 +29,8 @@ describe("shapeDateNavigation (R2/R3)", () => {
       previous: "2012-10-01",
       next: "2013-01-05",
       recent: [
-        { isoDate: "2013-01-05", isCurrent: false },
         { isoDate: DATE, isCurrent: true },
+        { isoDate: "2013-01-05", isCurrent: false },
       ],
     });
   });
@@ -55,17 +55,39 @@ describe("shapeDateNavigation (R2/R3)", () => {
     });
   });
 
-  it("keeps the recent list in the order the database returned it (newest written first)", () => {
-    const nav = shapeDateNavigation(DATE, null, [
-      { event_date: "1999-01-01" },
-      { event_date: "2050-01-01" },
-      { event_date: "1970-01-01" },
+  it("Sprint 32: shows the same dates the database chose, sorted oldest date first", () => {
+    // Generation order (what get_recent_reading_dates returns), deliberately
+    // not date order: mixed years, mixed months, and an 18th-century date
+    // among 20th-century ones. Sorting on the long-date label would give
+    // "1 March 1969, 11 November 2012, 11 September 2001, 14 July 1789, ..."
+    // instead.
+    const generationOrder = [
+      { event_date: "1969-07-20" },
+      { event_date: "1789-07-14" },
+      { event_date: DATE },
+      { event_date: "1969-03-01" },
+      { event_date: "1945-05-08" },
+      { event_date: "1969-12-31" },
+      { event_date: "2001-09-11" },
+    ];
+    const input = generationOrder.map((row) => ({ ...row }));
+    const nav = shapeDateNavigation(DATE, null, input);
+    expect(nav.kind).toBe("available");
+    if (nav.kind !== "available") return;
+    expect(nav.recent).toEqual([
+      { isoDate: "1789-07-14", isCurrent: false },
+      { isoDate: "1945-05-08", isCurrent: false },
+      { isoDate: "1969-03-01", isCurrent: false },
+      { isoDate: "1969-07-20", isCurrent: false },
+      { isoDate: "1969-12-31", isCurrent: false },
+      { isoDate: "2001-09-11", isCurrent: false },
+      { isoDate: DATE, isCurrent: true },
     ]);
-    expect(nav.kind === "available" && nav.recent.map((d) => d.isoDate)).toEqual([
-      "1999-01-01",
-      "2050-01-01",
-      "1970-01-01",
-    ]);
+    // R2: the set is unchanged (no date added or dropped) and the RPC rows are not mutated.
+    expect(nav.recent.map((d) => d.isoDate).sort()).toEqual(
+      generationOrder.map((r) => r.event_date).sort()
+    );
+    expect(input).toEqual(generationOrder);
   });
 
   it("null or empty results are 'no neighbours, no list', not an outage", () => {
@@ -101,9 +123,9 @@ describe("loadDateNavigation (R1/R4/R5)", () => {
       previous: "2012-10-01",
       next: "2013-01-05",
       recent: [
-        { isoDate: "2013-01-05", isCurrent: false },
-        { isoDate: DATE, isCurrent: true },
         { isoDate: "2012-10-01", isCurrent: false },
+        { isoDate: DATE, isCurrent: true },
+        { isoDate: "2013-01-05", isCurrent: false },
       ],
     });
     expect(errorSpy).not.toHaveBeenCalled();

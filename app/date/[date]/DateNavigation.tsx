@@ -84,7 +84,7 @@ export function DateNavigation({ navigation }: { navigation: DateNavigationData 
   );
 }
 
-/** R3: newest written first; the current page's own date is marked, never linked. */
+/** R3: oldest date first (Sprint 32); the current page's own date is marked, never linked. */
 function RecentList({ recent }: { recent: RecentReadingDate[] }) {
   return (
     <ol className={styles.recentList}>
