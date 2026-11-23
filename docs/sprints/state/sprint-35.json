@@ -1,17 +1,17 @@
 {
   "id": 35,
   "title": "Reveal wording follow-ups",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "3eda281fb93b9fd981f119c41f1796e8212e514029e573aa50232fb9abbb54ea",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "3938e372d8186092029540cbad032ff7ecaa44e14b2a8d3f1299a920f09b825d",
   "last_shipped_commit": "c27a566c999244f4323800dcfd71a21b05838f40",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-23T13:30:13+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=c27a566 | ci=green: 1 CI run(s) for c27a566c999244f4323800dcfd71a21b05838f40 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-23T13:50:56+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Tested 2026-11-23, about 13:50 UTC, against https://my-little-racoon.vercel.app.\nShipped commit c27a566. Production serves the pushed tip d77911b: /api/health/db reports status ok and\ncommit d77911b, migrationVersion unchanged at 20261122152710. git diff --stat c27a566 d77911b touches\nonly docs/sprints/state/sprint-35.json.\nCI: runs 45185314125 (c27a566) and 45186273300 (d77911b). Both succeeded.\nTools: headless Chromium (Playwright 1.57) with JS on and off, at 1280x900 and 390x844, plus curl\nagainst the served HTML and every served JS chunk.\n\nSTEP 1, metadata line after reveal: PASS, observed live.\nI revealed the saved horoscope (a real click on the \"Reveal the horoscope\" summary) on 5 pages. After\nthe reveal, the open panel's paragraph reads, verbatim:\n- /date/1969-07-20: \"Revealed on request from 10 positions and 17 aspects.\"\n- /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d: \"Revealed on request from 10 positions and 17 aspects.\"\n- /date/2030-03-14: \"Revealed on request from 10 positions and 16 aspects.\"\n- /date/2050-06-15: \"Revealed on request from 10 positions and 13 aspects.\"\n- /date/2026-12-16: \"Revealed on request from 10 positions and 11 aspects.\"\nThe aspect count N still varies per date (17, 16, 13, 11), so it is still computed and not hard-coded.\nResults were identical with JS on and with JS off.\nThe URL was unchanged, there were zero non-prefetch requests during the reveal, and there were no\nconsole or page errors. The /reading page made the same two Go-to-this-date _rsc prefetches seen in\nSprint 33.\nThe same wording also shows in the folded state on desktop, as an aria-hidden span beside the button.\nScreenshot: s35-desk-folded.png.\n\"Written on request\" appears nowhere in the served HTML of /date/1969-07-20, /date/2031-05-09 or\n/reading/0b01c79f-..., nor in any of the 9 JS chunks they load: 0 hits.\n\nObservation, not a defect and not new: at 390px the metadata line is not shown at all, folded or\nrevealed. Both elements carry the footerNote and desktopOnly classes and compute display none on the\nphone. Sprint 35 changed only the string literal (c27a566 diff: one line each in HoroscopeReveal.tsx\nand cast.ts, plus two test lines), so this is the existing desktop-only design. My Sprint 33 phone\nscreenshot s33-m390-saved-open.png likewise has no line under the revealed text.\n\nSTEP 2, outage message: PASS. Checked from the deployed source, NOT observed live, as the sprint file\nspecifies. Triggering the outage safely in production isn't possible.\n- At the deployed commit d77911b, lib/date-page/cast.ts lines 10-11 read: CAST_UNAVAILABLE_MESSAGE =\n  \"The horoscope can't be revealed right now because the service is unavailable. Try again in a few\n  minutes.\"\n- It is used at lines 64 and 78.\n- git grep at d77911b for \"Written on request\" or \"can't be written\" under app/ and lib/ found\n  nothing (exit 1).\n- The message is server-side only: neither \"can't be revealed\" nor \"service is unavailable\" appears in\n  the served client JS (0 hits), so there was no client-side copy to observe."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-23T13:40:32+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-23T13:50:56+00:00"
   }
 }
