@@ -1,12 +1,12 @@
 {
   "id": 39,
   "title": "Only write horoscopes for dates with matched events",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "979ddda726621368cdfee822a035cf33dd0f8e0b7eb6d6a21f2dbe8188ae89c8",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "82405135dc1244f4b51d3e6f2dba3218acb5b93a870b62065b0cd5d55a2f268c",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "d8984489199f0d12482b6b6c4b6d8603e62ca315",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T22:15:47+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=d898448 | ci=green: 1 CI run(s) for d8984489199f0d12482b6b6c4b6d8603e62ca315 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T22:05:11+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-23T22:15:47+00:00"
   }
 }
