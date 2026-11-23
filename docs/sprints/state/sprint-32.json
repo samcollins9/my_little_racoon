@@ -1,7 +1,7 @@
 {
   "id": 32,
   "title": "Recently written list sorted by date",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "e15c8a15906b113c3a91fb32ebff6ce43474d494f105ec5ad8ea2cd0aea7e83a",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: QA1 gate 1, round 1: PASS. Audited commit aca36fb against the current sprint file, re-read fresh. The file is unchanged since 5044e23, and no criterion asserts anything between versions. Sprints 30 and 31 are merged to main and closed, which satisfies the stated dependency.\n\nR1 Met.\n- shapeDateNavigation now sorts a copy of the RPC rows with byIsoDateAscending, a code-unit comparison of event_date.\n- event_date is a Postgres date that PostgREST serialises as zero-padded YYYY-MM-DD. The app's range is 1700-2100, so every year has four digits and string order is chronological.\n- It never sorts on the long-date label and never uses localeCompare.\n- Desktop and the phone details list both render the same RecentList from navigation.recent, so both get the order.\n\nR2 Met. Nothing under supabase/ changes. The sort runs in shapeDateNavigation, after loadDateNavigation has read the RPC result. The SQL cap still picks the 20 most recently written before the reorder. The sort works on a spread copy, so the input rows are not mutated, and the test asserts that.\n\nR3 Met. Excluding bookkeeping, the diff is exactly three files:\n- lib/date-page/navigation.ts: the sort;\n- app/date/[date]/DateNavigation.tsx: a one-line doc comment;\n- lib/date-page/navigation.test.ts.\nisCurrent, previous/next and the unavailable path are untouched.\n\nR4 Met.\n- The new test feeds rows in generation order, deliberately not date order: 1789-07-14 among 1945, 1969 (three months), 2001 and 2012 dates. It asserts exact ascending output and that the current-date marker survives. It also asserts the set is unchanged and the input is not mutated. Its comment shows the label-sort order it would catch.\n- Existing tests were changed only for order: the first shape test and the loadDateNavigation success test, where the same entries are reordered. The old \"keeps database order\" test asserted the behaviour this sprint deliberately replaces, and the new test supersedes it.\n\nRan these myself:\n- npm test: 26 files, 291 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean, /date/[date] dynamic.\n\nNo Human Prerequisites. No test was labelled known-failing."
+    },
+    {
+      "ts": "2026-11-23T00:53:58+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-23T00:53:37+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-23T00:53:58+00:00"
   }
 }
