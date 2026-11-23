@@ -165,16 +165,40 @@ described are what those runs showed. Times are rough figures from those runs.
 
 ### Tier 1: CI's `build` job, locally
 
-No Docker, no `.env.local`, no Supabase. These are the steps of
-`.github/workflows/ci.yml`'s `build` job, in the same order:
+No Docker, no `.env.local`, no Supabase. After a clean install, one command
+runs the rest:
 
 ```bash
 npm ci              # clean install from package-lock.json (~10s)
+npm run verify      # lint, typecheck, test, build, in CI's order
+```
+
+`npm run verify` (`scripts/project-verify.js`) runs the steps of
+`.github/workflows/ci.yml`'s `build` job, in the same order, and stops at the
+first one that fails:
+
+```bash
 npm run lint        # eslint (~2s)
 npm run typecheck   # tsc --noEmit (~2s)
 npm run test        # vitest run (~1s)
 npm run build       # next build, the same command Vercel runs (~5s)
 ```
+
+Each step's output appears unchanged. The last line is always the result:
+
+```
+VERIFY PASS (lint, typecheck, test, build) exit=0
+VERIFY FAIL at <step> exit=<n>
+```
+
+and the command exits with that same code: the failing step's own code, or 1
+if it has none.
+
+**The exit code is the evidence, not the text above it.** A step can print
+something that looks fine and still fail. Check `$?` (`echo "exit=$?"`
+straight after the command), and never pipe `npm run verify` or any single
+step into `tail`, `head` or `grep` when its result is what you are checking:
+the pipe's exit status replaces the command's own.
 
 **Network:** `lint`, `typecheck` and `test` need none; they also pass with
 networking switched off. `npm ci` needs the npm registry. `npm run build` needs
@@ -204,8 +228,8 @@ npx supabase stop    # when you're done
 The `export` line (bash) is CI's own "Export local stack URL/anon key" step.
 The tests read `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 from the environment, and Vitest does not load `.env.local`. Without that
-line, every test fails with `Supabase client requires NEXT_PUBLIC_SUPABASE_URL
-and NEXT_PUBLIC_SUPABASE_ANON_KEY`. The two-command recipe under
+line, no test runs: every test file fails to load with `Supabase client
+requires NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY`. The two-command recipe under
 [Running the policy tests](#running-the-policy-tests) leaves this step out. It
 is the same suite; see that section for what the tests cover.
 
