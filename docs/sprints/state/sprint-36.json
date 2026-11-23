@@ -1,16 +1,16 @@
 {
   "id": 36,
   "title": "One verify command with an explicit exit code",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "27bd3fe66411863c7f2bea567f73413fb8f27dc621b2e2c7477e4759b989f4da",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "24fd73c17ea49b772b032efd4ef6f88116c8c9f5814fa0ec816a039a6f3d88fd",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-23T13:55:39+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T14:10:40+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: Gate-1 audit of 7e24b84 (HEAD). Sprint file re-read fresh; unchanged since 9fc57e7 (planning) apart from 18fcc6d's lifecycle status line and folder move.\n\nR1 MET: STEPS = lint, typecheck, test, build. Each runs as `npm run <step>`, matching ci.yml's build job step for step, in CI's order. It needs no Docker, .env.local or Supabase.\nR2 MET: verify() returns at the first step with error or non-zero status. failureCode() passes the step's own status through and falls back to 1 for a spawn error, a signal (status null), or an error alongside status 0. Nothing in scripts/project-verify.js uses a pipe or a \"|| true\" (grep exit 1). stdio is inherited; process.exitCode is set to the code.\nR3 MET: the result line is printed by console.log after verify() returns, on both paths, and is the last line of output. Confirmed in every run below. npm 10.9.8 printed nothing after it on failure.\nR4 MET: package-lock.json is unchanged (git diff --quiet exit 0). The only new files are scripts/project-verify.js and its test, with a project- prefix as R4 suggests. No existing scripts/ or .claude/ file was modified. Code files changed: README.md, package.json (one \"verify\" script line), and the two new files.\nR5 MET: README Tier 1 documents npm run verify, both result lines, the exit code, and the rule against piping into tail/head/grep. The line-207 nit is fixed (\"no test runs: every test file fails to load with ...\"); grep for \"every test fails\" finds nothing.\nR6 MET: .github/workflows/ci.yml is untouched.\nR7 MET, reproduced by QA1 rather than taken from the handoff, which I did not see. The exit codes below were read straight after each command, from a redirect, never through a pipe:\n- Clean tree at 7e24b84, npm run verify: exit=0, last line \"VERIFY PASS (lint, typecheck, test, build) exit=0\". 357 tests: 350 plus the 7 new ones, so vitest picks up scripts/*.test.js.\n- Throwaway clone at 7e24b84 plus an uncommitted lint error: exit=1, last line \"VERIFY FAIL at lint exit=1\". No tsc, vitest or next build step started.\n- The same clone plus an uncommitted failing test: exit=1, last line \"VERIFY FAIL at test exit=1\". Steps run: eslint, tsc, vitest; next build never started.\n- Direct \"node scripts/project-verify.js\" (the PATH fallback, no npm_execpath) in the real repo: exit=0 with the PASS line.\n- Incidentally, in the clone the direct run failed at build. The cause was my symlinked node_modules, which Turbopack rejects as pointing outside the filesystem root. This is an artefact of my scratch setup, not a defect. It does show a build failure propagating as \"VERIFY FAIL at build exit=1\".\nThe scratch clone was deleted afterwards.\n- git log 44413a1..HEAD holds only 18fcc6d (record start) and 7e24b84. git log -p contains no deliberate-failure content.\n\nUnit tests (scripts/project-verify.test.js) cover the CI order, the all-pass path, stopping at lint with lint's own code, stopping at test, and the three exit-1 fallbacks. They are meaningful, and correctly stop short of recursing into the real npm run verify.\n\nQA1's own checks at 7e24b84 (the separate commands, each with its exit code read directly): covered by the verify run above, exit=0.\n\nHandoff evidence: I did not see Dev Team 1's handoff, so I could not confirm that it quotes the VERIFY line with exit=0 as the new CLAUDE.md standard requires. I re-ran everything myself instead, which the standard allows. The user should confirm the handoff actually quoted it.\n\nNo Human Prerequisites. No known-failing tests."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T13:55:39+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-23T14:10:40+00:00"
   }
 }
