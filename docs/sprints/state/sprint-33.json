@@ -1,12 +1,12 @@
 {
   "id": 33,
   "title": "Reveal step for the horoscope",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "dd718b39edd535fac7bf7ca9aabb1e1b7be56658bd7c5c1622d3452056a116b6",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "9bef3e728fc41160655902a6c3d1b2efda14e9b50954b43f9ddeec1fa4ea46c5",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "deb75ad91e423c8e296272889a88ede0a153334c",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T01:31:56+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=deb75ad | ci=green: 1 CI run(s) for deb75ad91e423c8e296272889a88ede0a153334c all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T01:23:51+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-23T01:31:56+00:00"
   }
 }
