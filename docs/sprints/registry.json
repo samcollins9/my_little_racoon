@@ -232,8 +232,8 @@
     "39": {
       "title": "Only write horoscopes for dates with matched events",
       "epic": "Date pages (PRD v3)",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-39_only-write-horoscopes-for-dates-with-matched-events.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-39_only-write-horoscopes-for-dates-with-matched-events.md"
     }
   }
 }
