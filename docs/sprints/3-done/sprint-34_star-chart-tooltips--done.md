@@ -2,7 +2,7 @@
 id: 34
 title: "Star chart tooltips"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-23T00:36:58+00:00
 ---
 
