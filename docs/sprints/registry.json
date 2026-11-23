@@ -214,8 +214,8 @@
     "36": {
       "title": "One verify command with an explicit exit code",
       "epic": "Operability",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-36_one-verify-command-with-an-explicit-exit-code.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-36_one-verify-command-with-an-explicit-exit-code.md"
     }
   }
 }
