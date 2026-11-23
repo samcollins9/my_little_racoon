@@ -722,6 +722,14 @@
   display: none;
 }
 
+/* LiveQA round 1 (R2): the unsaved state's control is a <button>, which
+   the UA stylesheet centres; this one is a <span>, which inherits start
+   alignment. On desktop, where the label wraps to two lines, that showed.
+   Centre it explicitly so the two folded states match. */
+.revealSummary .castButton {
+  text-align: center;
+}
+
 .reveal[open] > .revealSummary {
   margin-top: 0;
 }
