@@ -1,7 +1,15 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { composeChart } from "@/lib/chart/model";
+import {
+  linkableEventDate,
+  unavailableMessage,
+  type UnavailableHoroscope,
+} from "@/lib/date-page/accuracy";
+import { datePagePath } from "@/lib/date-page/params";
 import { CALCULATION_HOUR_UTC, type PlanetPosition } from "@/lib/ephemeris/adapter";
 import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
+import { hasMatchedEvents } from "@/lib/events/matched";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 import { eventsStatusLabel, formatLongDate } from "./format";
@@ -177,7 +185,11 @@ export function ReadingView({
                 <div className={styles.eventsList}>
                   {events.events.map((event, i) => (
                     <div key={i} className={styles.eventRow}>
-                      <span className={styles.eventYear}>{event.year}</span>
+                      <EventYear
+                        year={event.year}
+                        eventDate={eventDate}
+                        linked={!hasMatchedEvents(events)}
+                      />
                       <span className={styles.eventText}>
                         {event.text}
                         {isSafeExternalUrl(event.sourceUrl) ? (
@@ -200,6 +212,32 @@ export function ReadingView({
         </div>
       </main>
     </div>
+  );
+}
+
+/**
+ * Sprint 39, R1: column 1 of an event row. On an unmatched date each year is
+ * a link to the same month and day in that year, when the date page
+ * supports that date (linkableEventDate); every other year stays plain
+ * text. `eventDate` is the page's date, or the stored row's on
+ * /reading/[id], so the link keeps that date's own month and day.
+ *
+ * The accessible name spells out the destination ("Go to 9 May 1976") and
+ * still contains the visible year, so speech input can say what it sees.
+ */
+function EventYear({ year, eventDate, linked }: { year: number; eventDate: string; linked: boolean }) {
+  const target = linked ? linkableEventDate(year, eventDate) : null;
+  if (!target) return <span className={styles.eventYear}>{year}</span>;
+
+  const long = formatLongDate(target);
+  return (
+    <Link
+      href={datePagePath(target)}
+      className={`${styles.eventYear} ${styles.eventYearLink}`}
+      aria-label={`Go to ${long.day} ${long.month} ${long.year}`}
+    >
+      {year}
+    </Link>
   );
 }
 
@@ -424,6 +462,32 @@ function ConstellationFigure({
           </g>
         ))}
       </svg>
+    </>
+  );
+}
+
+/** Sprint 39, R6: the status label beside "The reading" for each message. */
+const UNAVAILABLE_STATUS: Record<UnavailableHoroscope["kind"], string> = {
+  unmatched: "no exact-date events",
+  lookupFailed: "events unavailable",
+};
+
+/**
+ * Sprint 39, R3-R6: "The reading" section's contents when no horoscope may
+ * be written or shown for the date, shared by the date page and
+ * /reading/[id]. It takes the place of every other state: the generate
+ * form, a saved horoscope, the disabled panel and the saved-horoscopes
+ * outage notice. No form, no reveal, and nothing here needs the database
+ * or JavaScript.
+ */
+export function HoroscopeUnavailableSection({ availability }: { availability: UnavailableHoroscope }) {
+  const message = unavailableMessage(availability);
+  return (
+    <>
+      <ReadingHeader status="idle" label={UNAVAILABLE_STATUS[availability.kind]} />
+      <p className={styles.accuracyNote}>
+        <strong className={styles.accuracyLead}>{message.lead}</strong> {message.next}
+      </p>
     </>
   );
 }

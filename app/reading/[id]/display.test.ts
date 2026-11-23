@@ -24,10 +24,10 @@ describe("eventsLabel (R2, R4)", () => {
     );
   });
 
-  it("says plainly when the year did not match (the common case)", () => {
-    expect(eventsLabel(events({ matchedYear: false }))).toBe(
-      "No recorded event matched this exact year — showing notable happenings on this day across history instead."
-    );
+  // Sprint 39, R2: the label is only shown for an empty list, and an
+  // unmatched day with no events has no other-year happenings to show.
+  it("an unmatched payload with no events says there are none", () => {
+    expect(eventsLabel(events({ matchedYear: false, events: [] }))).toBe("No recorded events for this day.");
   });
 });
 

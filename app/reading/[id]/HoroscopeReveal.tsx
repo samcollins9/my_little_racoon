@@ -23,15 +23,19 @@ const STATUS_TEXT: Record<ReadingStatus, string> = {
   busy: "revealing",
 };
 
-/** "The reading" heading and its status label. */
-export function ReadingHeader({ status }: { status: ReadingStatus }) {
+/**
+ * "The reading" heading and its status label. `label` replaces the status's
+ * own text where a state has no generation status to report (Sprint 39's
+ * accuracy messages); the status still decides the label's style.
+ */
+export function ReadingHeader({ status, label }: { status: ReadingStatus; label?: string }) {
   return (
     <div className={styles.readingHeader}>
       <h3 className={styles.sectionTitle}>The reading</h3>
       <span
         className={`${styles.readingStatus} ${status === "busy" ? styles.statusBusy : styles.statusIdle}`}
       >
-        {STATUS_TEXT[status]}
+        {label ?? STATUS_TEXT[status]}
       </span>
     </div>
   );

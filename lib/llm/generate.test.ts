@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PlanetPosition } from "../ephemeris/adapter";
+import { EVENTS_LOOKUP_FAILED_REASON, UNMATCHED_EVENTS_REASON } from "../events/matched";
+import type { WikipediaEventsPayload } from "../events/wikipedia";
 import {
   computePromptAspects,
   generateAndPersistHoroscope,
@@ -17,11 +19,21 @@ const MINIMAL_POSITIONS: PlanetPosition[] = [
   { body: "Moon", eclipticLongitude: 40, sign: "Taurus", degreeInSign: 10, retrograde: false },
 ];
 
+// Sprint 39: generation needs events from the exact year (R9), so the
+// fixture every success-path test builds on has them.
+const MATCHED_EVENTS: WikipediaEventsPayload = {
+  source: "wikipedia-onthisday",
+  requestedDate: "1977-03-31",
+  matchedYear: true,
+  fetchedAt: "2026-11-23T00:00:00.000Z",
+  events: [{ year: 1977, text: "An event from the exact year" }],
+};
+
 const READING: StoredReadingForGeneration = {
   id: "11111111-1111-1111-1111-111111111111",
   event_date: "1977-03-31",
   positions: MINIMAL_POSITIONS,
-  events: null,
+  events: MATCHED_EVENTS,
   horoscope: null,
 };
 
@@ -203,5 +215,33 @@ describe("generateAndPersistHoroscope", () => {
       horoscope: "A horoscope about Fire signs.",
       model: "gpt-4o-mini-2024-07-18",
     });
+  });
+});
+
+describe("generateAndPersistHoroscope refuses rows without exact-year events (Sprint 39, R9)", () => {
+  const unmatched: WikipediaEventsPayload = {
+    ...MATCHED_EVENTS,
+    matchedYear: false,
+    events: [{ year: 1889, text: "An event from another year" }],
+  };
+  // A stored row is JSON from the database: anything but the boolean true
+  // is not matched, the same strictness as Sprint 30's navigation filter.
+  const stringTrue = { ...MATCHED_EVENTS, matchedYear: "true" } as unknown as WikipediaEventsPayload;
+
+  it.each([
+    ["unmatched events", unmatched, UNMATCHED_EVENTS_REASON],
+    ['matchedYear as the string "true"', stringTrue, UNMATCHED_EVENTS_REASON],
+    ["null events (a failed lookup)", null, EVENTS_LOOKUP_FAILED_REASON],
+  ])("%s: no OpenAI call and no write", async (_name, events, reason) => {
+    const generateSpy = vi
+      .spyOn(horoscope, "generateHoroscope")
+      .mockResolvedValue({ text: "text", model: "gpt-4o-mini" });
+    const writer = fakeWriter({ data: true, error: null });
+
+    const result = await generateAndPersistHoroscope(writer, "some-id", { ...READING, events });
+
+    expect(result).toEqual({ ok: false, error: reason });
+    expect(generateSpy).not.toHaveBeenCalled();
+    expect(writer.rpc).not.toHaveBeenCalled();
   });
 });

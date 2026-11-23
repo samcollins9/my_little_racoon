@@ -7,6 +7,7 @@ import {
 } from "../ephemeris/adapter";
 import { computeAspects, type Aspect } from "../ephemeris/aspects";
 import { composeChart, type ReadingModel } from "../chart/model";
+import { unwritableReason } from "../events/matched";
 import type { WikipediaEventsPayload } from "../events/wikipedia";
 import { generateHoroscope } from "./horoscope";
 
@@ -114,6 +115,12 @@ export type GenerateResult = { ok: true } | { ok: false; error: string };
  * from generateHoroscope (network, timeout, malformed response) or from
  * the RPC call both leave the stored reading untouched -- there is no
  * partial-write path here to guard against, only ordering.
+ *
+ * Sprint 39, R9: a row whose stored events are unmatched or missing is
+ * refused before the prompt is built, so OpenAI is never called for it.
+ * This covers both write paths: /reading/[id]'s action calls this directly,
+ * and the date page's cast reaches it only after its own, earlier refusal
+ * (which has to come before that path's insert).
  */
 export async function generateAndPersistHoroscope(
   writer: SupabaseClient,
@@ -123,6 +130,9 @@ export async function generateAndPersistHoroscope(
   if (!isHoroscopeEnabled()) {
     return { ok: false, error: "Horoscope generation is currently disabled." };
   }
+
+  const refusal = unwritableReason(reading.events);
+  if (refusal) return { ok: false, error: refusal };
 
   const readingModel = buildReadingModel(reading);
 

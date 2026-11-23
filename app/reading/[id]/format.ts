@@ -1,3 +1,4 @@
+import { hasMatchedEvents } from "../../../lib/events/matched";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 
 /**
@@ -55,5 +56,7 @@ export function eventsStatusLabel(events: WikipediaEventsPayload | null): string
   if (!events) {
     return null;
   }
-  return events.matchedYear ? "this exact date" : "on this day, other years";
+  // Sprint 39: the shared rule, so this label can never disagree with the
+  // reading section's accuracy message.
+  return hasMatchedEvents(events) ? "this exact date" : "on this day, other years";
 }

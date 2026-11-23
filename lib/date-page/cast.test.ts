@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { calculationInstantForDate, computePositions } from "../ephemeris/adapter";
+import { EVENTS_LOOKUP_FAILED_REASON, UNMATCHED_EVENTS_REASON } from "../events/matched";
 import type { WikipediaEventsPayload } from "../events/wikipedia";
 import {
   CAST_DISABLED_MESSAGE,
@@ -11,16 +12,23 @@ import { EMPTY_LOOKUP, PAUSED_LOOKUP, fakeSupabase, type FakeResult } from "./te
 
 const DATE = "2012-11-11";
 
+// Sprint 39: a cast only proceeds past the fetch with exact-year events (R8).
 const EVENTS: WikipediaEventsPayload = {
   source: "wikipedia-onthisday",
   requestedDate: DATE,
-  matchedYear: false,
+  matchedYear: true,
   fetchedAt: "2026-11-15T00:00:00.000Z",
-  events: [],
+  events: [{ year: 2012, text: "An event from the exact year" }],
+};
+
+const UNMATCHED_EVENTS: WikipediaEventsPayload = {
+  ...EVENTS,
+  matchedYear: false,
+  events: [{ year: 1918, text: "An event from another year" }],
 };
 
 const SAVED: FakeResult = {
-  data: [{ id: "x", event_date: DATE, positions: [], events: null, horoscope: "Saved." }],
+  data: [{ id: "x", event_date: DATE, positions: [], events: EVENTS, horoscope: "Saved." }],
   error: null,
   status: 200,
 };
@@ -48,9 +56,12 @@ function clients({ lookup = EMPTY_LOOKUP, insertResult }: { lookup?: FakeResult;
   return { reader, writer, pair: { reader: reader.client, writer: writer.client } };
 }
 
-function deps(generateResult: { ok: true } | { ok: false; error: string } = { ok: true }) {
+function deps(
+  generateResult: { ok: true } | { ok: false; error: string } = { ok: true },
+  fetched: WikipediaEventsPayload | null = EVENTS
+) {
   return {
-    fetchEvents: vi.fn().mockResolvedValue(EVENTS),
+    fetchEvents: vi.fn().mockResolvedValue(fetched),
     generate: vi.fn().mockResolvedValue(generateResult),
   };
 }
@@ -158,5 +169,39 @@ describe("castHoroscopeForDate (R5, R12)", () => {
       message: "Horoscope generation failed, try again.",
     });
     expect(c.writer.insert).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("castHoroscopeForDate refuses without exact-year events (Sprint 39, R8)", () => {
+  it.each([
+    ["unmatched events", UNMATCHED_EVENTS, UNMATCHED_EVENTS_REASON],
+    ["a failed lookup (null)", null, EVENTS_LOOKUP_FAILED_REASON],
+  ])("%s: refuses before inserting, generating or updating anything", async (_name, fetched, reason) => {
+    vi.stubEnv("HOROSCOPE_ENABLED", "true");
+    const c = clients();
+    const d = deps({ ok: true }, fetched);
+
+    const result = await castHoroscopeForDate(c.pair, DATE, d);
+
+    expect(result).toEqual({ ok: false, message: reason });
+    // The server's own fetch decided it, for this date.
+    expect(d.fetchEvents).toHaveBeenCalledWith(DATE);
+    // No insert, no generate, no set_reading_horoscope: nothing written.
+    expect(c.writer.from).not.toHaveBeenCalled();
+    expect(c.writer.insert).not.toHaveBeenCalled();
+    expect(c.writer.rpc).not.toHaveBeenCalled();
+    expect(d.generate).not.toHaveBeenCalled();
+  });
+
+  it("a saved horoscope on an unmatched row doesn't count as saved: the fresh fetch decides, and refuses", async () => {
+    vi.stubEnv("HOROSCOPE_ENABLED", "true");
+    const c = clients({
+      lookup: { ...SAVED, data: [{ id: "x", event_date: DATE, positions: [], events: UNMATCHED_EVENTS, horoscope: "Old." }] },
+    });
+    const d = deps({ ok: true }, UNMATCHED_EVENTS);
+
+    expect(await castHoroscopeForDate(c.pair, DATE, d)).toEqual({ ok: false, message: UNMATCHED_EVENTS_REASON });
+    expect(c.writer.from).not.toHaveBeenCalled();
+    expect(d.generate).not.toHaveBeenCalled();
   });
 });

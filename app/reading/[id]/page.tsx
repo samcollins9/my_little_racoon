@@ -6,6 +6,7 @@ import {
   logDatabaseUnavailable,
 } from "@/lib/supabase/availability";
 import { composeChart } from "@/lib/chart/model";
+import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import type { PlanetPosition } from "@/lib/ephemeris/adapter";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
@@ -13,7 +14,7 @@ import { generateReadingHoroscope } from "./actions";
 import { horoscopeParagraphs } from "./display";
 import { isLandingRevealed } from "./reveal";
 import { ReadingPanel } from "./ReadingPanel";
-import { DisabledReadingSection, ReadingView } from "./ReadingView";
+import { DisabledReadingSection, HoroscopeUnavailableSection, ReadingView } from "./ReadingView";
 import { datePagePath } from "@/lib/date-page/params";
 
 type StoredReading = {
@@ -81,6 +82,11 @@ export default async function ReadingPage({
   // event_date is the stored row's, never a request value, so the link can
   // only ever point at the date this reading is about.
   const datePageHref = datePagePath(reading.event_date);
+  // Sprint 39, R10: judged on the row's own stored events, exactly as the
+  // date page judges its events. An unmatched or event-less row shows the
+  // message in place of its saved horoscope, the generate form and the
+  // disabled panel; the row itself is never touched.
+  const availability = horoscopeAvailability(reading.events, reading.event_date);
 
   return (
     <ReadingView
@@ -89,7 +95,9 @@ export default async function ReadingPage({
       events={reading.events}
       jdNote="sealed · anyone with the link"
     >
-      {isHoroscopeEnabled() ? (
+      {availability.kind !== "writable" ? (
+        <HoroscopeUnavailableSection availability={availability} />
+      ) : isHoroscopeEnabled() ? (
         <form action={generateReadingHoroscope}>
           <input type="hidden" name="readingId" value={id} />
           <ReadingPanel

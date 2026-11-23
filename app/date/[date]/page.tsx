@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { composeChart } from "@/lib/chart/model";
+import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import { loadDatePage } from "@/lib/date-page/load";
 import { loadDateNavigation } from "@/lib/date-page/navigation";
 import { parseDatePageParam } from "@/lib/date-page/params";
@@ -8,7 +9,11 @@ import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import { horoscopeParagraphs } from "@/app/reading/[id]/display";
 import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
-import { DisabledReadingSection, ReadingView } from "@/app/reading/[id]/ReadingView";
+import {
+  DisabledReadingSection,
+  HoroscopeUnavailableSection,
+  ReadingView,
+} from "@/app/reading/[id]/ReadingView";
 import { isLandingRevealed } from "@/app/reading/[id]/reveal";
 import readingStyles from "@/app/reading/[id]/reading.module.css";
 import { castHoroscope } from "./actions";
@@ -63,6 +68,11 @@ export default async function DatePage({
   // Sprint 33, R4: presentation only -- it opens an already-saved horoscope's
   // disclosure and nothing else. Nothing on this render path writes (R3).
   const revealed = isLandingRevealed(revealedParam);
+  // Sprint 39, R6: decided from the events shown beside the reading, which
+  // never needs the database. A saved horoscope only reaches here with
+  // matched events (lookupSavedHoroscope, R7), so a non-writable result
+  // means a fresh lookup that was unmatched or failed.
+  const availability = horoscopeAvailability(page.events, page.eventDate);
 
   return (
     <ReadingView
@@ -76,7 +86,9 @@ export default async function DatePage({
         </>
       }
     >
-      {page.saved.kind === "unavailable" ? (
+      {availability.kind !== "writable" ? (
+        <HoroscopeUnavailableSection availability={availability} />
+      ) : page.saved.kind === "unavailable" ? (
         <SavedHoroscopesUnavailable />
       ) : isHoroscopeEnabled() ? (
         <form action={castHoroscope}>

@@ -1,17 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { renderToStaticMarkup } from "react-dom/server";
-import type { ReactElement } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { calculationInstantForDate, computePositions } from "@/lib/ephemeris/adapter";
-import { createAnonClient } from "@/lib/supabase/anon-client";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { EMPTY_LOOKUP, PAUSED_LOOKUP } from "@/lib/date-page/test-support";
 import {
-  EMPTY_LOOKUP,
-  PAUSED_LOOKUP,
-  fakeSupabase,
-  type FakeResult,
-} from "@/lib/date-page/test-support";
-import DatePage from "@/app/date/[date]/page";
-import ReadingPage from "./page";
+  NAVIGATION_RPCS,
+  expectNoWriteAndNoOpenAI as expectNoWriteAndNoOpenAIFrom,
+  ok,
+  renderDatePage as renderDatePageOn,
+  renderReadingPage as renderReadingPageFor,
+  useAnon,
+} from "./page-test-support";
 import { REVEALED_PARAM, withRevealed } from "./reveal";
 
 // Sprint 33, R4/R8: the landing-revealed URL's server render, through the
@@ -40,8 +37,6 @@ const DATE = "1969-07-20";
 const READING_ID = "6f1c2b9e-1a2b-4c3d-8e9f-0a1b2c3d4e5f";
 const SAVED_TEXT = "Mars leans on the door.";
 
-const ok = (data: unknown): FakeResult => ({ data, error: null, status: 200 });
-
 function storedRow(horoscope: string | null) {
   return {
     id: READING_ID,
@@ -52,18 +47,20 @@ function storedRow(horoscope: string | null) {
   };
 }
 
-const NAVIGATION_RPCS = {
-  get_adjacent_reading_dates: ok([{ previous_date: null, next_date: null }]),
-  get_recent_reading_dates: ok([]),
-};
-
-let fetchSpy: ReturnType<typeof vi.fn>;
+let fetchSpy: Mock;
 
 beforeEach(() => {
   vi.stubEnv("HOROSCOPE_ENABLED", "true");
-  // Wikipedia (the only fetch a GET render may make) answers with an outage,
-  // which fetchDayEvents turns into "no events" without throwing.
-  fetchSpy = vi.fn(async () => new Response("unavailable", { status: 503 }));
+  // Wikipedia (the only fetch a GET render may make) answers with an event
+  // from the page's own year. Sprint 39: an unmatched or failed lookup now
+  // replaces the whole reading section (accuracy-pages.test.ts covers those),
+  // so the states this file checks need matched events.
+  fetchSpy = vi.fn(
+    async () =>
+      new Response(JSON.stringify({ selected: [{ year: 1969, text: "Apollo 11 lands on the Moon." }] }), {
+        status: 200,
+      })
+  );
   vi.stubGlobal("fetch", fetchSpy);
   vi.spyOn(console, "error").mockImplementation(() => {});
   vi.spyOn(console, "warn").mockImplementation(() => {});
@@ -75,36 +72,10 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function useAnon(rpc: Record<string, FakeResult>) {
-  const fake = fakeSupabase({ rpc });
-  vi.mocked(createAnonClient).mockReturnValue(fake.client);
-  return fake;
-}
-
-async function renderDatePage(searchParams: Record<string, string | string[]>): Promise<string> {
-  const element = await DatePage({
-    params: Promise.resolve({ date: DATE }),
-    searchParams: Promise.resolve(searchParams),
-  });
-  return renderToStaticMarkup(element as ReactElement);
-}
-
-async function renderReadingPage(searchParams: Record<string, string | string[]>): Promise<string> {
-  const element = await ReadingPage({
-    params: Promise.resolve({ id: READING_ID }),
-    searchParams: Promise.resolve(searchParams),
-  });
-  return renderToStaticMarkup(element as ReactElement);
-}
-
-/** R4: nothing on a GET render writes, generates or calls OpenAI. */
-function expectNoWriteAndNoOpenAI(fake: ReturnType<typeof fakeSupabase>) {
-  expect(createAdminClient).not.toHaveBeenCalled();
-  expect(fake.from).not.toHaveBeenCalled();
-  expect(fake.insert).not.toHaveBeenCalled();
-  expect(fake.rpc).not.toHaveBeenCalledWith("set_reading_horoscope", expect.anything());
-  for (const [url] of fetchSpy.mock.calls) expect(String(url)).not.toContain("openai.com");
-}
+const renderDatePage = (searchParams: Record<string, string | string[]>) => renderDatePageOn(DATE, searchParams);
+const renderReadingPage = (searchParams: Record<string, string | string[]>) =>
+  renderReadingPageFor(READING_ID, searchParams);
+const expectNoWriteAndNoOpenAI = (fake: ReturnType<typeof useAnon>) => expectNoWriteAndNoOpenAIFrom(fake, fetchSpy);
 
 const detailsTag = (html: string) => html.match(/<details[^>]*>/)?.[0] ?? null;
 

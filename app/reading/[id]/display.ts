@@ -1,6 +1,7 @@
 // Relative, not "@/" -- vitest doesn't resolve the tsconfig alias for
 // testable files under app/ (same reason constellation.ts uses relative
 // imports, Sprint 13).
+import { hasMatchedEvents } from "../../../lib/events/matched";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 
 /**
@@ -13,13 +14,15 @@ import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 
 // R2: read from the stored payload, never inferred from whether the
 // requested year happens to match something in the caller's own head.
+// Sprint 39, R2: this label is only shown when the event list is empty, and
+// an unmatched payload with no events has nothing "across history" to show.
 export function eventsLabel(events: WikipediaEventsPayload | null): string {
   if (!events) {
     return "No events looked up for this reading.";
   }
-  return events.matchedYear
+  return hasMatchedEvents(events)
     ? "These events happened on this exact date."
-    : "No recorded event matched this exact year — showing notable happenings on this day across history instead.";
+    : "No recorded events for this day.";
 }
 
 /**

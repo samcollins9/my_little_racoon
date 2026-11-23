@@ -255,6 +255,26 @@
   letter-spacing: 0.06em;
 }
 
+/* Sprint 39, R1: an other-year event's year, linked to that year's date
+   page. Underlined like the date navigation's links (date.module.css's
+   .recentLink), so a linked year reads as a link and a plain one doesn't.
+   The vertical padding, cancelled by the negative margin, enlarges the
+   tap target without moving the row. */
+.eventYearLink {
+  align-self: start;
+  padding: 8px 0;
+  margin: -8px 0;
+  text-decoration: underline;
+  text-decoration-color: var(--om-rule-strong);
+  text-underline-offset: 3px;
+}
+
+.eventYearLink:hover,
+.eventYearLink:focus-visible {
+  color: var(--om-verdigris-light);
+  text-decoration-color: currentColor;
+}
+
 .eventText {
   font-size: 17.5px;
   line-height: 1.5;
@@ -263,6 +283,24 @@
   /* A long unbroken word (a URL, a compound name) wraps instead of
      widening the page. */
   overflow-wrap: anywhere;
+}
+
+/* Sprint 39, R3-R5: why no horoscope can be written for this date. The same
+   measure and colour as the date page's outage notice (date.module.css's
+   .unavailableText), with the reason itself in the brighter text colour. */
+.accuracyNote {
+  margin: 0;
+  padding: 10px 0 4px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--om-grey);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.accuracyLead {
+  font-weight: inherit;
+  color: var(--om-bone);
 }
 
 .eventsEmpty {
@@ -622,6 +660,16 @@
 
   .eventYear {
     font-size: 11.5px;
+  }
+
+  /* R4 (Sprint 20): touch targets clear 44px at this size. */
+  .eventYearLink {
+    padding: 15px 0;
+    margin: -15px 0;
+  }
+
+  .accuracyNote {
+    font-size: 17px;
   }
 
   .eventText {

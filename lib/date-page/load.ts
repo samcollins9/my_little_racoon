@@ -4,6 +4,7 @@ import {
   computePositions,
   type PlanetPosition,
 } from "../ephemeris/adapter";
+import { hasMatchedEvents } from "../events/matched";
 import { fetchDayEvents, type WikipediaEventsPayload } from "../events/wikipedia";
 import type { StoredReadingForGeneration } from "../llm/generate";
 import { isDatabaseUnavailable, logDatabaseUnavailable } from "../supabase/availability";
@@ -17,6 +18,14 @@ export type SavedHoroscopeLookup =
  * R4: the newest saved horoscope for a date, through get_reading_by_date --
  * never a table select (the table has no select policy, and
  * lib/readings-access-guardrail.ts holds that line). Read-only.
+ *
+ * Sprint 39, R7: a horoscope saved beside events from other years (or with
+ * no events at all) is never shown, so that row is reported as "none" and
+ * the caller behaves as if nothing was saved. The filter lives here, not in
+ * get_reading_by_date, deliberately: the function's row is also what
+ * Sprint 30's navigation judges, and navigation is out of scope. The cost
+ * is one rare case. If a date's newest horoscope is unmatched and an older
+ * one is matched, this reports "none" rather than the older row.
  *
  * `isoDate` must already have passed parseDatePageParam; that's why the
  * "dateLookup" classification excepts no error code at all. An unavailable
@@ -36,7 +45,8 @@ export async function lookupSavedHoroscope(
   }
 
   if (!data || data.length === 0) return { kind: "none" };
-  return { kind: "found", reading: data[0] as StoredReadingForGeneration };
+  const reading = data[0] as StoredReadingForGeneration;
+  return hasMatchedEvents(reading.events) ? { kind: "found", reading } : { kind: "none" };
 }
 
 export type DatePageData = {

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calculationInstantForDate, computePositions } from "../ephemeris/adapter";
+import { unwritableReason } from "../events/matched";
 import { fetchDayEvents, type WikipediaEventsPayload } from "../events/wikipedia";
 import { generateAndPersistHoroscope, isHoroscopeEnabled } from "../llm/generate";
 import { insertReading } from "../readings/insert";
@@ -40,9 +41,12 @@ type CastDeps = {
  *      one is out of scope; a stale tab or a hand-built POST mustn't do it.
  *      (Two casts racing each other can still both write; R4 shows the
  *      newer, which the sprint accepts.)
- *   3. Insert the reading -- positions and events, through insertReading
+ *   3. Sprint 39, R8: the events fetched here, never anything the form
+ *      sent, must be from the exact year. Unmatched or failed -> refuse,
+ *      before the insert, so a refused attempt writes nothing at all.
+ *   4. Insert the reading -- positions and events, through insertReading
  *      (shared with the retired /chart page's save action until Sprint 31).
- *   4. Generate and persist through generateAndPersistHoroscope. If that
+ *   5. Generate and persist through generateAndPersistHoroscope. If that
  *      fails the inserted row stays without a horoscope, which R4's lookup
  *      never returns.
  *
@@ -66,6 +70,9 @@ export async function castHoroscopeForDate(
 
   const positions = computePositions(calculationInstantForDate(isoDate));
   const events = await fetchEvents(isoDate);
+  const refusal = unwritableReason(events);
+  if (refusal) return { ok: false, message: refusal };
+
   const inserted = await insertReading(writer, { event_date: isoDate, positions, events });
 
   if (!inserted.ok) {
