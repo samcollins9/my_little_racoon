@@ -724,6 +724,22 @@ the next field added to the schema: `.get()` with a default only for fields
 younger than some sprint still in flight could be; direct indexing for
 everything in the base schema.
 
+**Check evidence is an exit code, never the last line of output** (project
+standard, added 23 Nov 2026 after Sprint 34). Sprint 34 reached Pipeman with
+a lint error that both Dev Team 1 and QA1 had reported clean, because each
+read only the tail of the output. From now on:
+- **Every Dev Team handoff quotes the exit code of each check it claims passed.**
+  Once Sprint 36 ships, that means `npm run verify`'s final result line
+  (`VERIFY PASS ... exit=0`). Until then, it's each of `npm run lint`,
+  `npm run typecheck`, `npm test` and `npm run build`, each followed by
+  `echo "exit=$?"`.
+- **QA1 treats a missing or non-zero exit code as a FAIL** for that
+  check, regardless of what the output's text appears to say. Re-run the
+  command yourself and read `$?` when the handoff's evidence is missing or
+  ambiguous.
+- **Never pipe a check into `tail`, `head` or `grep` when its result is the
+  evidence.** The pipe's exit status replaces the check's own.
+
 ---
 
 <!-- BEGIN:nextjs-agent-rules -->

@@ -1,5 +1,5 @@
 {
-  "next_id": 35,
+  "next_id": 37,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -204,6 +204,18 @@
       "epic": "Date pages",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-34_star-chart-tooltips--done.md"
+    },
+    "35": {
+      "title": "Reveal wording follow-ups",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-35_reveal-wording-follow-ups.md"
+    },
+    "36": {
+      "title": "One verify command with an explicit exit code",
+      "epic": "Operability",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-36_one-verify-command-with-an-explicit-exit-code.md"
     }
   }
 }
