@@ -1,5 +1,5 @@
 {
-  "next_id": 38,
+  "next_id": 39,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -222,6 +222,12 @@
       "epic": "Date pages",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-37_chart-panel-tabs-planets-signs-and-aspects-key--done.md"
+    },
+    "38": {
+      "title": "Phone layout scrolls as one page",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-38_phone-layout-scrolls-as-one-page.md"
     }
   }
 }
