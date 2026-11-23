@@ -2,7 +2,7 @@
 id: 33
 title: "Reveal step for the horoscope"
 epic: "Date pages"
-status: in_progress
+status: done
 created: 2026-11-23T00:36:59+00:00
 ---
 
