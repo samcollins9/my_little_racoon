@@ -1,7 +1,7 @@
 {
   "id": 35,
   "title": "Reveal wording follow-ups",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "3eda281fb93b9fd981f119c41f1796e8212e514029e573aa50232fb9abbb54ea",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: Gate-1 audit of c27a566 (HEAD). Sprint file re-read fresh; unchanged since 9fc57e7 (planning) apart from d82ccc9's lifecycle status line.\n\nR1 MET: app/reading/[id]/HoroscopeReveal.tsx aspectsNoteText now returns `Revealed on request from 10 positions and ${aspectCount} aspects.` Only the first word changed; the aspectCount interpolation is untouched.\nR2 MET: lib/date-page/cast.ts CAST_UNAVAILABLE_MESSAGE now reads \"The horoscope can't be revealed right now because the service is unavailable. Try again in a few minutes.\" Only \"written\" -> \"revealed\".\nR3 MET: diff is 3 files, 4 lines: the two string literals plus the two test expectations. No logic, markup or style change. CAST_DISABLED_MESSAGE and CAST_SAVE_FAILED_MESSAGE are unchanged. grep for \"Written on request\" and \"can't be written\" under app/ and lib/ finds nothing (grep exit 1).\nR4 MET: ReadingPanel.test.ts lines 144 and 188 updated in wording only; the matcher shapes (toMatch with the aria-hidden regex, toContain) are identical, and no assertion was removed (1-for-1 line swaps). The outage message has no literal assertion anywhere: lib/date-page/cast.test.ts lines 114 and 126 assert against the imported CAST_UNAVAILABLE_MESSAGE constant, so they follow the change without an edit, which R4 allows.\n\nChecks, re-run by QA1 at c27a566 with exit codes read directly, not from output tails: npm run lint exit=0; npm run typecheck exit=0; npm test exit=0 (350 passed); npm run build exit=0. I did not rely on the Dev Team handoff for this evidence.\n\nObservation, not a defect: other user-facing \"written\" copy remains, e.g. \"Recently written\" in app/date/[date]/DateNavigation.tsx and the site description in app/layout.tsx. Both are explicitly out of scope (\"Any other copy change\"; R3 \"no other messages change\"). If the user wants them aligned, that is a future proposal for Master Controller.\n\nNo Human Prerequisites. No known-failing tests."
+    },
+    {
+      "ts": "2026-11-23T13:34:16+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-23T13:33:40+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-23T13:34:16+00:00"
   }
 }
