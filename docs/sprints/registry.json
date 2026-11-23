@@ -190,8 +190,8 @@
     "32": {
       "title": "Recently written list sorted by date",
       "epic": "Date pages",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-32_recently-written-list-sorted-by-date.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-32_recently-written-list-sorted-by-date.md"
     },
     "33": {
       "title": "Reveal step for the horoscope",
