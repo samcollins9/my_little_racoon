@@ -1,5 +1,5 @@
 {
-  "next_id": 37,
+  "next_id": 38,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -216,6 +216,12 @@
       "epic": "Operability",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-36_one-verify-command-with-an-explicit-exit-code--done.md"
+    },
+    "37": {
+      "title": "Chart panel tabs: planets, signs and aspects key",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-37_chart-panel-tabs-planets-signs-and-aspects-key.md"
     }
   }
 }
