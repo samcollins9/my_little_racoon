@@ -1,16 +1,16 @@
 {
   "id": 33,
   "title": "Reveal step for the horoscope",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "dd718b39edd535fac7bf7ca9aabb1e1b7be56658bd7c5c1622d3452056a116b6",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "9bef3e728fc41160655902a6c3d1b2efda14e9b50954b43f9ddeec1fa4ea46c5",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-23T01:12:09+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T01:23:21+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate 1, round 1: PASS. Audited commit 79a5b47 against the current sprint file, re-read fresh. The file is unchanged since 1157755, and no criterion asserts anything between versions. Sprint 31 is merged and closed, so the dependency is met.\n\nR1 Met. A grep of app/ and lib/ non-test source for \"rite the horoscope\", \"Nothing has been written\" and \"not written yet\" finds only:\n- comments in app/date/[date]/actions.ts and lib/date-page/cast.ts;\n- lib/llm/horoscope.ts:114, which is the OpenAI prompt text, not user-visible copy.\nThe idle sentence is R1's exact wording. The button reads \"Reveal the horoscope\", the pending label \"Revealing\u2026\", and the busy phrase \"The horoscope is being revealed.\" \"Try again\" is kept. The error and disabled messages are unchanged, as allowed.\n\nR2 Met. Read both branches side by side.\n- Unsaved: ReadingHeader(\"not revealed yet\") + IdleBlock + readingFooter with button.castButton + note.\n- Saved, folded: the same header classes and status text + the same IdleBlock + a summary holding span.readingFooter, span.castButton with the same label, and the same note text and class.\n- The only structural difference is summary/span against button. Dev Team names it and it is unavoidable. .revealPanel is display:contents, so flex layout is unchanged.\n- The test \"folded, it can't be told apart...\" asserts the shared pieces.\n- The horoscope text lives only inside the details element, after the summary.\n\nR3 Met.\n- It is a native details/summary in HoroscopeReveal.tsx, which is not \"use client\" and has no state, effects or handlers.\n- There is no fetch, and no new client component reveals the text. ReadingPanel was already the client component, for useFormStatus.\n- The keyboard and expanded state come from the native element.\n- The folded and open summary labels toggle with display:none, so only one is in the accessible name. The folded note is aria-hidden inside the summary.\n- Paragraph rendering and the rise animation are the same as before.\n\nR4 Met. Traced ?revealed=1.\n- isLandingRevealed accepts exactly \"1\". The value only sets details open={revealed}, and both pages pass it through as a boolean.\n- With no saved horoscope there is no details element, so it has no effect.\n- Neither GET path gains a write. The only diff to either server action is the success redirect, now withRevealed(path). The error redirects are unchanged.\n- reveal-landing.test.ts renders the REAL DatePage and ReadingPage. The admin client is mocked to throw if created, and the test asserts:\n  - no from() or insert;\n  - no set_reading_horoscope;\n  - no openai.com fetch;\n  - on the date page, only api.wikimedia.org fetches.\n  It covers saved and unsaved horoscopes on both routes, plus the 0, true and repeated values.\n\nR5 Met. DisabledReadingSection with a saved horoscope renders SavedHoroscope, with the disabled note as both folded note and footer, and no form or submit. With none, it renders the header, IdleBlock and disabled note, with no reveal control. The lookup-unavailable path still renders SavedHoroscopesUnavailable with no details element, and that is tested.\n\nR6 and R7 Met. Nothing under supabase/, lib/ or DateNavigation* changes. The diff covers:\n- the shared panel and view: ReadingPanel, ReadingView, the new HoroscopeReveal, reveal.ts and the CSS;\n- both pages' wiring;\n- both actions' success redirect, which R4 permits;\n- tests;\n- vitest.config.ts. That file gains an \"@/\" alias anchored to \"^@/\" so @supabase packages are untouched. It is test infrastructure only, and the commit says the user agreed to it; I have not verified that agreement myself.\nThe chart, events and navigation are not touched.\n\nR8 Met. ReadingPanel.test.ts covers every listed state, asserting the visible text and that the text sits inside the folded details element:\n- saved and folded;\n- landing revealed;\n- no horoscope with generation enabled;\n- disabled, with and without a saved horoscope;\n- error with Try again, with and without a saved horoscope.\nreveal-landing.test.ts covers the lookup-unavailable state and the no-write GET.\n\nRan these myself:\n- npm test: 27 files, 318 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean, both routes dynamic.\n\nLow, non-blocking, for LiveQA's eye:\n(a) .reveal makes the details element a flex container. Older engines ignored display:flex on details and fell back to block, which loses the 20px gap but still unfolds. Check visually in LiveQA steps 1 and 6.\n(b) In the saved-plus-error case, the error note shows beside the folded control, and \"Try again\" appears only once unfolded. That state needs a horoscope saved AND a failed cast, which only a racing double-cast can produce. It is tested and documented.\n\nNo Human Prerequisites. No test was labelled known-failing."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T01:12:09+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-23T01:23:21+00:00"
   }
 }
