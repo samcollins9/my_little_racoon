@@ -184,8 +184,8 @@
     "31": {
       "title": "Retire /chart and the step flow",
       "epic": "Date pages",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-31_retire-chart-and-the-step-flow.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-31_retire-chart-and-the-step-flow--done.md"
     },
     "32": {
       "title": "Recently written list sorted by date",
