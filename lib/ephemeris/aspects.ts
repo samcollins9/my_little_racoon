@@ -18,8 +18,11 @@ export type Aspect = {
  * The ranges don't actually overlap at these values, so order doesn't
  * change which aspect a pair gets -- it's what makes "first match" a
  * well-defined, checkable rule rather than an implicit tie-break.
+ *
+ * Exported (Sprint 37, R5) so the Aspects tab's key reads each angle from
+ * here rather than restating it.
  */
-const ASPECT_DEFINITIONS: { name: AspectName; angle: number; maxOrb: number }[] = [
+export const ASPECT_DEFINITIONS: readonly { name: AspectName; angle: number; maxOrb: number }[] = [
   { name: "conjunction", angle: 0, maxOrb: 8 },
   { name: "opposition", angle: 180, maxOrb: 8 },
   { name: "trine", angle: 120, maxOrb: 7 },

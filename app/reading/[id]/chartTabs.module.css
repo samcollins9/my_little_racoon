@@ -1,0 +1,299 @@
+/* ============================================================
+   Sprint 37: the chart panel's tabs and key tables
+   (ChartTabs.tsx, ChartKeyTables.tsx). Colours are the app's own
+   tokens (app/globals.css); line swatches take their stroke from
+   constellation.ts, never from here.
+   ============================================================ */
+
+/* ---- The two renderings ---- */
+
+/* Hidden panels and the stacked headings use the `hidden` attribute.
+   Restated here because a class that sets `display` would otherwise
+   override the browser's own [hidden] rule. */
+.tabs [hidden] {
+  display: none;
+}
+
+.stackedHeading {
+  margin: 0;
+  padding: 18px 26px 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+/* Stacked: each section after the first is ruled off from the one above. */
+.stacked > .panel + .panel {
+  border-top: 1px solid var(--om-rule);
+}
+
+/* ---- Tab strip ---- */
+
+.tablist {
+  display: flex;
+  border-bottom: 1px solid var(--om-rule);
+}
+
+.tab {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 8px 11px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  color: var(--om-grey);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--om-bone-dim);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--om-verdigris-light);
+  border-bottom-color: var(--om-verdigris);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--om-verdigris);
+  outline-offset: -2px;
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--om-verdigris);
+  outline-offset: -2px;
+}
+
+/* ---- Key tables ---- */
+
+.keyPanel {
+  padding: 18px 26px 22px;
+}
+
+.keySubheading {
+  margin: 0 0 8px;
+  font-family: var(--font-mono), monospace;
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
+.keySubheading:not(:first-child) {
+  margin-top: 22px;
+}
+
+/* R6's last resort: the table, never the page, scrolls sideways. */
+.tableScroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.keyTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 17px;
+  color: var(--om-bone-dim);
+}
+
+.keyTable th,
+.keyTable td {
+  padding: 6px 10px 6px 0;
+  text-align: left;
+  vertical-align: baseline;
+  border-bottom: 1px solid var(--om-rule-faint);
+  font-weight: 400;
+}
+
+.keyTable thead th {
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+  border-bottom-color: var(--om-rule);
+}
+
+/* R6, priority 1: the symbol-and-name column never wraps, never hides, and
+   stays in view if the table has to scroll inside its container. */
+.symbolCell {
+  white-space: nowrap;
+  position: sticky;
+  left: 0;
+  background: var(--om-ink-raised);
+}
+
+.symbol {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  white-space: nowrap;
+}
+
+.glyph {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9em;
+  min-width: 1.1em;
+}
+
+.swatch {
+  flex: none;
+  align-self: center;
+}
+
+.coordinate {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--om-grey);
+  white-space: nowrap;
+}
+
+.keyTable thead th.coordinate {
+  font-size: 9px;
+}
+
+.markColumn {
+  width: 1.5em;
+  text-align: center;
+  color: var(--om-rust);
+}
+
+.keyTable th.markColumn,
+.keyTable td.markColumn {
+  padding-right: 0;
+  text-align: center;
+}
+
+.planetList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* R4: an occupied sign echoes the chart's highlighted sector glyph (the
+   verdigris fill), and is also marked without colour: a bar at the row's
+   start and the brighter weight. An empty sign is dimmed and lighter, as its
+   sector glyph is on the chart. */
+.occupied .symbolCell {
+  color: var(--om-verdigris-light);
+  font-weight: 400;
+  box-shadow: inset 3px 0 0 var(--om-verdigris);
+  padding-left: 10px;
+}
+
+.unoccupied .symbolCell {
+  color: var(--om-grey-dim);
+  font-weight: 300;
+  padding-left: 10px;
+}
+
+.unoccupied td {
+  color: var(--om-grey);
+  font-weight: 300;
+}
+
+.keyNote,
+.keyEmpty {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--om-grey);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   Phones -- the same single breakpoint as reading.module.css.
+   The chart panel there is a fixed 300px-high figure above a scrolling
+   reading column, so the key panels take that same height and scroll
+   vertically inside it, rather than pushing the page's own layout.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  /* R4 (Sprint 20): touch targets clear 44px at this size. */
+  .tab {
+    min-height: 44px;
+    padding: 0 4px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .enhanced .keyPanel {
+    height: 300px;
+    overflow-y: auto;
+    padding: 12px 24px 16px;
+  }
+
+  /* Without JavaScript every section is stacked; cap the whole stack so the
+     events and reading below are still reachable. */
+  .stacked {
+    max-height: 50vh;
+    overflow-y: auto;
+    /* The phone chart is a fixed 390px figure; once the stack's own
+       scrollbar narrows the box it would overflow by that much and add a
+       sideways scrollbar. Clip it instead, as the page body already does. */
+    overflow-x: hidden;
+  }
+
+  .stacked .keyPanel {
+    padding: 8px 24px 16px;
+  }
+
+  .stackedHeading {
+    padding: 14px 24px 4px;
+  }
+
+  .keyTable {
+    font-size: 16px;
+  }
+
+  .keyTable th,
+  .keyTable td {
+    padding: 6px 8px 6px 0;
+  }
+}
+
+/* R6, around 390px: name columns keep their width; the coordinate columns
+   (Position, Orb) give way first, shrinking to the smallest text, and only
+   then may the table scroll inside .tableScroll with the symbol column
+   pinned. */
+@media (max-width: 420px) {
+  .keyTable {
+    font-size: 15px;
+  }
+
+  .keyTable th,
+  .keyTable td {
+    padding-right: 6px;
+  }
+
+  .coordinate {
+    font-size: 11px;
+  }
+
+  .glyph {
+    min-width: 1em;
+  }
+}

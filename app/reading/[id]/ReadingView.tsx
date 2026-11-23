@@ -5,12 +5,17 @@ import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 import { eventsStatusLabel, formatLongDate } from "./format";
+import { AspectsPanel, PlanetsTable, SignsTable } from "./ChartKeyTables";
+import { ChartTabs } from "./ChartTabs";
 import {
   STAR_FIELD,
   computeBodies,
   computeMoonPhaseGeometry,
   computeSectors,
   computeThreads,
+  type BodyRender,
+  type SectorRender,
+  type ThreadGeometry,
 } from "./constellation";
 import { IdleBlock, ReadingHeader, SavedHoroscope } from "./HoroscopeReveal";
 import styles from "./reading.module.css";
@@ -93,208 +98,30 @@ export function ReadingView({
 
         <div className={styles.body}>
           <div className={styles.leftColumn}>
-            <svg
-              viewBox="0 0 640 640"
-              width="560"
-              height="560"
-              className={`${styles.constellationSvg} ${styles.desktopOnly}`}
-            >
-              <defs>
-                <radialGradient id="omReadingField" cx="50%" cy="46%" r="56%">
-                  <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
-                  <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
-                  <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
-                </radialGradient>
-              </defs>
-              <rect x="0" y="0" width="640" height="640" fill="url(#omReadingField)" />
-              {STAR_FIELD.map((star, i) => (
-                <circle
-                  key={i}
-                  cx={star.x}
-                  cy={star.y}
-                  r={star.radius}
-                  fill="oklch(0.80 0.02 288)"
-                  opacity={star.opacity}
-                  className={styles.star}
-                  style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
-                />
-              ))}
-              <circle cx="320" cy="320" r="288" fill="none" stroke="oklch(0.235 0.02 288)" strokeWidth="1" />
-              <circle cx="320" cy="320" r="60" fill="none" stroke="oklch(0.20 0.018 288)" strokeWidth="1" />
-              {sectors.map((sector) => (
-                <g key={sector.sign}>
-                  <line
-                    x1={sector.lineX1}
-                    y1={sector.lineY1}
-                    x2={sector.lineX2}
-                    y2={sector.lineY2}
-                    stroke="oklch(0.22 0.018 288)"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={sector.glyphX}
-                    y={sector.glyphY}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="17"
-                    fill={sector.occupied ? "oklch(0.72 0.09 145)" : "oklch(0.34 0.02 288)"}
-                    fontFamily="var(--font-mono), monospace"
-                  >
-                    {/* Sprint 34, R2: the native tooltip, first child of the glyph it names. */}
-                    <title>{sector.tooltip}</title>
-                    {sector.glyph}
-                  </text>
-                </g>
-              ))}
-              {threads.map((thread, i) => (
-                <line
-                  key={i}
-                  x1={thread.x1}
-                  y1={thread.y1}
-                  x2={thread.x2}
-                  y2={thread.y2}
-                  stroke={thread.color}
-                  strokeWidth={thread.baseWidth}
-                  strokeDasharray={thread.dash}
-                  strokeLinecap="round"
-                  opacity={0.35 + thread.tightness * 0.5}
-                  className={styles.thread}
-                  style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
-                />
-              ))}
-              {bodies.map((body) => (
-                <g key={body.key}>
-                  {/* Sprint 34, R1: first child, so hovering the halo, dot,
-                      glyph or label anywhere in this group shows it. */}
-                  <title>{body.tooltip}</title>
-                  <circle
-                    cx={body.x}
-                    cy={body.y}
-                    r="18"
-                    fill={body.color}
-                    opacity="0.1"
-                    className={styles.bodyHalo}
-                    style={{ animation: "om-halo 8s ease-in-out infinite" }}
-                  />
-                  <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
-                  <text
-                    x={body.glyphX}
-                    y={body.glyphY}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="15"
-                    fill={body.color}
-                    fontFamily="var(--font-mono), monospace"
-                  >
-                    {body.glyph}
-                  </text>
-                  <text
-                    x={body.labelX}
-                    y={body.labelY}
-                    textAnchor={body.labelAnchor}
-                    dominantBaseline="central"
-                    fontSize="9.5"
-                    fill="oklch(0.60 0.015 285)"
-                    fontFamily="var(--font-mono), monospace"
-                    letterSpacing="0.05em"
-                  >
-                    {body.label}
-                  </text>
-                </g>
-              ))}
-              {/* Sprint 34, LiveQA round 1: the centre date and hour labels
-                  are drawn last, on top of the planets, and on some dates
-                  (1969-07-20) the Moon's glyph lands inside the date label.
-                  Click-through, so the planet underneath keeps its tooltip.
-                  Purely a hit-testing change; nothing about how they look. */}
-              <text
-                x="320"
-                y="316"
-                pointerEvents="none"
-                textAnchor="middle"
-                fontSize="12"
-                fill="oklch(0.54 0.015 285)"
-                fontFamily="var(--font-mono), monospace"
-                letterSpacing="0.24em"
-              >
-                {eventDate.split("-").join(" · ")}
-              </text>
-              <text
-                x="320"
-                y="338"
-                pointerEvents="none"
-                textAnchor="middle"
-                fontSize="11"
-                fill="oklch(0.40 0.015 285)"
-                fontFamily="var(--font-mono), monospace"
-                letterSpacing="0.24em"
-              >
-                {calculationHour}
-              </text>
-            </svg>
-
-            {/* Mobile: cropped viewBox, no sign sectors, no body labels
-                (frame 3/4) -- genuinely dropped, not CSS-hidden, same
-                treatment as /chart's own mobile crop. */}
-            <svg
-              viewBox="110 110 420 420"
-              width="390"
-              height="300"
-              className={`${styles.constellationSvg} ${styles.mobileOnly}`}
-            >
-              <defs>
-                <radialGradient id="omReadingFieldMobile" cx="50%" cy="46%" r="56%">
-                  <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
-                  <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
-                  <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
-                </radialGradient>
-              </defs>
-              <rect x="0" y="0" width="640" height="640" fill="url(#omReadingFieldMobile)" />
-              {STAR_FIELD.map((star, i) => (
-                <circle
-                  key={i}
-                  cx={star.x}
-                  cy={star.y}
-                  r={star.radius}
-                  fill="oklch(0.80 0.02 288)"
-                  opacity={star.opacity}
-                  className={styles.star}
-                  style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
-                />
-              ))}
-              {threads.map((thread, i) => (
-                <line
-                  key={i}
-                  x1={thread.x1}
-                  y1={thread.y1}
-                  x2={thread.x2}
-                  y2={thread.y2}
-                  stroke={thread.color}
-                  strokeWidth={thread.baseWidth}
-                  strokeDasharray={thread.dash}
-                  strokeLinecap="round"
-                  opacity={0.35 + thread.tightness * 0.5}
-                  className={styles.thread}
-                  style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
-                />
-              ))}
-              {bodies.map((body) => (
-                <g key={body.key}>
-                  <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
-                  <text
-                    x={body.glyphX}
-                    y={body.glyphY}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="18"
-                    fill={body.color}
-                    fontFamily="var(--font-mono), monospace"
-                  >
-                    {body.glyph}
-                  </text>
-                </g>
-              ))}
-            </svg>
+            {/* Sprint 37, R1: the chart area is a tabbed panel. Chart (the
+                figure below, unchanged) is selected on every load; the other
+                three tabs are a key to it, rendered here on the server. */}
+            <ChartTabs
+              label="Chart views"
+              tabs={[
+                {
+                  id: "chart",
+                  label: "Chart",
+                  content: (
+                    <ConstellationFigure
+                      eventDate={eventDate}
+                      calculationHour={calculationHour}
+                      bodies={bodies}
+                      threads={threads}
+                      sectors={sectors}
+                    />
+                  ),
+                },
+                { id: "planets", label: "Planets", content: <PlanetsTable positions={chart.positions} /> },
+                { id: "signs", label: "Signs", content: <SignsTable positions={chart.positions} /> },
+                { id: "aspects", label: "Aspects", content: <AspectsPanel aspects={chart.aspects} /> },
+              ]}
+            />
 
             <div className={styles.balanceGrid}>
               <div className={styles.balanceCellBordered}>
@@ -373,6 +200,231 @@ export function ReadingView({
         </div>
       </main>
     </div>
+  );
+}
+
+/**
+ * The desktop and phone charts, exactly as ReadingView drew them before
+ * Sprint 37 -- moved here unchanged to become the Chart tab's content.
+ */
+function ConstellationFigure({
+  eventDate,
+  calculationHour,
+  bodies,
+  threads,
+  sectors,
+}: {
+  eventDate: string;
+  calculationHour: string;
+  bodies: BodyRender[];
+  threads: ThreadGeometry[];
+  sectors: SectorRender[];
+}) {
+  return (
+    <>
+      <svg
+        viewBox="0 0 640 640"
+        width="560"
+        height="560"
+        className={`${styles.constellationSvg} ${styles.desktopOnly}`}
+      >
+        <defs>
+          <radialGradient id="omReadingField" cx="50%" cy="46%" r="56%">
+            <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
+            <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
+            <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
+          </radialGradient>
+        </defs>
+        <rect x="0" y="0" width="640" height="640" fill="url(#omReadingField)" />
+        {STAR_FIELD.map((star, i) => (
+          <circle
+            key={i}
+            cx={star.x}
+            cy={star.y}
+            r={star.radius}
+            fill="oklch(0.80 0.02 288)"
+            opacity={star.opacity}
+            className={styles.star}
+            style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
+          />
+        ))}
+        <circle cx="320" cy="320" r="288" fill="none" stroke="oklch(0.235 0.02 288)" strokeWidth="1" />
+        <circle cx="320" cy="320" r="60" fill="none" stroke="oklch(0.20 0.018 288)" strokeWidth="1" />
+        {sectors.map((sector) => (
+          <g key={sector.sign}>
+            <line
+              x1={sector.lineX1}
+              y1={sector.lineY1}
+              x2={sector.lineX2}
+              y2={sector.lineY2}
+              stroke="oklch(0.22 0.018 288)"
+              strokeWidth="1"
+            />
+            <text
+              x={sector.glyphX}
+              y={sector.glyphY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="17"
+              fill={sector.occupied ? "oklch(0.72 0.09 145)" : "oklch(0.34 0.02 288)"}
+              fontFamily="var(--font-mono), monospace"
+            >
+              {/* Sprint 34, R2: the native tooltip, first child of the glyph it names. */}
+              <title>{sector.tooltip}</title>
+              {sector.glyph}
+            </text>
+          </g>
+        ))}
+        {threads.map((thread, i) => (
+          <line
+            key={i}
+            x1={thread.x1}
+            y1={thread.y1}
+            x2={thread.x2}
+            y2={thread.y2}
+            stroke={thread.color}
+            strokeWidth={thread.baseWidth}
+            strokeDasharray={thread.dash}
+            strokeLinecap="round"
+            opacity={0.35 + thread.tightness * 0.5}
+            className={styles.thread}
+            style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
+          />
+        ))}
+        {bodies.map((body) => (
+          <g key={body.key}>
+            {/* Sprint 34, R1: first child, so hovering the halo, dot,
+                glyph or label anywhere in this group shows it. */}
+            <title>{body.tooltip}</title>
+            <circle
+              cx={body.x}
+              cy={body.y}
+              r="18"
+              fill={body.color}
+              opacity="0.1"
+              className={styles.bodyHalo}
+              style={{ animation: "om-halo 8s ease-in-out infinite" }}
+            />
+            <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
+            <text
+              x={body.glyphX}
+              y={body.glyphY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="15"
+              fill={body.color}
+              fontFamily="var(--font-mono), monospace"
+            >
+              {body.glyph}
+            </text>
+            <text
+              x={body.labelX}
+              y={body.labelY}
+              textAnchor={body.labelAnchor}
+              dominantBaseline="central"
+              fontSize="9.5"
+              fill="oklch(0.60 0.015 285)"
+              fontFamily="var(--font-mono), monospace"
+              letterSpacing="0.05em"
+            >
+              {body.label}
+            </text>
+          </g>
+        ))}
+        {/* Sprint 34, LiveQA round 1: the centre date and hour labels
+            are drawn last, on top of the planets, and on some dates
+            (1969-07-20) the Moon's glyph lands inside the date label.
+            Click-through, so the planet underneath keeps its tooltip.
+            Purely a hit-testing change; nothing about how they look. */}
+        <text
+          x="320"
+          y="316"
+          pointerEvents="none"
+          textAnchor="middle"
+          fontSize="12"
+          fill="oklch(0.54 0.015 285)"
+          fontFamily="var(--font-mono), monospace"
+          letterSpacing="0.24em"
+        >
+          {eventDate.split("-").join(" · ")}
+        </text>
+        <text
+          x="320"
+          y="338"
+          pointerEvents="none"
+          textAnchor="middle"
+          fontSize="11"
+          fill="oklch(0.40 0.015 285)"
+          fontFamily="var(--font-mono), monospace"
+          letterSpacing="0.24em"
+        >
+          {calculationHour}
+        </text>
+      </svg>
+
+      {/* Mobile: cropped viewBox, no sign sectors, no body labels
+          (frame 3/4) -- genuinely dropped, not CSS-hidden, same
+          treatment as /chart's own mobile crop. */}
+      <svg
+        viewBox="110 110 420 420"
+        width="390"
+        height="300"
+        className={`${styles.constellationSvg} ${styles.mobileOnly}`}
+      >
+        <defs>
+          <radialGradient id="omReadingFieldMobile" cx="50%" cy="46%" r="56%">
+            <stop offset="0%" stopColor="oklch(0.205 0.03 288)" />
+            <stop offset="62%" stopColor="oklch(0.145 0.016 286)" />
+            <stop offset="100%" stopColor="oklch(0.112 0.012 285)" />
+          </radialGradient>
+        </defs>
+        <rect x="0" y="0" width="640" height="640" fill="url(#omReadingFieldMobile)" />
+        {STAR_FIELD.map((star, i) => (
+          <circle
+            key={i}
+            cx={star.x}
+            cy={star.y}
+            r={star.radius}
+            fill="oklch(0.80 0.02 288)"
+            opacity={star.opacity}
+            className={styles.star}
+            style={{ animation: `om-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite` }}
+          />
+        ))}
+        {threads.map((thread, i) => (
+          <line
+            key={i}
+            x1={thread.x1}
+            y1={thread.y1}
+            x2={thread.x2}
+            y2={thread.y2}
+            stroke={thread.color}
+            strokeWidth={thread.baseWidth}
+            strokeDasharray={thread.dash}
+            strokeLinecap="round"
+            opacity={0.35 + thread.tightness * 0.5}
+            className={styles.thread}
+            style={{ animation: `om-breathe ${7 + thread.tightness * 6.8}s ease-in-out 0.4s infinite` }}
+          />
+        ))}
+        {bodies.map((body) => (
+          <g key={body.key}>
+            <circle cx={body.x} cy={body.y} r={body.dotRadius} fill={body.color} />
+            <text
+              x={body.glyphX}
+              y={body.glyphY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="18"
+              fill={body.color}
+              fontFamily="var(--font-mono), monospace"
+            >
+              {body.glyph}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </>
   );
 }
 

@@ -21,7 +21,8 @@ const CX = 320;
 const CY = 320;
 const D = Math.PI / 180;
 
-const PLANET_GLYPHS: Record<PlanetName, string> = {
+/** Exported for the chart key tabs (Sprint 37, R7): one glyph table for chart and key. */
+export const PLANET_GLYPHS: Record<PlanetName, string> = {
   Sun: "☉",
   Moon: "☽",
   Mercury: "☿",
@@ -63,7 +64,7 @@ const SIGN_ORDER: ZodiacSign[] = [
   "Pisces",
 ];
 
-const SIGN_GLYPHS: Record<ZodiacSign, string> = {
+export const SIGN_GLYPHS: Record<ZodiacSign, string> = {
   Aries: "♈",
   Taurus: "♉",
   Gemini: "♊",
@@ -129,14 +130,29 @@ export function degreesAndMinutes(degreeInSign: number): { degrees: number; minu
   return { degrees, minutes };
 }
 
-/** "12°34'" -- degree and minute within the body's sign. */
-function dms(degreeInSign: number): string {
+/**
+ * "12°34'" -- degree and minute within the body's sign. The chart label's
+ * position, and (Sprint 37, R3/R7) the Planets tab's Position column, so
+ * the two can't disagree.
+ */
+export function dms(degreeInSign: number): string {
   const { degrees, minutes } = degreesAndMinutes(degreeInSign);
   return `${String(degrees).padStart(2, "0")}°${String(minutes).padStart(2, "0")}'`;
 }
 
+/** The retrograde mark: the chart label's and the Planets tab's (Sprint 37, R3). */
+export const RETROGRADE_GLYPH = "℞";
+
 /** The Sun and Moon are never retrograde, whatever a position record says (R1). */
 const NEVER_RETROGRADE: ReadonlySet<PlanetName> = new Set(["Sun", "Moon"]);
+
+/**
+ * Whether a body is shown as retrograde: the tooltip's rule (Sprint 34, R1),
+ * shared with the Planets tab's ℞ column (Sprint 37, R3).
+ */
+export function isShownRetrograde(position: Pick<PlanetPosition, "body" | "retrograde">): boolean {
+  return position.retrograde && !NEVER_RETROGRADE.has(position.body);
+}
 
 /**
  * Sprint 34, R1: a planet's native SVG tooltip, "Mars in Aries 12°34′" with
@@ -147,7 +163,7 @@ export function planetTooltip(
   position: Pick<PlanetPosition, "body" | "sign" | "degreeInSign" | "retrograde">
 ): string {
   const { degrees, minutes } = degreesAndMinutes(position.degreeInSign);
-  const retrograde = position.retrograde && !NEVER_RETROGRADE.has(position.body);
+  const retrograde = isShownRetrograde(position);
   return `${position.body} in ${position.sign} ${degrees}°${String(minutes).padStart(2, "0")}′${
     retrograde ? ", retrograde" : ""
   }`;
@@ -203,7 +219,7 @@ export function computeBodies(positions: PlanetPosition[]): BodyRender[] {
       labelX: CX + (r + 16) * cos,
       labelY: CY + (r + 16) * sin,
       labelAnchor: cos < 0 ? "end" : "start",
-      label: `${dms(p.degreeInSign)} ${SIGN_GLYPHS[p.sign]}${p.retrograde ? "  ℞" : ""}`,
+      label: `${dms(p.degreeInSign)} ${SIGN_GLYPHS[p.sign]}${p.retrograde ? `  ${RETROGRADE_GLYPH}` : ""}`,
       tooltip: planetTooltip(p),
       color: luminary
         ? BODY_COLOR_LUMINARY
