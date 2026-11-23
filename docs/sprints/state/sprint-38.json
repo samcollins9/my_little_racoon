@@ -1,16 +1,16 @@
 {
   "id": 38,
   "title": "Phone layout scrolls as one page",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "a53a9aa620d39c72a65edb06d35488d64ce2b8b4dd6658d4ae931893e44a0298",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "4f955e5c7bc9a6c9a326c47b95cf0a22bd73e6a895938610785a317695507a24",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-23T15:36:46+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-23T15:43:24+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: Gate-1 audit of 69160e5 (HEAD). Sprint file re-read fresh; unchanged since c63bbe0 (planning) apart from a92f169's lifecycle status line and folder move.\n\nR1 MET:\n- .card at 900px or narrower is now height:auto with min-height:100vh.\n- .body lost overflow:hidden, and .rightColumn lost overflow-y:auto.\n- .dateBand, .flowSlot and .leftColumn lost flex-shrink:0, which was only needed in the fixed-height column.\n- .body and .rightColumn keep flex:1, which only stretches a short page to the screen bottom.\n- A grep of page-level CSS (globals.css, reading.module.css, chartTabs.module.css, date.module.css) for overflow, height:100, sticky and contain finds no main-axis overflow or fixed height on any page ancestor.\n\nR2 MET:\n- .enhanced .keyPanel lost height:300px and overflow-y:auto.\n- The whole .stacked rule went: max-height:50vh, overflow-y:auto and overflow-x:hidden.\n- The sideways clip for the 390px phone chart moved to .leftColumn as overflow-x:clip, which covers both the tabs and the stacked fallback. clip with the other axis visible creates no scroll container, so the vertical axis is untouched.\n\nR3 MET: the mask-image and -webkit-mask-image rules on .rightColumn were removed at 900px or narrower.\n\nRequired greps, with every hit accounted for:\n- 100vh: reading.module.css line 22, .page min-height (desktop, pre-existing, allowed); line 534, a comment; line 538, .card min-height:100vh, which R1 allows.\n- overflow-y:auto: none in either file.\n- max-height: none in either file.\n- mask-image: none in either file.\n- Other overflow hits: chartTabs.module.css line 98, .tableScroll overflow-x:auto. That is Sprint 37's in-table sideways scroll, horizontal only, and not an ancestor of the footer. Line 221, .visuallyHidden overflow:hidden, a 1px helper.\n\nR4 MET:\n- The .readingFooter sticky bottom:0 rule (line 646) is unchanged apart from its comment.\n- The .reveal:not([open]) > .revealSummary sticky rule (line 796, second phone media block) is not in the diff at all.\n- No ancestor of either now has an overflow value: the card, body and rightColumn chain is clean. .leftColumn's clip is on a sibling branch, not an ancestor.\n- The 44px castButton floor is untouched.\n\nR5 MET statically, two notes for LiveQA:\n(a) Sideways clipping used to come from .body overflow:hidden, which covered BOTH columns. Now only .leftColumn clips. The right column's event and reading text has no overflow-wrap rule anywhere in the CSS. So an unbreakable long token in a Wikipedia event, which the old clip would have cut off silently, would now widen the page instead. That is hypothetical: I found no such content to demonstrate it, and ordinary prose wraps. LiveQA step 4 covers it.\n(b) overflow-x:clip needs iOS Safari 16 or later. On older iOS the rule is ignored, and a viewport narrower than 390px could scroll sideways because of the chart. That is acceptable, but worth noting in LiveQA step 8 if a real phone is used.\n\nR6 MET: every rule change sits inside @media (max-width:900px): reading.module.css lines 519 to 680, and chartTabs.module.css lines 235 to 264. The only hunk outside a media block is chartTabs.module.css lines 229 to 233, the section header comment.\n\nR7 MET: the diff touches only reading.module.css and chartTabs.module.css, with no .tsx or .ts change. The stale comments were updated: the \"fixed 300px-high figure\", the Sprint 24 flex-shrink note, the fade-mask rationale, and the stacked-cap note.\n\nR8: QA1 ran npm run verify at 69160e5, exit=0, last line \"VERIFY PASS (lint, typecheck, test, build) exit=0\". I did not see Dev Team 1's handoff, so I could not confirm that it carries the VERIFY line or the 390x844 before and after screenshots R8 requires. The user should confirm both are there before dev-done. This is the third sprint running where QA1 has had no sight of the handoff.\n\nNo Human Prerequisites. No known-failing tests."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-23T15:36:46+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-23T15:43:24+00:00"
   }
 }
