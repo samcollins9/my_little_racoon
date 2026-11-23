@@ -1,17 +1,17 @@
 {
   "id": 31,
   "title": "Retire /chart and the step flow",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "204b4afc77f3b2c20c6d5731eabc7290f070313acd88e1f1a830d9dd3af29bc7",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "e85f614a8bf5e5bb9c1903187e394053fd177c68d29577b7fe32b7ff3d159c4c",
   "last_shipped_commit": "707e18fe02ae5aee7434e77871de07d4e9cae07d",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 2,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-22T15:26:17+00:00",
   "completed": null,
   "history": [
@@ -50,11 +50,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=707e18f | ci=green: 1 CI run(s) for 707e18fe02ae5aee7434e77871de07d4e9cae07d all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-23T00:44:29+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Tested 2026-11-23, about 00:40 UTC, against\nhttps://my-little-racoon.vercel.app.\nShipped commit 707e18f. Production serves the pushed tip 604d6f1: /api/health/db reports\nstatus ok and commit 604d6f1. git diff --stat 707e18f 604d6f1 touches only\ndocs/sprints/state/sprint-30.json and sprint-31.json.\nTools: headless Chromium (Playwright 1.57, real navigation and clicks), curl, the anon RPC\n(the user-supplied publishable key) to look up reading ids, and the gh API for job logs.\n\nCI: runs 45040958347 (707e18f) and 45041473191 (604d6f1). build, rls-tests and migrate all\nsucceed in both.\n- build: \"Tests 291 passed (291)\".\n- rls-tests: \"Test Files 5 passed (5)\" and \"Tests 43 passed (43)\".\n- migrate: \"Remote database is up to date.\" and \"No drift detected.\".\n- Both rls-tests jobs logged Docker \"error from registry: Rate exceeded\" while pulling images,\n  and the migrate drift step logged \"Data limit exceeded\". These were retried within the same\n  step, then \"Started supabase local development setup.\" and the suites ran. They are\n  transient registry throttling, not a defect, but worth knowing if a future run fails there.\n\nSTEP 1, /chart: PASS. curl gives 307, location https://my-little-racoon.vercel.app/ and\ncache-control \"public, max-age=0, must-revalidate\". In the browser the chain is 307 /chart,\nthen 307 /, then 200 /date/2026-11-23 (h1 \"23 November 2026\", today in UTC). It is not a 308.\n\nSTEP 2, dated /chart: PASS. All are 307:\n- /chart?date=1969-07-20 goes to /date/1969-07-20, which renders in the browser with h1\n  \"20 July 1969\".\n- /chart?date=garbage and /chart?date=2200-01-01 go to /, then to /date/2026-11-23.\n- Extra cases: 1700-01-01 goes to /date/1700-01-01 and 2100-12-31 to /date/2100-12-31 (both\n  boundaries are kept). 1699-12-31 and 2026-02-30 go to /. A repeated date param\n  (?date=1969-07-20&date=2000-01-01) goes to /.\n- Observation, not a defect: /chart/ with a trailing slash returns 308 to /chart. That is\n  Next.js's own trailing-slash normalisation, and its target is /chart itself, which then\n  307s. The cacheable hop never fixes a destination date page.\n\nSTEP 3, /reading/[id]: PASS, with one note about the sprint file's example id.\n- The example 5bf3a1f5-b47f-4dfa-9a42-41f18eb24861, and 047e8dbd-..., are both UNWRITTEN\n  readings: \"The reading / NOT WRITTEN YET\" with a \"WRITE THE HOROSCOPE\" button.\n  - Each returns 200, with no step indicator (no nav or ol element) and no old-flow copy.\n  - Each has no internal link at all; the only link is the Wikipedia \"source\".\n  - That is the unchanged unwritten state. The pre-sprint panel only ever rendered the \"Cast\n    a new chart\" link in the written state. Prod's older deployments are behind Vercel login\n    (302), so this baseline comes from the git history, not a live before/after.\n  - R3 requires that \"Write the horoscope\" for old unwritten readings stays, and it does.\n  - So the example id can't show a back link by design. I tested the link on written\n    readings instead.\n- Written readings, with ids taken from get_reading_by_date via the anon key:\n  - 0b01c79f-73d5-4fbc-afeb-d65da32ae38d (20 July 1969): 200, no step indicator. Its visible\n    links are \"source\" and \"GO TO THIS DATE\" pointing at /date/1969-07-20. The HTML carries\n    two anchors, a desktopOnly one and a mobile one, both href /date/1969-07-20.\n  - 586064b5-6d6b-47ee-80c0-92a1a1e0c70c (15 June 2050): \"GO TO THIS DATE\" points at\n    /date/2050-06-15.\n  - Clicking \"GO TO THIS DATE\" on the 1969 reading landed on /date/1969-07-20, h1 \"20 July\n    1969\".\n- No visible text on any of the four reading pages matched \"step N\", a \"1. \", \"2. \" or \"3. \"\n  label, \"cast a new chart\", \"cast the chart\", \"save this reading\" or \"see the full reading\".\n- /reading/abc and /reading/00000000-0000-4000-8000-000000000000 both return 404 \"This page\n  could not be found.\", so the 404 uniformity holds.\n\nSTEP 4, date page unchanged: PASS. /date/1900-01-01, 1984-02-29 and 2001-09-11 show\nprev/next, the recent list (the same 11 dates in the same order) and \"this exact date\" /\n\"other years\" identical to my Sprint 30 run. The current date is still marked on 2001-09-11.\nThe site meta description is now \"Pick a date to see the sky over it and what happened that\nday, and have a horoscope written for it.\"\n\nSTEP 5, no old-flow copy reachable from /: PASS. A breadth-first crawl to depth 2 of every\nsame-origin link from / reached 12 pages: / and 11 date pages. None had visible text\nmatching the step or old-flow patterns, and none landed on a /chart page.\n\nSTEP 6, 390px: PASS. isMobile at 390x844 on /reading/0b01c79f-... (written),\n/reading/5bf3a1f5-... (unwritten) and /date/1969-07-20. scrollWidth is 390 on each, with no\nelement extending past 390px.\n\nConsole: the only errors are the expected 404 resource loads on the two 404 probes.\nNot verified live: error.tsx's link to / needs a database outage to render, so R4 rests on\nQA1's static read."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-22T16:01:10+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-23T00:44:29+00:00"
   }
 }
