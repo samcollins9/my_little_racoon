@@ -1,0 +1,30 @@
+{
+  "id": 37,
+  "title": "Chart panel tabs: planets, signs and aspects key",
+  "phase": "dev_build",
+  "qa1_audit_result": null,
+  "qa1_audit_file_hash": null,
+  "qa1_audit_hash_scheme": null,
+  "qa1_audited_tree_hash": null,
+  "last_shipped_commit": null,
+  "groundtruth_result": null,
+  "live_loop_audit_trees": [],
+  "pre_block_phase": null,
+  "audit_rounds": 0,
+  "live_test_rounds": 0,
+  "started": "2026-11-23T15:00:35+00:00",
+  "completed": null,
+  "history": [
+    {
+      "ts": "2026-11-23T15:00:35+00:00",
+      "actor": "system",
+      "event": "sprint_started",
+      "detail": ""
+    }
+  ],
+  "last_claim": {
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-23T15:00:35+00:00"
+  }
+}

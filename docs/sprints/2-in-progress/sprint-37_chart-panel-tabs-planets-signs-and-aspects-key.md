@@ -2,7 +2,7 @@
 id: 37
 title: "Chart panel tabs: planets, signs and aspects key"
 epic: "Date pages"
-status: todo
+status: in_progress
 created: 2026-11-23T14:59:24+00:00
 ---
 
