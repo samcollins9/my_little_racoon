@@ -1,7 +1,7 @@
 {
   "id": 36,
   "title": "One verify command with an explicit exit code",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "27bd3fe66411863c7f2bea567f73413fb8f27dc621b2e2c7477e4759b989f4da",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 1,
   "started": "2026-11-23T13:55:39+00:00",
-  "completed": null,
+  "completed": "2026-11-23T14:28:00+00:00",
   "history": [
     {
       "ts": "2026-11-23T13:55:39+00:00",
@@ -44,11 +44,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 1). Tested 2026-11-23, about 14:25 UTC. The live surface, as the sprint file defines it,\nis the published repository plus CI and production health.\nShipped commit 7e24b84. The pushed tip is 908c3bb. git diff --stat 7e24b84 908c3bb touches only\ndocs/sprints/state/sprint-36.json.\nEnvironment: a fresh git clone of https://github.com/samcollins9/my_little_racoon.git into a scratch\ndirectory (not my working tree), checked out at 7e24b84e8bb1bb90a57c961a3e666d8cf4160c62. Node\nv22.23.2, npm 10.9.8, with no Supabase env vars and no .env.local. A real npm ci was run, with no\nsymlinked node_modules.\nEvery exit code below was read directly from the command, with output redirected to a file and never\npiped. The quoted last lines are read back from that file afterwards.\n\nSTEP 1, clean clone: PASS.\n- npm ci: exit=0.\n- npm run verify: exit=0.\n- Last line: VERIFY PASS (lint, typecheck, test, build) exit=0\n- The steps ran in order: eslint, then tsc --noEmit, then vitest run (Test Files 29 passed (29),\n  Tests 357 passed (357)), then next build.\n- That matches ci.yml's build job: npm ci, then lint, typecheck, test, build.\n\nSTEP 2, lint error in the scratch clone only: PASS.\n- I added an uncommitted lib/liveqa-lint.ts containing an explicit any.\n- Running eslint on it directly gives exit=1 with \"1:26 error Unexpected any. Specify a different type\n  @typescript-eslint/no-explicit-any\".\n- npm run verify: exit=1, last line \"VERIFY FAIL at lint exit=1\".\n- ESLint's own error output was streamed into the log unchanged.\n- There were 0 occurrences of the tsc, vitest or next build step headers, so no later step ran.\n\nBeyond the plan, also in the scratch clone only:\n- Type error, lib/liveqa-type.ts with a string assigned to a number:\n  - npm run verify: exit=2, last line \"VERIFY FAIL at typecheck exit=2\".\n  - So tsc's own exit code 2 is passed through, not flattened to 1, which is what R2 requires.\n  - The TS2322 error was shown, and vitest and next build did not run.\n- Failing test, lib/liveqa-fail.test.ts with expect(1).toBe(2):\n  - npm run verify: exit=1, last line \"VERIFY FAIL at test exit=1\".\n  - vitest's \"FAIL lib/liveqa-fail.test.ts > liveqa deliberate failure\" output was shown, and next\n    build did not run.\n- Each deliberate file was deleted straight after its run, and git status in the clone was empty\n  afterwards. Nothing was committed or pushed. The whole clone has since been deleted.\n\nSTEP 3, CI and production: PASS.\n- CI run 45191638428 (7e24b84) and run 45192547654 (908c3bb): build, rls-tests and migrate all\n  succeeded in both.\n- Production /api/health/db reports status ok, connected true, and commit 908c3bb, the post-deploy\n  tip. migrationVersion is unchanged at 20261122152710_navigation_exact_date_readings."
+    },
+    {
+      "ts": "2026-11-23T14:28:00+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=close sprint 36"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-23T14:26:52+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-23T14:28:00+00:00"
   }
 }

@@ -2,7 +2,7 @@
 id: 36
 title: "One verify command with an explicit exit code"
 epic: "Operability"
-status: in_progress
+status: done
 created: 2026-11-23T03:13:07+00:00
 ---
 
