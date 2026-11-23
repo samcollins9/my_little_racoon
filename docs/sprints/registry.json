@@ -1,5 +1,5 @@
 {
-  "next_id": 32,
+  "next_id": 35,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -186,6 +186,24 @@
       "epic": "Date pages",
       "status": "in_progress",
       "file": "docs/sprints/2-in-progress/sprint-31_retire-chart-and-the-step-flow.md"
+    },
+    "32": {
+      "title": "Recently written list sorted by date",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-32_recently-written-list-sorted-by-date.md"
+    },
+    "33": {
+      "title": "Reveal step for the horoscope",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-33_reveal-step-for-the-horoscope.md"
+    },
+    "34": {
+      "title": "Star chart tooltips",
+      "epic": "Date pages",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-34_star-chart-tooltips.md"
     }
   }
 }
