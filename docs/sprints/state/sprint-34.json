@@ -1,7 +1,7 @@
 {
   "id": 34,
   "title": "Star chart tooltips",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "bf3eac5eb613a0c88ab3b707b8b01f39fcdd085554960c612f908efa40122ce9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: QA1 gate 1, round 1: PASS. Audited commit ff41550 against the current sprint file, re-read fresh. The file is unchanged since d1366fa, and no criterion asserts anything between versions. Sprint 33 is merged and closed, which satisfies the stated dependency.\n\nR1 Met.\n- In ReadingView.tsx's desktop chart, each bodies.map group now has title as its FIRST child, before the halo circle, dot, glyph and label. Hovering anywhere in the group shows the tooltip.\n- The text is body.tooltip, from planetTooltip(p) in constellation.ts: \"Body in Sign D\u00b0MM\u2032\" with \", retrograde\" appended only when retrograde is set and the body is not Sun or Moon.\n- degreesAndMinutes floors both parts, then clamps degrees to 29 and minutes to 59, so 30\u00b0 and 60\u2032 are impossible outputs.\n- The chart's existing dms label now reads the same helper. For any value in [0,30) the label is byte-identical to before, so label and tooltip cannot disagree.\n- Probed float behaviour: for v = 12.6, the double is actually 12.59999..., so floor((v - d) * 60) = 35 is the exact floor of the stored value. Math.floor(v * 60) would give 36 only through multiplication rounding. The chosen formula is the faithful one.\n\nR2 Met. Each sector text glyph now has title as its first child, then the glyph character. The text is sector.tooltip, from sectorTooltip(sign) = \"Sign: Element, Modality\", read through two new lookups, elementOfSign and modalityOfSign. Those return entries from balance.ts's existing ELEMENT_BY_SIGN and MODALITY_BY_SIGN tables, so there is no new table. The hover target was not widened, so there is no paint-order question.\n\nR3 Met. Both strings come from pure exported functions in constellation.ts, carried on BodyRender and SectorRender. The JSX only interpolates them.\n\nR4 Met.\n- No \"use client\" is added, and there is no CSS change.\n- Excluding bookkeeping, the diff is exactly: ReadingView.tsx (2 title elements plus comments), constellation.ts (helpers and two fields), balance.ts (two lookup exports R2 requires) and two test files.\n- The phone chart is untouched, and a test asserts it has no titles.\n- Chart geometry and colours are unchanged.\n\nR5 Met. constellation.test.ts covers:\n- degreesAndMinutes at 0, 12.5667 (12\u00b034\u2032), 29.9999 and 29.999 (both 29\u00b059\u2032), plus 12.5, a sweep, and the largest double below 30;\n- every PLANET_NAMES x ZODIAC_SIGNS spelling;\n- the retrograde suffix only when true;\n- Sun and Moon never retrograde;\n- the label and tooltip agreeing;\n- all 12 signs against an independently written element and modality table.\nReadingView.test.ts asserts against the rendered markup:\n- title is the first child of every planet group and sector glyph;\n- the forced-retrograde suffix;\n- exactly 22 titles, none outside the SVG.\n\nRan these myself:\n- npm test: 28 files, 349 tests, green.\n- typecheck: clean.\n- lint: clean.\n- build: clean.\n\nNo Human Prerequisites. No test was labelled known-failing."
+    },
+    {
+      "ts": "2026-11-23T02:23:10+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-23T02:22:21+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-23T02:23:10+00:00"
   }
 }
