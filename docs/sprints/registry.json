@@ -256,8 +256,8 @@
     "43": {
       "title": "Ask Reloy site banner",
       "epic": "Site identity",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-43_ask-reloy-site-banner.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-43_ask-reloy-site-banner.md"
     }
   }
 }
