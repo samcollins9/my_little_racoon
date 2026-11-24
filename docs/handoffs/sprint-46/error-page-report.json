@@ -1,0 +1,27 @@
+{
+  "origin": "http://127.0.0.1:3146",
+  "browser": "Chrome/156.0.8078.4",
+  "pages": [
+    {
+      "path": "/reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b",
+      "status": 500,
+      "title": "Retroactive Horoscope",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": false,
+          "dataLayerFirst": null
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 2,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3"
+      ]
+    }
+  ]
+}

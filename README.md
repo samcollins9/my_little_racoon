@@ -375,6 +375,23 @@ are not gated on migrations, because previews don't get their own
 database (see below) and there is nothing preview-specific for them to
 migrate.
 
+## Analytics
+
+The production site loads Google Tag Manager container `GTM-T9WQSKH3`
+on every page, from the root layout (`app/TagManager.tsx`; the ID is in
+`lib/analytics/tag-manager.ts`). **Only production loads it**: it renders
+only when the server's `VERCEL_ENV` is `production`, so local `npm run dev`,
+a local `npm run build && npm start`, Vercel preview deployments and the
+tests send nothing. There's no consent banner, by decision (Sprint 46).
+
+The Google Analytics (GA4) tag itself is configured **in Tag Manager, not
+in this repo**: a Google tag with the stream's `G-` measurement ID, firing
+on All Pages, in a published container version. Don't add a GA4 tag to the
+code as well, or every page view counts twice. Page views on in-app
+navigation (Next's links don't reload the page) need GA4's enhanced
+measurement "Page changes based on browser history events", or a History
+Change trigger in the container.
+
 ## Shared database (deliberate, Sprint 5)
 
 Preview deployments and production share the same Supabase project.
