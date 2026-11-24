@@ -1,4 +1,5 @@
 import type { ReadingModel } from "../chart/model";
+import { stripPictureNotes } from "../events/picture-notes";
 
 /**
  * PRD v2 §4. Unlike lib/events/wikipedia.ts, this throws on failure rather
@@ -92,7 +93,8 @@ export function buildPrompt(reading: ReadingModel): string {
 
   const eventsBlock =
     events.length > 0
-      ? events.map((e) => `${e.year}: ${e.text}`).join("\n")
+      ? // Sprint 42: the model never sees the picture either, so the note goes.
+        events.map((e) => `${e.year}: ${stripPictureNotes(e.text)}`).join("\n")
       : "Nothing specific on record for this date.";
 
   return `DATE: ${chart.date}

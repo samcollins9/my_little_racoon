@@ -10,6 +10,7 @@ import { datePagePath } from "@/lib/date-page/params";
 import { CALCULATION_HOUR_UTC, type PlanetPosition } from "@/lib/ephemeris/adapter";
 import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
 import { hasMatchedEvents } from "@/lib/events/matched";
+import { stripPictureNotes } from "@/lib/events/picture-notes";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
 import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 import { eventsStatusLabel, formatLongDate } from "./format";
@@ -191,7 +192,8 @@ export function ReadingView({
                         linked={!hasMatchedEvents(events)}
                       />
                       <span className={styles.eventText}>
-                        {event.text}
+                        {/* Sprint 42: we never show Wikipedia's picture, so its "(pictured)" note goes. */}
+                        {stripPictureNotes(event.text)}
                         {isSafeExternalUrl(event.sourceUrl) ? (
                           <>
                             {" "}

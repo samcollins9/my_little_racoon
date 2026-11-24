@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { calculationInstantForDate, computePositions } from "../../../lib/ephemeris/adapter";
 import { ZODIAC_SIGNS } from "../../../lib/ephemeris/zodiac";
 import { planetTooltip, sectorTooltip } from "./constellation";
+import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 import { ReadingView } from "./ReadingView";
 
 // Sprint 34, R1/R2/R4: the desktop chart's native tooltips, read from the
@@ -85,5 +86,46 @@ describe("desktop chart tooltips (Sprint 34)", () => {
     const mobile = html.match(/<svg viewBox="110 110 420 420"[\s\S]*?<\/svg>/)![0];
 
     expect(mobile).not.toContain("<title>");
+  });
+});
+
+// Sprint 42, R2: the "What happened" column shows event text through
+// stripPictureNotes. Rendered on the server, the way /date/[date] and
+// /reading/[id] (which share this component) first reach a visitor.
+describe('"What happened" drops Wikipedia\'s picture notes (Sprint 42)', () => {
+  const events: WikipediaEventsPayload = {
+    source: "wikipedia-onthisday",
+    requestedDate: DATE,
+    matchedYear: true,
+    fetchedAt: "2026-11-24T00:00:00.000Z",
+    events: [
+      {
+        year: 1969,
+        text: "Apollo 11 (pictured) lands on the Moon, and Armstrong (signing pictured), steps out.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Apollo_11",
+      },
+      { year: 1969, text: "A painting (depicted) is shown." },
+    ],
+  };
+
+  const html = renderToStaticMarkup(
+    <ReadingView eventDate={DATE} positions={computePositions(calculationInstantForDate(DATE))} events={events}>
+      {null}
+    </ReadingView>
+  );
+
+  it("removes the note and leaves the sentence tidy", () => {
+    expect(html).not.toMatch(/pictured/i);
+    expect(html).toContain("Apollo 11 lands on the Moon, and Armstrong, steps out.");
+  });
+
+  it("keeps the source link, untouched", () => {
+    expect(html).toContain(
+      'Apollo 11 lands on the Moon, and Armstrong, steps out. (<a href="https://en.wikipedia.org/wiki/Apollo_11">source</a>)'
+    );
+  });
+
+  it('leaves text without a note alone, "(depicted)" included', () => {
+    expect(html).toContain("A painting (depicted) is shown.");
   });
 });

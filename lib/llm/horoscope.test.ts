@@ -80,6 +80,28 @@ describe("buildPrompt", () => {
     const prompt = buildPrompt(reading({}, []));
     expect(prompt).toContain("Nothing specific on record for this date.");
   });
+
+  it('drops Wikipedia\'s "(… pictured)" notes from the event lines (Sprint 42, R3/R4)', () => {
+    const prompt = buildPrompt(
+      reading({}, [
+        { year: 1969, text: "Apollo 11 (pictured) lands on the Moon." },
+        { year: 1215, text: "King John seals Magna Carta (fragment pictured), at Runnymede." },
+        { year: 1889, text: "Something happened" },
+      ])
+    );
+
+    expect(prompt).not.toMatch(/pictured/i);
+    expect(prompt).toContain(
+      "1969: Apollo 11 lands on the Moon.\n1215: King John seals Magna Carta, at Runnymede.\n1889: Something happened"
+    );
+  });
+
+  it("changes nothing else in the prompt: byte-for-byte the prompt built from the already-stripped text (Sprint 42, R3)", () => {
+    const withNotes = buildPrompt(reading({}, [{ year: 1969, text: "Apollo 11 (pictured) lands on the Moon." }]));
+    const preStripped = buildPrompt(reading({}, [{ year: 1969, text: "Apollo 11 lands on the Moon." }]));
+
+    expect(withNotes).toBe(preStripped);
+  });
 });
 
 describe("SYSTEM_PROMPT (Sprint 21)", () => {
