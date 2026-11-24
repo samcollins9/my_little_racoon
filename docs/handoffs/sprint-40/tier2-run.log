@@ -1,0 +1,99 @@
+preset_supabase_vars=0
+Starting database from backup...
+Starting containers...
+Waiting for health checks...
+Started supabase local development setup.
+
+╭──────────────────────────────────────╮
+│ 🔧 Development Tools                 │
+├─────────┬────────────────────────────┤
+│ Studio  │ http://127.0.0.1:54323     │
+│ Mailpit │ http://127.0.0.1:54324     │
+│ MCP     │ http://127.0.0.1:54321/mcp │
+╰─────────┴────────────────────────────╯
+
+╭──────────────────────────────────────────────────────╮
+│ 🌐 APIs                                              │
+├────────────────┬─────────────────────────────────────┤
+│ Project URL    │ http://127.0.0.1:54321              │
+│ REST           │ http://127.0.0.1:54321/rest/v1      │
+│ GraphQL        │ http://127.0.0.1:54321/graphql/v1   │
+│ Edge Functions │ http://127.0.0.1:54321/functions/v1 │
+╰────────────────┴─────────────────────────────────────╯
+
+╭───────────────────────────────────────────────────────────────╮
+│ ⛁ Database                                                    │
+├─────┬─────────────────────────────────────────────────────────┤
+│ URL │ postgresql://postgres:postgres@127.0.0.1:54322/postgres │
+╰─────┴─────────────────────────────────────────────────────────╯
+
+╭──────────────────────────────────────────────────────────────╮
+│ 🔑 Authentication Keys                                       │
+├─────────────┬────────────────────────────────────────────────┤
+│ Publishable │ <redacted>│
+│ Secret      │ <redacted>│
+╰─────────────┴────────────────────────────────────────────────╯
+
+╭───────────────────────────────────────────────────────────────────────────────╮
+│ 📦 Storage (S3)                                                               │
+├────────────┬──────────────────────────────────────────────────────────────────┤
+│ URL        │ http://127.0.0.1:54321/storage/v1/s3                             │
+│ Access Key │ <redacted>│
+│ Secret Key │ <redacted>│
+│ Region     │ local                                                            │
+╰────────────┴──────────────────────────────────────────────────────────────────╯
+Local dev security notice
+All services bind to 0.0.0.0 (network-accessible, not just localhost)
+API keys and JWT secrets are shared defaults. Do not use in production
+Studio, pgMeta (/pg/*), and analytics have no authentication
+
+step1_exit=0
+Resetting local database...
+Recreating database...
+Initialising schema...
+Seeding globals from roles.sql...
+Applying migration 20260815221042_create_readings.sql...
+Applying migration 20260816125144_grant_default_data_api_privileges.sql...
+Applying migration 20260816134147_readings_rls_policies.sql...
+Applying migration 20260816174352_readings_positions.sql...
+Applying migration 20260816181929_readings_positions_not_null.sql...
+Applying migration 20260822224615_readings_drop_vestigial_place_columns.sql...
+Applying migration 20260822224620_readings_add_events_and_horoscope_columns.sql...
+Applying migration 20260823004820_set_reading_horoscope.sql...
+Applying migration 20261115211107_get_reading_by_date.sql...
+Applying migration 20261115212732_readings_server_authored_writes.sql...
+Applying migration 20261122142918_reading_date_navigation.sql...
+Applying migration 20261122152710_navigation_exact_date_readings.sql...
+Seeding data from supabase/seed.sql...
+Restarting containers...
+Finished supabase db reset on branch main.
+step2_exit=0
+Stopped services: [supabase_imgproxy_my_little_raccoon supabase_pooler_my_little_raccoon]
+step3_exit=0
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+
+> retroactive-horoscope@0.1.0 test:rls
+> vitest run --config vitest.rls.config.ts
+
+
+ RUN  v3.2.7 /home/sam/workspace/workshop/my_little_raccoon
+
+ ✓ supabase/tests/reading-date-navigation-exact-year.test.ts (13 tests) 889ms
+   ✓ cap and adjacency apply after the filter (Sprint 30, R2) > the cap holds 20 qualifying dates when more than 20 qualify and newer ones don't  408ms
+ ✓ supabase/tests/reading-date-navigation.test.ts (13 tests) 639ms
+ ✓ supabase/tests/reading-by-date.test.ts (5 tests) 105ms
+ ✓ supabase/tests/rls.test.ts (9 tests) 89ms
+ ✓ supabase/tests/readings-save-retrieve.test.ts (3 tests) 34ms
+
+ Test Files  5 passed (5)
+      Tests  43 passed (43)
+   Start at  19:57:45
+   Duration  2.53s (transform 60ms, setup 0ms, collect 211ms, tests 1.76s, environment 0ms, prepare 168ms)
+
+step4_exit=0
+Stopping containers...
+Stopped supabase local development setup.
+Local data are backed up to docker volume. Use docker to show them: docker volume ls --filter label=com.supabase.cli.project=my_little_raccoon
+step5_exit=0

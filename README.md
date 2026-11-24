@@ -89,6 +89,10 @@ Copy the printed `API URL`, `anon key`, and `service_role key` into a
 `.env.local` (gitignored) as `NEXT_PUBLIC_SUPABASE_URL`,
 `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` — see
 `.env.example` for the full list, each marked public or secret.
+The service role key `npx supabase start` prints is the local stack's
+well-known demo key, the same on every machine; production's service role
+key (from Vercel or the hosted Supabase project) never goes in `.env.local`,
+or anywhere else on a developer machine.
 `supabase start` applies every migration in `supabase/migrations/` to the
 local database automatically.
 
@@ -141,10 +145,10 @@ yet, not just the ones this sprint happens to touch.
 
 ### Running the policy tests
 
-```bash
-npx supabase start        # requires Docker
-npm run test:rls
-```
+Use the recipe under [Tier 2: CI's `rls-tests` job,
+locally](#tier-2-cis-rls-tests-job-locally). It starts the local stack,
+exports the three variables the tests need into your shell, and runs the
+suite; the tests fail to load without that export.
 
 `npm run test` (the default suite) does **not** include these — they need
 a live Postgres + PostgREST behind them, not just Node. `npm run test:rls`
@@ -216,22 +220,41 @@ here checks the deployed app.
 Needs Docker running. This is the local equivalent of CI's `rls-tests` job:
 
 ```bash
-npx supabase start   # local stack; applies every migration (~30-90s)
+npx supabase start   # local stack (~30-90s)
+npx supabase db reset   # rebuild the local database from every migration
 export $(npx supabase status -o env \
   --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
   --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
-  | grep '^NEXT_PUBLIC_SUPABASE_' | tr -d '"')
+  --override-name auth.service_role_key=SUPABASE_SERVICE_ROLE_KEY \
+  | grep -E '^(NEXT_PUBLIC_SUPABASE_(URL|ANON_KEY)|SUPABASE_SERVICE_ROLE_KEY)=' \
+  | tr -d '"')
 npm run test:rls     # vitest run --config vitest.rls.config.ts (~2s)
 npx supabase stop    # when you're done
 ```
 
-The `export` line (bash) is CI's own "Export local stack URL/anon key" step.
-The tests read `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-from the environment, and Vitest does not load `.env.local`. Without that
-line, no test runs: every test file fails to load with `Supabase client
-requires NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY`. The two-command recipe under
-[Running the policy tests](#running-the-policy-tests) leaves this step out. It
-is the same suite; see that section for what the tests cover.
+`supabase start` applies the migrations only when it creates the local
+database. After that, `supabase stop` keeps the database in a Docker volume and
+the next `start` restores it as it was ("Starting database from backup"), so
+any migration added since is missing and the tests run against an old schema.
+`supabase db reset` rebuilds the local database from every file in
+`supabase/migrations/`, which is what CI gets from its fresh stack. It deletes
+the local database's data, so don't run it against local rows you want to
+keep.
+
+The `export` line (bash) is CI's own "Export local stack URL/anon key/service
+role key" step, with the same three `--override-name` mappings. The tests read
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and
+`SUPABASE_SERVICE_ROLE_KEY` from the environment. They go into the shell, not
+`.env.local`, because Vitest does not load `.env.local`: a key that is already
+in your `.env.local` doesn't reach the tests. The service role key exported
+here is the local stack's well-known demo key, printed by `npx supabase
+start`; production's service role key never goes in `.env.local`, or anywhere
+else on a developer machine. Without the export line, no test runs: every test
+file fails to load with `Supabase client requires NEXT_PUBLIC_SUPABASE_URL and
+NEXT_PUBLIC_SUPABASE_ANON_KEY`. Without the service role mapping, they fail
+with `Supabase admin client requires NEXT_PUBLIC_SUPABASE_URL and
+SUPABASE_SERVICE_ROLE_KEY`. See [Running the policy
+tests](#running-the-policy-tests) for what the suite covers.
 
 ### Running the built app locally
 
