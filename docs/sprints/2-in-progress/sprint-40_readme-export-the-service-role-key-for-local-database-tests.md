@@ -2,7 +2,7 @@
 id: 40
 title: "README: export the service role key for local database tests"
 epic: "Developer docs"
-status: todo
+status: in_progress
 created: 2026-11-24T00:27:12+00:00
 ---
 
