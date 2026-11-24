@@ -2,7 +2,7 @@
 id: 45
 title: "Notable dates replace the recently written list"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-24T15:43:15+00:00
 ---
 
