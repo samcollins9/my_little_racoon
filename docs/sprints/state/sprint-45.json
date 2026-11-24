@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "f372c44792ca5d89f53cc222766d7a0b41ec8f5a4363d4030bb019f531694fa7",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "fa9800ade51c85324935146f94333eba8139ccb4d530abaa8441abdf3c0eee61",
-  "last_shipped_commit": "947f5ea806a0d79fc04f2576881e6c6e07d7e976",
+  "last_shipped_commit": "8920e1655859d639b7890caf451662ac3af060a0",
   "groundtruth_result": "CONDITIONAL",
   "live_loop_audit_trees": [
     {
@@ -63,11 +63,17 @@
       "actor": "qa1",
       "event": "live_loop_audit",
       "detail": "PASS: PASS, live-loop audit of 8920e16 (fix for LiveQA round 1 CONDITIONAL). Not a fresh gate-1 pass and not a substitute for LiveQA's retest.\n\nSprint file: re-read fresh. Unchanged since my gate-1 PASS (last touched 0d70053, the start commit). No new or amended requirements.\n\nHandoff: read at the audited commit (git show 8920e16:docs/handoffs/sprint-45.md). A Round 3 section was added. Rounds 1 and 2 are untouched (54 insertions, 0 deletions). It quotes VERIFY PASS (lint, typecheck, test, build) exit=0. It also corrects Round 2's wrong claim that the card is a fixed 1320px, which LiveQA disproved live.\n\nDiff 947f5ea..8920e16, outside excluded bookkeeping and evidence files: app/date/[date]/date.module.css (+38/-7) and a comment in NotableDates.tsx. No markup, logic or test changes. The other files in the range are sprint 46's own planning and state files, and sprint 45's state file.\n\nThe fix, checked against the defect LiveQA recorded:\n1. Closed tooltips are now display:none, not visibility:hidden. A box with display:none generates no layout, so it can't contribute to scrollWidth. That removes the exact cause LiveQA attributed: scrollWidth equalled the right edge of the furthest hidden tooltip. Hover and focus selectors are unchanged and now set display:block.\n   Accessibility: accname step 2A includes a hidden node when aria-describedby references it, so link descriptions survive. The handoff's AX-tree check shows 19 links with descriptions (the 20th date is the current-page span), which is consistent with that.\n2. Inside @supports (position-area: block-end) and (anchor-scope: all), each li is a scoped anchor. The tooltip uses position-area block-end span-inline-end, with position-try-fallbacks flip-inline. main:has(.notableStrip) becomes position:relative, so the card is the containing block.\n   I checked the claim that this moves nothing else. A grep of app CSS for absolute, fixed and sticky finds only these other absolute elements:\n   - reading.module.css balanceFill: it has its own position:relative parent (balanceTrack), so it's unaffected.\n   - chartTabs visuallyHidden: it has no insets, so it sits at its static position and is unaffected.\n   Sticky elements don't depend on the containing block. Making main relative without a z-index creates no stacking context. The claim holds.\n3. Browsers without anchor positioning fall back to the old placement. With fix 1, closed tooltips still can't widen the page there. An OPEN tooltip on the last date of a wrapped row can still run past the card while it's hovered. The handoff names this honestly as a known limitation.\n\nTests: no new unit test, which is justified. The change is CSS only, and Vitest renders markup without layout. The evidence is Dev Team's committed CDP probe (cdp45-overflow.mjs) and round3-overflow-report.json, which I read:\n- At 901, 1000, 1100, 1200, 1279, 1280, 1320 and 1440px, with every tooltip closed, docW equals vw at every width. At 901 it's 901, where LiveQA measured 969.\n- Across all 20 hovers at every width: exactly one tooltip is shown, it sits flush under its date, and it lies inside the card and the viewport. maxDocWWhileOpen equals vw.\n- At 901, the flipped dates are exactly the three LiveQA saw overflow.\nThe phone report is said to be identical to round 1's. I didn't re-run the browser probe myself; that's static-audit scope, and LiveQA's retest covers it.\n\nMy own check: npm run verify at 8920e16, on a clean tree. Result: verify=0, VERIFY PASS (lint, typecheck, test, build) exit=0, 43 test files and 502 tests passed.\n\nFor LiveQA's retest:\n(a) Re-measure scrollWidth at 901-1278 on production, closed and while hovering the rightmost date on each row.\n(b) Check that every link still has its description in the AX tree, now that closed tooltips are display:none.\n(c) Firefox, if you can: whether anchor positioning applies there, or the fallback runs. If it's the fallback, expect the known limitation: an open tooltip can run past the card's edge while hovered, though closed tooltips can't widen the page.\n\nNo issues found. No Human Prerequisites. | commit=8920e1655859d639b7890caf451662ac3af060a0"
+    },
+    {
+      "ts": "2026-11-24T22:26:19+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=8920e16 | ci=green: 1 CI run(s) for 8920e1655859d639b7890caf451662ac3af060a0 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-24T22:19:56+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-24T22:26:19+00:00"
   }
 }
