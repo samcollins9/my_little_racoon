@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { pickTagline } from "@/lib/banner/taglines";
 import { composeChart } from "@/lib/chart/model";
 import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import { loadDatePage } from "@/lib/date-page/load";
@@ -79,6 +80,8 @@ export default async function DatePage({
       eventDate={page.eventDate}
       positions={page.positions}
       events={page.events}
+      // Sprint 43, R8: after connection(), so a fresh pick per request.
+      tagline={pickTagline(Math.random)}
       belowDateBand={
         <>
           <DatePicker isoDate={isoDate} />

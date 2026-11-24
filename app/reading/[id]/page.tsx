@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { pickTagline } from "@/lib/banner/taglines";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import {
   DatabaseUnavailableError,
@@ -40,6 +42,11 @@ export default async function ReadingPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ error?: string; revealed?: string | string[] }>;
 }) {
+  // Sprint 43, R8: the banner's tagline is a random pick per request, so
+  // this page must never be prerendered or served from a cached render.
+  // Awaiting searchParams already makes it dynamic; connection() says so
+  // explicitly, the same way the date page does.
+  await connection();
   const { id } = await params;
   const { error: generateError, revealed: revealedParam } = await searchParams;
   // Sprint 33, R4: presentation only -- it opens an already-saved horoscope's
@@ -93,6 +100,7 @@ export default async function ReadingPage({
       eventDate={reading.event_date}
       positions={reading.positions}
       events={reading.events}
+      tagline={pickTagline(Math.random)}
       jdNote="sealed · anyone with the link"
     >
       {availability.kind !== "writable" ? (

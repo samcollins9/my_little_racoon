@@ -4,6 +4,7 @@ import { calculationInstantForDate, computePositions } from "../../../lib/epheme
 import { ZODIAC_SIGNS } from "../../../lib/ephemeris/zodiac";
 import { planetTooltip, sectorTooltip } from "./constellation";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
+import { TAGLINES } from "../../../lib/banner/taglines";
 import { ReadingView } from "./ReadingView";
 
 // Sprint 34, R1/R2/R4: the desktop chart's native tooltips, read from the
@@ -22,7 +23,7 @@ const DATE = "1969-07-20";
 function renderView(positions = computePositions(calculationInstantForDate(DATE))): string {
   // The reading section's contents aren't needed for the chart.
   return renderToStaticMarkup(
-    <ReadingView eventDate={DATE} positions={positions} events={null}>
+    <ReadingView eventDate={DATE} positions={positions} events={null} tagline={TAGLINES[0]}>
       {null}
     </ReadingView>
   );
@@ -109,7 +110,12 @@ describe('"What happened" drops Wikipedia\'s picture notes (Sprint 42)', () => {
   };
 
   const html = renderToStaticMarkup(
-    <ReadingView eventDate={DATE} positions={computePositions(calculationInstantForDate(DATE))} events={events}>
+    <ReadingView
+      eventDate={DATE}
+      positions={computePositions(calculationInstantForDate(DATE))}
+      events={events}
+      tagline={TAGLINES[0]}
+    >
       {null}
     </ReadingView>
   );

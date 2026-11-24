@@ -1,0 +1,121 @@
+/*
+ * Sprint 43: the "Ask Reloy" banner. Values from
+ * the banner variations design file's template (docs/design/): 0a's <header> for desktop,
+ * 0e's first (Seer) phone header below 900px. Existing --om-* tokens where
+ * one has the exact value; the design's own literal otherwise, since no
+ * token matches it (noted per line). Fonts are next/font's variables.
+ */
+
+.banner {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 16px 40px 0;
+  border-bottom: 1px solid var(--om-rule-strong);
+  /* No token: the design's two gradient stops. */
+  background: linear-gradient(180deg, oklch(0.112 0.012 285) 0%, oklch(0.16 0.02 288) 100%);
+  /* The phone portrait's negative margin pokes past the left edge by
+     design; this keeps it from ever widening the page or the error card. */
+  overflow: hidden;
+}
+
+/* 0a: the portrait rises out of the bar's bottom edge. */
+.portraitLink {
+  display: block;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.portrait {
+  display: block;
+  /* R4: whole-number CSS pixels, 1x the PNG, never smoothed. */
+  width: 133px;
+  height: 138px;
+  max-width: none;
+  image-rendering: pixelated;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 18px;
+  min-width: 0;
+}
+
+.wordmark {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  /* No token: the design's wordmark white, a step brighter than --om-bone. */
+  color: oklch(0.94 0.012 85);
+  /* The design sets the colour inline, which beats the global a:hover; this
+     does the same, so the wordmark never turns green on hover. */
+  align-self: flex-start;
+}
+
+.wordmark:hover {
+  color: oklch(0.94 0.012 85);
+}
+
+.wordmark:focus-visible {
+  outline: 2px solid var(--om-verdigris);
+  outline-offset: 4px;
+}
+
+.wordmarkAccent {
+  font-style: italic;
+  color: var(--om-verdigris);
+}
+
+/* R9: grows to a third line rather than clipping. The design's box is a
+   fixed 520 x 46 (two lines at 17px x 1.35); min-height keeps that height,
+   with no fixed height and no overflow rule to cut tagline 8 off. */
+.tagline {
+  margin: 0;
+  width: 520px;
+  max-width: 100%;
+  min-height: 46px;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.35;
+  /* No token: the design's tagline colour, quoted in Requirement 5. */
+  color: oklch(0.74 0.02 85);
+  text-wrap: pretty;
+}
+
+/* 0e, the Seer: the portrait cropped to a 92px window, a 32px wordmark, no
+   tagline, no menu button (there's no nav to fold). The banner isn't sticky
+   on phones either: it scrolls away with the page, as Sprint 38 requires. */
+@media (max-width: 900px) {
+  .banner {
+    gap: 12px;
+    padding: 10px 18px 0;
+  }
+
+  .portraitLink {
+    width: 133px;
+    height: 92px;
+    overflow: hidden;
+    margin-left: -24px;
+  }
+
+  .portrait {
+    margin-top: -46px;
+  }
+
+  .text {
+    gap: 0;
+  }
+
+  .wordmark {
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .tagline {
+    display: none;
+  }
+}

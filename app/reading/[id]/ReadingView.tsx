@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SiteBanner } from "@/app/components/SiteBanner";
 import { composeChart } from "@/lib/chart/model";
 import {
   linkableEventDate,
@@ -33,6 +34,12 @@ type ReadingViewProps = {
   eventDate: string;
   positions: PlanetPosition[];
   events: WikipediaEventsPayload | null;
+  /**
+   * Sprint 43, R8: the banner's tagline, picked on the server by the page
+   * (lib/banner/taglines.ts's pickTagline), so this component stays a pure
+   * function of its props.
+   */
+  tagline: string;
   /** Second line of the JD block under the date band; omitted when absent. */
   jdNote?: string;
   /** The strip between the date band and the body (the date page's picker and navigation). */
@@ -54,11 +61,17 @@ type ReadingViewProps = {
  * astronomical from the design prototype. Positions are rendered as given
  * -- the caller decides whether they are a stored row's or freshly
  * computed.
+ *
+ * Sprint 43, R2: the "Ask Reloy" banner opens the card, above the date
+ * band. Every state either page renders goes through here (written, idle,
+ * disabled, unavailable, unmatched events), so mounting it once here puts
+ * it on all of them.
  */
 export function ReadingView({
   eventDate,
   positions,
   events,
+  tagline,
   jdNote,
   belowDateBand,
   children,
@@ -76,6 +89,7 @@ export function ReadingView({
   return (
     <div className={styles.page}>
       <main className={styles.card}>
+        <SiteBanner tagline={tagline} />
         <div className={styles.dateBand}>
           <div className={styles.dateBandLeft}>
             <span className={styles.eyebrow}>The sky over</span>

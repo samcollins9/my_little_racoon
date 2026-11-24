@@ -23,6 +23,12 @@
   border: 1px solid var(--om-rule-strong);
   background: var(--om-ink-raised);
   box-shadow: 0 44px 100px -46px oklch(0.02 0 0 / 0.95);
+}
+
+/* Sprint 43: the card's padding moved here, onto its contents, so the
+   banner above them spans the card's full width as it does on the reading
+   card. The same 40px 44px as before. */
+.cardBody {
   padding: 40px 44px;
 }
 
@@ -66,7 +72,8 @@
 }
 
 @media (max-width: 900px) {
-  .card {
+  /* Sprint 43: was .card, moved with the desktop padding above. */
+  .cardBody {
     padding: 28px 24px;
   }
 }
