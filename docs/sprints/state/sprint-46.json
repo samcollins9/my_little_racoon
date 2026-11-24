@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "36bb112f28487d9787abc55bf831c48262f13d5f9c6c5f43c8770f7675110dde",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "1cdab833f53c33f4417fb4f057dcbb8baca01fd2973c3e88078ac2964f54fc61",
-  "last_shipped_commit": "2a7409741549b913fc3139d37da6b487a46768b2",
+  "last_shipped_commit": "f3b47be50db72b4ad1dff9ab5fb92727034c1cf8",
   "groundtruth_result": "CONDITIONAL",
   "live_loop_audit_trees": [
     {
@@ -63,11 +63,17 @@
       "actor": "qa1",
       "event": "correction",
       "detail": "target_index=1 | target_event=audit | target_ts=2026-11-24T22:32:02+00:00 | Correction to my gate-1 notes, ruling on Dev Team's question 1 (the 500 error shell). I said R2's dataLayer-first rule \"holds on every page the layout server-renders, which is every page R1 names\". That was false, and LiveQA round 1 (event 4) disproved it. Route-level notFound() 404s on /date/[date] and /reading/[id] are also served as Next's bare error document, with the root layout rendered only in the browser. There the container was fetched twice and no page_view was sent. I accepted Dev Team's premise without testing it against a route-level 404. The verdict itself is superseded by the fix at f3b47be, which I audited as a live-loop PASS (event 5)."
+    },
+    {
+      "ts": "2026-11-24T23:15:34+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=f3b47be | ci=green: 1 CI run(s) for f3b47be50db72b4ad1dff9ab5fb92727034c1cf8 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-24T23:08:57+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-24T23:15:34+00:00"
   }
 }
