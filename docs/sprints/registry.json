@@ -1,5 +1,5 @@
 {
-  "next_id": 40,
+  "next_id": 42,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -234,6 +234,18 @@
       "epic": "Date pages (PRD v3)",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-39_only-write-horoscopes-for-dates-with-matched-events--done.md"
+    },
+    "40": {
+      "title": "README: export the service role key for local database tests",
+      "epic": "Developer docs",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-40_readme-export-the-service-role-key-for-local-database-tests.md"
+    },
+    "41": {
+      "title": "Front page lands on today in the latest year with an event",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-41_front-page-lands-on-today-in-the-latest-year-with-an-event.md"
     }
   }
 }

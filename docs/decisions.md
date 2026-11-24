@@ -52,3 +52,31 @@ one written from another year's events isn't astrologically valid. So:
 Known consequence, accepted for now: today's date, the landing page, will usually be
 unmatched, so the front door will usually say a horoscope can't be written for it.
 Where `/` lands may be revisited separately.
+
+### Correction, 24 Nov 2026: what Sprint 39 actually built (decision 2 above)
+
+Decision 2 says "newest with a horoscope wins" applies among matched rows only. That
+would mean showing an older matched horoscope when the newest one for that date is
+unmatched. Sprint 39's file said only that such a horoscope "may" still be shown, and
+the build hides both. It treats the date as having nothing saved, and offers a fresh
+write if the date's events match. That wording was Master Controller's, and the
+ambiguity is Master Controller's too.
+
+Why this is left as built for now: no new unmatched row can be written any more, so
+the case only affects dates already in the database. It also goes away when someone
+writes a fresh horoscope for the date, because that new row is matched and is the
+newest. A follow-up sprint, which would need a database change, is worth doing only if
+the measurement below finds dates that are actually affected:
+
+    select event_date from readings where horoscope is not null
+    group by event_date
+    having bool_or((events->>'matchedYear')::boolean is true)
+       and bool_or(events is null or (events->>'matchedYear')::boolean is not true);
+
+## 24 Nov 2026: where the front page lands (Sprint 41)
+
+Decided by the user. `/` lands on today's UTC month and day, in the most recent year
+(up to this year, within the date page's 1700–2100 range) that has a Wikipedia "On
+this day" event on it. That date is always writable. If the feed can't be used, `/`
+falls back to today's date as before. This amends decision 4 for `/` only: "today" is
+still the UTC date, and `/date/<today>` is unchanged.
