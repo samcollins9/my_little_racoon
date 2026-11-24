@@ -1,16 +1,16 @@
 {
   "id": 42,
   "title": "Strip \"(pictured)\" notes from event text",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "ac9383c811b99a13853f5731008c938eb51ca51067a48efb9adaf8427f0ee4fb",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "b8250ced42167790094c4a4ff37abb7fb5e6a3b1bb78975dbc4b1b702e81a654",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-24T00:35:04+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T00:41:21+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate-1 audit, Sprint 42, commit 1bf9be8 on devteam2/sprint-42 (worktree). Verdict: PASS.\n\nSprint file: re-read fresh from the worktree. The only change since MC's 84f8f20 is the lifecycle-owned status line (5834318, record start). Nothing amended mid-build.\n\nHandoff: read at the audited commit with git show 1bf9be8:docs/handoffs/sprint-42.md. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0 with 35 files and 444 tests. QA1's own npm run verify in the worktree: verify=0, 35 files, 444 tests, VERIFY PASS. They match.\n\nR1: met. lib/events/picture-notes.ts exports one function, stripPictureNotes, with no imports at all. Regex /\\s*\\([^()]*\\bpictured\\b[^()]*\\)/gi: one paren group with no inner parens, whole word pictured in any case, plus the preceding whitespace. Tidying (collapse runs of spaces, trim) runs only when something was removed, so note-free text is returned as the identical string. Read against every row of the Req 4 table. QA1's hand checks, run as a throwaway script: empty string gives empty string; two notes (\"A (pictured) and B (right, pictured).\") gives \"A and B.\"; also \"Foo (pictured).\" gives \"Foo.\", \"Foo (pictured); bar\" gives \"Foo; bar\", and an NBSP before the note is taken with it.\nR2: met. ReadingView renders stripPictureNotes(event.text). The source link markup is unchanged, and a test pins the stripped text immediately followed by the source link. QA1 grepped app and lib (non-test) for .text, for destructured text and for events.map. The only render site of event text is ReadingView:196. The other hits are UI notes (ReadingPanel, HoroscopeReveal), the generate.ts result, accuracy.ts (year only) and wikipedia.ts:98-99 (the stored payload, out of scope and Sprint 41's file, untouched).\nR3: met. horoscope.ts event lines use the helper. The existing buildPrompt tests are unmodified (the diff only adds to them). The new toBe test shows the prompt built with a note is byte-identical to the one built from pre-stripped text.\nR4: met. All nine table rows are tests: six in it.each, plus (depicted), nested and no-note identity. The nested case is defined as \"A (b c) d\". There is a prompt-lines test with a fixture containing pictured notes. verify exit=0 as above.\nR5: met, see Handoff.\n\nIndependence: the diff touches only picture-notes.ts and its test, horoscope.ts and its test, ReadingView.tsx and its test, and the handoff. It does not touch wikipedia.ts, README.md, app/page.tsx or reading.module.css.\n\nDev Team's question (global double-space collapse after a removal): acceptable. Req 1 says the result has no doubled spaces, and the collapse only runs when a note was removed, so the \"unchanged, exactly\" clause still holds for note-free text.\n\nNits, not blocking (handoff already discloses both): a leading note followed by punctuation (\"(pictured), x\") leaves \", x\"; a note right after an opening paren leaves \"( b)\". Neither shape is in MC's sample. If LiveQA ever sees one, it's a follow-up.\n\nHuman Prerequisites: unchanged and optional. For LiveQA step 3, the user runs the sprint file's SQL to supply a reading id whose stored events contain pictured.\n\nWorktree return path: this sprint lives on devteam2/sprint-42. On close it needs Pipeman's merge into main per CLAUDE.md."
     }
   ],
   "last_claim": {
-    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
-    "claude_agent": "dev-team-2",
-    "ts": "2026-11-24T00:35:04+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-24T00:41:21+00:00"
   }
 }
