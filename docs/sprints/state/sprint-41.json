@@ -1,17 +1,17 @@
 {
   "id": 41,
   "title": "Front page lands on today in the latest year with an event",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "c26b3ffbf2ca41e2ef171b93eb914d581d238f4d123cfa99d050b1dc586e0b0f",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "79a560d14d4407b2eb39731ebf1feabfc517e380123da2547b07b5c06b5e45ea",
   "last_shipped_commit": "0aad17a23c02336288f604df6213b04bea740a94",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-24T03:02:27+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=0aad17a | ci=green: 1 CI run(s) for 0aad17a23c02336288f604df6213b04bea740a94 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-24T12:56:09+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1).\n- Production: steps 1, 2, 3 and 5.\n- A local production build of the shipped commit, with Wikipedia blocked at the resolver: step 4.\n- Step 6: I tested at about 12:55 UTC, not within an hour of midnight, so Requirement 8's clock tests carry it.\nNo defects.\n\nTested 2026-11-24, about 12:50 to 13:05 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 0aad17a. Production serves the pushed tip 173b5c4: /api/health/db reports status ok, connected true, commit 173b5c4, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat 0aad17a origin/main touches only the Sprint 43 done-rename, registry.json, and the state files for Sprints 41 and 43.\nTools:\n- curl.\n- Headless Chromium (Playwright 1.57): 1440x1000; 390x844 (isMobile, hasTouch) with JS on; and 390x844 with JS off.\n- A fresh git clone of https://github.com/samcollins9/my_little_racoon.git at 0aad17a in a scratch directory (not my working tree): npm ci exit=0 and npm run build exit=0. The route table shows \"\u0192 /\". Then next start.\n\nSTEP 1, curl -sI /: PASS.\n\"HTTP/2 307\", location /date/2023-11-24. Today's UTC month and day is 11-24.\n\nSTEP 2, the year: PASS.\n- I fetched https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/selected/11/24 with the project's User-Agent, \"RetroactiveHoroscope/1.0 (PoC; https://github.com/samcollins9/my_little_racoon)\", taken from lib/events/wikipedia.ts at 0aad17a. It returned HTTP 200 with 16 entries.\n- Years, newest first: 2023, 2009, 1976, 1971, 1963, 1943, 1941, 1925, 1922, 1918, 1906, 1863, 1859, 1643, 1542, 1221.\n- The largest year that is no later than 2026 and within 1700-2100 is 2023, which matches the redirect. The entry is \"Hibiscus Rising (pictured), a sculpture commemorating the life of David Oluwale, was unvei...\".\n\nSTEP 3, the landed page: PASS.\n- A real browser load of / at 1440, at 390, and at 390 with no JS: the navigation chain was \"307 / > 200 /date/2023-11-24\" each time.\n- The events status reads \"this exact date\", and the single event is \"2023: Hibiscus Rising, a sculpture commemorating the life of David Oluwale, ...\"; Sprint 42's stripping is visible.\n- The reading section reads: \"The reading NOT REVEALED YET The chart stands as it is. Nothing has been revealed about it yet \u2014 reveal the horoscope when you want the sky held to account for the day. REVEAL THE HOROSCOPE\". There is 1 POST form and 1 reveal details element.\n- Sprint 39's can't-write and couldn't-be-loaded messages are absent.\n- The Sprint 43 banner is present, scrollWidth is 1440 and 390, and there were 0 console or page errors.\n- Nothing was submitted; no horoscope was written.\n\nSTEP 4, fallback (Requirement 3): PASS, on the local build of 0aad17a.\nTwo servers ran side by side, each with dummy Supabase and OpenAI env and HOROSCOPE_ENABLED=false. Supabase pointed at a logging stand-in PostgREST on 127.0.0.1:54329.\n- Port 3941, with Wikipedia blocked: NODE_OPTIONS --require a preload that patches dns.lookup and dns.promises.lookup to throw ENOTFOUND for *.wikimedia.org and *.wikipedia.org. Sprint 39's step 4 used the same technique.\n  - / returned \"HTTP/1.1 307 Temporary Redirect\", location /date/2026-11-24, with Cache-Control \"private, no-cache, no-store, max-age=0, must-revalidate\".\n  - Three more requests each returned 307 to /date/2026-11-24, never a 500 or a 404.\n  - The server log has 4 \"getaddrinfo ENOTFOUND api.wikimedia.org\" lines, so the failure wasn't cached and each request retried.\n  - The fallback page /date/2026-11-24 shows Sprint 39's message: \"events unavailable The events for this date couldn't be loaded, so the horoscope can't be written right now. Try again in a few minutes.\" It has \"No events looked up for this reading.\" and 0 POST forms.\n- Port 3942, Wikipedia not blocked (the control): / returned 307 to /date/2023-11-24, the same as production.\n- The stand-in database logged 0 requests over these runs. I didn't run a positive control for the logger this time, so this supports Requirement 6 but isn't proof of it; QA1's import-closure walk and app/page.test.ts are the evidence for that.\n- Both servers are stopped, and the clone is deleted.\n\nSTEP 5, not cached: PASS.\nTwo curl -sI requests to production /, 9 seconds apart (12:54:16 and 12:54:25 GMT): both 307, both with age 0, cache-control \"private, no-cache, no-store, max-age=0, must-revalidate\", and x-vercel-cache MISS.\n\nSTEP 6: not run at midnight; Requirement 8's clock tests carry it (QA1 confirmed the midnight-boundary tests).\n\nNote: the Sprint 43 banner's home link now lands on /date/2023-11-24 through this redirect, as Sprint 43 intended once 41 shipped."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-24T03:16:15+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-24T12:56:09+00:00"
   }
 }
