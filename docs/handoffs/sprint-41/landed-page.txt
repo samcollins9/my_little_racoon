@@ -1,0 +1,7 @@
+# 2026-11-24T03:06:39Z next dev, stand-in PostgREST (no saved rows), live Wikipedia
+GET / -> location /date/2023-11-24; GET /date/2023-11-24 -> 200
+count of "this exact date" in the page: 2
+count of "on this day, other years" in the page: 0
+count of "Reveal the horoscope" in the page: 1
+count of "accurate horoscope" in the page: 0
+count of "couldn&#x27;t be loaded" in the page: 0

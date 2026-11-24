@@ -1,0 +1,8 @@
+# 2026-11-24T03:06:48Z production build in a network namespace with only loopback (unshare -rn)
+# reachability check: curl -sI https://api.wikimedia.org/
+wikimedia_curl_exit=6
+# curl -sI http://127.0.0.1:3143/
+HTTP/1.1 307 Temporary Redirect
+location: /date/2026-11-24
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+curl_exit=0

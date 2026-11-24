@@ -89,6 +89,22 @@ async function fetchSelectedEntries(monthDay: string): Promise<RawSelectedEntry[
   }
 }
 
+// The feed's path segment for a YYYY-MM-DD date: "MM/DD", zero-padded.
+function feedMonthDay(isoDate: string): string {
+  const [, month, day] = isoDate.split("-");
+  return `${month}/${day}`;
+}
+
+/**
+ * Whether a feed entry's year is `isoDate`'s own year -- the one rule
+ * behind `matchedYear`. Exported so anything that chooses a date from the
+ * feed's years (Sprint 41's front door) judges it exactly as
+ * fetchDayEvents will once that date's page loads.
+ */
+export function entryMatchesDateYear(entryYear: number, isoDate: string): boolean {
+  return String(entryYear) === isoDate.split("-")[0];
+}
+
 // R2: field access matches the shape confirmed live on 22 Aug 2026 --
 // text, year, and pages[0].content_urls.desktop.page for sourceUrl. Any
 // other field is invented, not confirmed.
@@ -111,19 +127,16 @@ function toDateEvent(entry: RawSelectedEntry): DateEvent {
  * Logs the reason before returning (R12).
  */
 export async function fetchDayEvents(isoDate: string): Promise<WikipediaEventsPayload | null> {
-  const [year, month, day] = isoDate.split("-");
-  const monthDay = `${month}/${day}`;
-
   // The whole body is one try/catch, not just the fetch itself -- an
   // unexpected response shape should degrade the same way a network
   // failure does (R6), not throw past this function.
   try {
-    const entries = await fetchSelectedEntries(monthDay);
+    const entries = await fetchSelectedEntries(feedMonthDay(isoDate));
 
     // R3: entries matching the reading's own year, per PRD §3.2. Falls
     // back to the top N unfiltered entries -- the common case, since any
     // given year contributes at most a couple of entries to a given day.
-    const yearMatches = entries.filter((entry) => String(entry.year) === year);
+    const yearMatches = entries.filter((entry) => entryMatchesDateYear(entry.year, isoDate));
     const matchedYear = yearMatches.length > 0;
     const selected = matchedYear ? yearMatches : entries.slice(0, FALLBACK_EVENT_COUNT);
 
@@ -139,6 +152,24 @@ export async function fetchDayEvents(isoDate: string): Promise<WikipediaEventsPa
     // in Vercel's logs, so an outage is distinguishable from a date that
     // genuinely had no events, rather than silently indistinguishable.
     console.error("fetchDayEvents failed", err);
+    return null;
+  }
+}
+
+/**
+ * Sprint 41: the years of the feed's entries for `isoDate`'s month and day,
+ * in feed order, or null when the feed can't be read. Shares
+ * fetchDayEvents' fetch, timeout, User-Agent and month/day cache, so the
+ * date page a caller sends the visitor to reads the same cached entries
+ * rather than fetching again (R5). Never throws, for the same reason
+ * fetchDayEvents doesn't, and logs the reason before returning null.
+ */
+export async function fetchDayEventYears(isoDate: string): Promise<number[] | null> {
+  try {
+    const entries = await fetchSelectedEntries(feedMonthDay(isoDate));
+    return entries.map((entry) => entry.year);
+  } catch (err) {
+    console.error("fetchDayEventYears failed", err);
     return null;
   }
 }

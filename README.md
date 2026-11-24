@@ -72,12 +72,15 @@ npm install
 npm run dev    # http://localhost:3000
 ```
 
-`/` redirects (307) to today's date page, `/date/YYYY-MM-DD`, with today
-meaning the UTC date and worked out on every request (Sprint 28) — there's
-no page of its own. The date page looks up the saved horoscope for its date,
-so it needs Supabase configured, same as `/reading/[id]` — see
-`.env.example`. `/chart` needs no environment variables: it is a redirect
-only.
+`/` redirects (307) to a date page, `/date/YYYY-MM-DD`, worked out on every
+request — there's no page of its own. It keeps today's month and day (today
+meaning the UTC date, Sprint 28) and picks the latest year, no later than
+this one, that Wikipedia's "On this day" feed has an event for (Sprint 41),
+so the front page is a date a horoscope can be written for. If the feed
+can't be read or has no such year, it lands on today itself. The date page
+looks up the saved horoscope for its date, so it needs Supabase configured,
+same as `/reading/[id]` — see `.env.example`. `/chart` needs no environment
+variables: it is a redirect only.
 
 `/api/health/db` does need Supabase configured. For local development:
 
@@ -267,7 +270,12 @@ npm run build && npm run start   # http://localhost:3000
 
 With no `.env.local`, this is what each route does:
 
-- `/` redirects (307) to `/date/<today, UTC>`.
+- `/` redirects (307) to `/date/<Y>-<MM>-<DD>`: today's UTC month and day,
+  in the latest year from 1700 to this one that Wikipedia's "On this day"
+  feed lists an event for. It needs no environment, only a connection to
+  `api.wikimedia.org`. If the feed can't be fetched (within its five-second
+  timeout), is empty, or has no such year, it redirects to
+  `/date/<today, UTC>` instead.
 - `/date/<date>` returns 500 (Next's generic error page): creating the
   Supabase client throws before the lookup runs. Only a database that is
   configured but unreachable gets the degraded page (chart and events, with
