@@ -162,7 +162,7 @@ Master Controller unpacked it this way to write this sprint. Dev Team takes the 
 ### Human Prerequisites
 
 - **Before Dev Team 2 creates its worktree:** Pipeman merges `devteam2/sprint-42` into main. The user tells Pipeman to do this, in Pipeman's session.
-- **The user confirms that the portrait may be published.** It's a pixel portrait that resembles a real person ("Reloy"). Confirm that whoever it depicts is fine with it appearing on the public site. If not, the sprint is blocked until a replacement image exists.
+- ~~The user confirms that the portrait may be published.~~ **Done, 24 Nov 2026:** the user confirmed it's their own portrait and is fine to publish.
 
 ### Team Assignments
 
