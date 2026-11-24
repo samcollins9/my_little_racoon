@@ -1,7 +1,7 @@
 {
   "id": 40,
   "title": "README: export the service role key for local database tests",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "f6c88eb951660c8b149d72cb12f909e1676132967cad828d784ad76d9c7ec416",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 1,
   "started": "2026-11-24T00:44:02+00:00",
-  "completed": null,
+  "completed": "2026-11-24T02:51:55+00:00",
   "history": [
     {
       "ts": "2026-11-24T00:44:02+00:00",
@@ -44,11 +44,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 1). The README's Tier 2 recipe, followed exactly as written in a fresh shell with no variables set and no .env.local, ran start, db reset, the export, test:rls and stop, and every step exited 0: 43/43 tests passed against all 12 migrations.\n\nTested 2026-11-24, about 02:40 to 03:00 UTC.\nShipped commit 3a5af87. origin/main tip db61aea; git diff --stat 3a5af87 db61aea touches only docs/sprints/state/sprint-40.json.\nThis sprint is docs only, so the released thing is the README as pushed. I tested it in a fresh git clone of https://github.com/samcollins9/my_little_racoon.git, checked out at 3a5af87, in a scratch directory (not my working tree).\n- npm ci exit=0.\n- ls .env.local: \"No such file or directory\".\n\nDOCKER: docker info exit=0, from the WSL shell (Docker Desktop's WSL integration). Before the run, no Supabase containers were running. Existing volumes included supabase_db_my_little_raccoon.\n\nFRESH SHELL: env -i with only HOME, PATH and TERM, and bash --noprofile --norc.\n- Count of variables matching \"supabase\" before the run: 0.\n\nRECIPE: extracted from README.md at 3a5af87 (the bash block under \"Tier 2: CI's rls-tests job, locally\", 10 lines). The runner is that block verbatim, with an echo of $? after each command; diff of the runner minus the echo lines against the README block was empty. Results:\n- npx supabase start: exit=0. It printed \"Starting database from backup...\", which is the stale-volume case the README now describes.\n- npx supabase db reset: exit=0. It printed 12 \"Applying migration\" lines, from 20260815221042_create_readings.sql to 20261122152710_navigation_exact_date_readings.sql, then \"Finished supabase db reset on branch main.\" The clone's supabase/migrations holds 12 files.\n- The export (status -o env with three --override-name lines, then grep -E, then tr -d): exit=0.\n  - Afterwards NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY were all set.\n  - The service role key's JWT payload contains \"supabase-demo\", so it's the local demo key, as the README says.\n- npm run test:rls: exit=0. \"Test Files 5 passed (5)\", \"Tests 43 passed (43)\".\n- npx supabase stop: exit=0, \"Stopped supabase local development setup.\"\n- The runner as a whole: exit=0.\n\nREADME'S FAILURE CLAIMS, checked in the same clean shell:\n- With no export, npm run test:rls exits 1 with \"Test Files 5 failed (5)\". All 5 report \"Supabase client requires NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY\", the README's exact wording.\n- With the URL and anon key set but no service role key, it exits 1 with 5 failed. All 5 report \"Supabase admin client requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY\", again the README's exact wording.\n\nLINK: the \"Running the policy tests\" section points to the Tier 2 recipe. In GitHub's rendered README at 3a5af87 (REST API, html media type), the target heading has id user-content-tier-2-cis-rls-tests-job-locally, and 2 links point to #tier-2-cis-rls-tests-job-locally, so the anchor resolves.\n\nSIDE EFFECT, as the sprint expects: db reset wiped the local stack's database volume for project my_little_raccoon. The README's own data-loss sentence warns about this, and the sprint file assigns the run to LiveQA. The stack is stopped again: 0 Supabase containers running afterwards.\n\nNo defects. Production's app is unaffected (docs only); nothing touched production."
+    },
+    {
+      "ts": "2026-11-24T02:51:55+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=close sprint 40 now please"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-24T02:47:19+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-24T02:51:55+00:00"
   }
 }
