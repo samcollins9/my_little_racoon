@@ -1,17 +1,17 @@
 {
   "id": 42,
   "title": "Strip \"(pictured)\" notes from event text",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "ac9383c811b99a13853f5731008c938eb51ca51067a48efb9adaf8427f0ee4fb",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "b8250ced42167790094c4a4ff37abb7fb5e6a3b1bb78975dbc4b1b702e81a654",
   "last_shipped_commit": "36c8bd1a0bf7de340a221c879666c2dca7c1cc7f",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-24T00:35:04+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=36c8bd1 | ci=green: 1 CI run(s) for 36c8bd1a0bf7de340a221c879666c2dca7c1cc7f all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-24T00:59:43+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Steps 1, 2 and 4 are done on production. Step 3 (/reading/<id> with stored pictured events) is not done: it is optional, and no id was supplied. The shared ReadingView path carries it, as the sprint file allows.\n\nTested 2026-11-24, about 00:55 to 01:10 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 36c8bd1. Production serves the pushed tip 0a6f230: /api/health/db reports status ok, connected true, commit 0a6f230, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat 36c8bd1 0a6f230 touches only docs: the Sprint 40 file, registry.json, and the state files for Sprints 40 and 42.\nTools:\n- Headless Chromium (Playwright 1.57): 1280x900; 390x844 (isMobile, hasTouch) with JS on; and 390x844 with JS off.\n- curl against the live Wikipedia feed (api.wikimedia.org onthisday/selected) and the served HTML.\n\nFEED: I sampled the same six days Master Controller used (01-15, 03-08, 05-09, 07-04, 11-23 and 12-16). All six returned HTTP 200. There are 13 events with a pictured note:\n- 11 \"(pictured)\";\n- 1 \"(fragment pictured)\": 1962-01-15, the Derveni papyrus;\n- 1 \"(signing pictured)\": 1776-07-04, the Declaration of Independence.\n\nSTEP 1, \"(pictured)\": PASS.\nFor each event, I compared the page's eventText, minus the trailing \"(source)\" link, with the feed text after removing the note:\n- 12 exact-date pages: 1962-01-15, 1885-01-15, 1979-03-08, 1702-03-08, 1977-05-09, 1945-07-04, 1862-07-04, 1776-07-04, 2011-11-23, 1924-11-23, 1922-12-16 and 1773-12-16.\n- 2 future-date fallback lists, which show the newest five years. Only 03-08 (1979) and 11-23 (2011) have a note in their first five:\n  - /date/2031-03-08 shows 1979;\n  - /date/2031-11-23 shows 2011.\n- 14 of 14 rows match exactly, with no residue.\n- The 13th feed event, 1054-07-04, is before 1700: /date/1054-07-04 returns 404, as expected.\n\nVerbatim examples:\n- 1979: \"Images taken by Voyager 1 proved the existence of volcanoes on Io, a moon of Jupiter. (source)\". The comma follows \"Io\" directly, and the NBSP in \"Voyager 1\" is kept.\n- 1977: \"The Hotel Polen in Amsterdam was destroyed by fire, leaving 33 people dead. (source)\".\n- 1054 (Crab Nebula) and 1773 (Boston Harbor) end with the note just before the full stop. The page shows 1773 as \"...threw chests of tea into Boston Harbor to protest British taxation without representation. (source)\".\n\nSTEP 2, variants: PASS.\n- 1962-01-15: \"The Derveni papyrus, the oldest surviving manuscript in Europe, was discovered in Macedonia in northern Greece. (source)\".\n- 1776-07-04: \"In Philadelphia, the Continental Congress adopted the Declaration of Independence, announcing that the thirteen American colonies were no longer a part of the British Empire. (source)\".\n- \"(pictured left)\" and \"(pictured right)\" were not seen in this sample, so Req 4's unit tests carry them.\n\nClean text, phone and no-JS: checked on /date/1962-01-15, 1776-07-04, 2031-07-04, 1979-03-08 and 2011-11-23, at 1280, at 390, and at 390 with no JS.\n- There were 0 \"pictured\" matches in the What happened column and 0 in the whole body innerText.\n- 0 rows had a doubled space, a space before , . ; : or ), or \"( \".\n- scrollWidth was 1280 and 390.\n- There were no console or page errors.\n- The source link is still present after each event, linking to the same en.wikipedia.org article as before (for example /wiki/Derveni_papyrus).\n\nAlso: the served HTML of /date/1776-07-04, 1969-07-20, 2026-12-16, 1920-08-19, / and /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d contains no \"pictured\" anywhere, including the RSC payload.\n\nSTEP 3: NOT DONE. It is optional. The user didn't run the Human Prerequisite query, and the page shows no reading id I could use.\n/date/1776-07-04 has a saved horoscope (\"Revealed on request\") and shows the stripped \"(signing pictured)\" text. But I couldn't confirm whether that rendering comes from the stored row or from a fresh lookup, so I'm not counting it as step 3.\n\nSTEP 4: no horoscope was written. The prompt change rests on Req 4's tests and QA1's audit.\n\nNo defects.\nQA1's two nits, \"(pictured), x\" at the start of a text and \"( b)\" after an opening paren, did not occur in any of the 13 live events."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-24T00:49:56+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-24T00:59:43+00:00"
   }
 }
