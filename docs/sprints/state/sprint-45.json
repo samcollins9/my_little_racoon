@@ -1,7 +1,7 @@
 {
   "id": 45,
   "title": "Notable dates replace the recently written list",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "f372c44792ca5d89f53cc222766d7a0b41ec8f5a4363d4030bb019f531694fa7",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -32,11 +32,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: QA1 gate-1 re-audit, Sprint 45, round 2, commit 947f5ea (main HEAD, clean tree). Verdict: PASS.\n\nSprint file: re-read fresh. It is unchanged since Dev Team 1's start (0d70053); git diff 0d70053 947f5ea -- docs/sprints shows only state/sprint-45.json.\n\nWhat moved since round 1 (a8f063f): only the two fixes QA1 required.\n- app/date/[date]/notable-dates-page.test.ts: the negative assertion on the retired RPC is replaced with an allow-list. It collects every RPC name the fake received and asserts the set equals {get_reading_by_date, get_adjacent_reading_dates}. Any other call fails, and the string is gone rather than disguised.\n- docs/handoffs/sprint-45.md: a new Round 2 section, appended (18 insertions, 0 deletions, so Round 1 is untouched). It quotes VERIFY PASS ... exit=0 with 43 files and 502 tests, and states round 1's error plainly: the grep was run before the test file added a match, and the earlier result was reported without re-running.\n- Plus the state file. Nothing else changed.\n\nFix 1, verified: QA1 ran grep -rn \"get_recent_reading_dates\\|RecentReadingDate\\|Recently written\" app lib at 947f5ea, unpiped: no output, grep exit=1. R8's acceptance criterion is now met as written. Behaviour is still covered, more strongly than before.\n\nFix 2, verified: Round 2 was read from the commit with git show, and its grep claim matches QA1's own run.\n\nChecks: QA1's own npm run verify at 947f5ea gave verify=0, 43 files, 502 tests, VERIFY PASS.\n\nAll other requirements stand as recorded in round 1's notes (R1-R7, R9-R11 met; QA1's ruling on Dev Team's question 1 unchanged). The non-blocking notes carry over:\n- Escape dismissal (WCAG 1.4.13) isn't possible without client JS.\n- LiveQA watch item: check for horizontal scroll at roughly 1000px desktop width. As Dev Team's Round 2 note says, the desktop .card is a fixed 1320px (pre-existing), so attribute any scroll at 901-1319px to the card or to the tooltips before calling it.\n\nNo Human Prerequisites."
+    },
+    {
+      "ts": "2026-11-24T16:01:30+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-24T16:00:59+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-24T16:01:30+00:00"
   }
 }
