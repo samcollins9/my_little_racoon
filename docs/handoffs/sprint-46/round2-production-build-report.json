@@ -1,0 +1,174 @@
+{
+  "origin": "http://127.0.0.1:3146",
+  "browser": "Chrome/156.0.8078.4",
+  "pages": [
+    {
+      "path": "/date/not-a-date",
+      "status": 404,
+      "title": "404: This page could not be found.",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:54:41.188Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1/date/not-a-date",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=scroll dl=http://127.0.0.1/date/not-a-date"
+      ]
+    },
+    {
+      "path": "/date/1054-07-04",
+      "status": 404,
+      "title": "404: This page could not be found.",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:54:47.648Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1/date/1054-07-04",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=scroll dl=http://127.0.0.1/date/1054-07-04"
+      ]
+    },
+    {
+      "path": "/reading/00000000-0000-4000-8000-000000000000",
+      "status": 404,
+      "title": "404: This page could not be found.",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:54:54.193Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1/reading/00000000-0000-4000-8000-000000000000",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=scroll dl=http://127.0.0.1/reading/00000000-0000-4000-8000-000000000000"
+      ]
+    },
+    {
+      "path": "/no-such-page",
+      "status": 404,
+      "title": "Retroactive Horoscope",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:55:00.679Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1/no-such-page",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=scroll dl=http://127.0.0.1/no-such-page"
+      ]
+    },
+    {
+      "path": "/date/1969-07-20",
+      "status": 200,
+      "title": "Retroactive Horoscope",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:55:07.282Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1h1v9288636404z en=page_view dl=http://127.0.0.1/date/1969-07-20"
+      ],
+      "clientNavigation": {
+        "clicked": true,
+        "to": "/date/1961-04-12",
+        "sameDocument": true,
+        "gtmScriptRequestsAdded": 0,
+        "analyticsEventsAdded": [],
+        "gtmScriptsInDom": 1
+      }
+    },
+    {
+      "path": "/reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b",
+      "status": 200,
+      "title": "Retroactive Horoscope",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:55:18.814Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1/reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b"
+      ],
+      "clientNavigation": {
+        "clicked": true,
+        "to": "/date/1969-07-20",
+        "sameDocument": true,
+        "gtmScriptRequestsAdded": 0,
+        "analyticsEventsAdded": [],
+        "gtmScriptsInDom": 1
+      }
+    },
+    {
+      "path": "/chart",
+      "status": 200,
+      "title": "Retroactive Horoscope",
+      "insertions": [
+        {
+          "src": "https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+          "async": true,
+          "dataLayerWasArray": true,
+          "dataLayerFirst": "[\"js\",\"2026-11-24T22:55:32.699Z\"]"
+        }
+      ],
+      "dataLayerIsArray": true,
+      "containerReady": true,
+      "gtagScripts": 0,
+      "gtmScriptRequests": 1,
+      "googleRequests": [
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://127.0.0.1:3146/date/1969-07-20",
+        "Script (script) https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3",
+        "Fetch (script) BLOCKED https://www.google-analytics.com/g/collect?v=2&tid=G-NFY3Q9KSXH&gtm=45He6bh1v9288636404za2 en=page_view dl=http://localhost/date/2026-11-24"
+      ]
+    }
+  ]
+}

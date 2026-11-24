@@ -83,3 +83,75 @@ On every page, `google_tag_manager["GTM-T9WQSKH3"]` existed after load. The cont
 ### Questions for QA1
 
 1. Is the 500-page ordering above acceptable under R2 as written, given it's Next's error shell and functionally harmless?
+
+## Round 2
+
+**Status:** ready for QA1's live-loop audit. This round fixes LiveQA round 1's one defect and changes nothing else.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (45 test files, 513 tests).
+
+### The defect (LiveQA round 1, CONDITIONAL, against R1)
+
+Route-level 404s, where `/date/[date]` or `/reading/[id]` call `notFound()` (for example `/date/not-a-date`, `/date/1054-07-04`, `/reading/<unknown uuid>`), requested `gtm.js` twice and sent no `page_view`.
+
+### Cause (reproduced on a local production build first)
+
+These 404s are served as Next's bare error document (`<html id="__next_error__">`), the same shell as Round 1's 500 case. The root layout renders only in the browser there. Two separate things then went wrong, both in `next/script` (`node_modules/next/dist/client/script.js`):
+1. **The inline half never ran.** A `beforeInteractive` inline script renders as a `<script>` that pushes onto `self.__next_s`. Next runs those only from server HTML. A `<script>` element React creates in the browser is inert. So there was no `gtag('js')`, no `gtm.js` event, the container's All Pages trigger never fired, and no `page_view` was sent.
+2. **The container was fetched twice.** For an `afterInteractive` script with a `src`, `next/script` calls `ReactDOM.preload(src)` *and* inserts the script. In the error shell, that preload's fetch wasn't reused. CDP showed two requests, one at High priority from React's chunk and one at Low from Next's loader, for one inserted `<script>` element.
+
+**My Round 1 premise was wrong.** I said the 500 shell was the only page without a server-rendered layout, and QA1's ruling relied on that. Every `notFound()` on these dynamic routes takes the same path.
+
+### Fix: `lib/analytics/tag-manager.ts`, `app/TagManager.tsx`
+
+`TagManager` now renders **one** `next/script`, `afterInteractive`, inline, with no `src`. Its body is the new `GTM_LOADER_SCRIPT`:
+- First, Google's inline half, verbatim (`GTM_INIT_SCRIPT`, unchanged).
+- Then Google's `<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-T9WQSKH3">`, created by the script itself and appended to `<head>`. It's skipped if a script with that `src` is already on the page.
+
+Why this fixes both:
+- **The inline half always runs.** `afterInteractive` inline scripts run through Next's client loader after hydration, whether or not the layout was server-rendered.
+- **One fetch.** There's no `src` prop, so there's no `ReactDOM.preload`.
+- **Order is explicit (R2).** The inline half runs before the container element exists, so `dataLayer` is always there first. The container is `async`, so it never blocks rendering.
+- **R4 still holds.** The ID is still only in `GTM_CONTAINER_ID`, and the URL is built from it.
+
+**Question for QA1 (R2's wording).** R2 allows "the snippet above as given, or `GoogleTagManager` from `@next/third-parties`". This is Google's snippet with its second tag inserted by the first, instead of written as a literal second `<script>`. Its contents are the same, and so are `async` and the order. I didn't switch to `@next/third-parties`: its `GoogleTagManager` also renders a `next/script` with a `src` (the container), so I'd expect the same preload double-fetch in the error shell. That's an inference from reading the code, not something I measured, since the package isn't installed.
+
+### Tests
+
+- **`app/TagManager.test.tsx`:** in production, exactly one `next/script`: `id="gtm"`, `afterInteractive`, with `GTM_LOADER_SCRIPT` as its body and no `src`. The R3 cases are unchanged.
+- **`lib/analytics/tag-manager.test.ts`, two new tests:**
+  - The loader text is Google's inline half followed by the insertion: `async = true`, the exact URL, and the already-present guard. It contains no `G-` ID, `gtag/js` or `config`.
+  - The loader is run twice against a minimal fake `window`/`document`. Exactly one container is appended, it's `async` with the exact URL, and at the moment it's appended, `dataLayer` already holds the `js` command.
+
+### Manual check against real builds
+
+I used the same rig as Round 1 ([fake46.mjs](sprint-46/fake46.mjs), [cdp46.mjs](sprint-46/cdp46.mjs)), with GA's collect endpoint blocked throughout. Each blocked hit is recorded with its event name, but none left the machine.
+
+**`VERCEL_ENV=production` build** ([round2-production-build-report.json](sprint-46/round2-production-build-report.json)):
+
+| Page | HTTP | `gtm.js` requests | `dataLayer` before container | GA4 event sent (blocked) |
+|---|---|---|---|---|
+| `/date/not-a-date` | 404 | **1** (was 2) | yes, starts `["js", …]` | `page_view` (was none) |
+| `/date/1054-07-04` | 404 | **1** (was 2) | yes | `page_view` (was none) |
+| `/reading/00000000-0000-4000-8000-000000000000` | 404 | **1** (was 2) | yes | `page_view` (was none) |
+| `/no-such-page` | 404 | 1 | yes | `page_view` |
+| `/date/1969-07-20` | 200 | 1; client navigation to `/date/1961-04-12` adds 0 | yes | `page_view` |
+| `/reading/<id>` | 200 | 1; client navigation to `/date/1969-07-20` adds 0 | yes | `page_view`, and a history `page_view` for the navigation |
+| `/chart` (redirects to today's date page) | 200 | 1 | yes | `page_view` |
+
+There's no `gtag/js` script on any page, and `google_tag_manager["GTM-T9WQSKH3"]` exists on every page.
+
+**The 500 error shell** (stand-in stopped, `/reading/<id>`, [round2-error-page-report.json](sprint-46/round2-error-page-report.json)): 1 request, `dataLayer` first, `page_view` sent. **Round 1's known limitation on this page is gone.** That one container `<script>` element got two requests, and `dataLayer` came after the container there.
+
+**Builds with `VERCEL_ENV` unset, `preview` and `development`** ([round2-non-production-builds.txt](sprint-46/round2-non-production-builds.txt)): six pages each, now including `/date/not-a-date` and the unknown reading id. In all 18 cases the HTML contains no `googletagmanager`, `GTM-` or `dataLayer` (`grep exit=1` each).
+
+### Acceptance greps, re-run at this commit
+
+- `GTM-T9WQSKH3` outside tests: one match, `lib/analytics/tag-manager.ts:7`.
+- `NEXT_PUBLIC_VERCEL_ENV`: `grep exit=1`.
+- `G-[A-Z0-9]{6,}|gtag/js`: only the test comment at `tag-manager.test.ts:22`, the same as Round 1.
+
+### Not changed
+
+- `app/layout.tsx`, the README and the R3 switch are unchanged.
+- The README still names `app/TagManager.tsx` and `lib/analytics/tag-manager.ts` correctly.
