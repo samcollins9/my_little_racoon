@@ -56,8 +56,10 @@ describe("the date page's notable dates (Sprint 45)", () => {
     expect(dateLinks(copy(html, "notable-dates-section-heading"))).toEqual(ALL_DATES);
     expect(html).not.toContain("Previous reading");
     expect(html).not.toContain("Next reading");
-    // R8: the one navigation lookup left is the adjacent one.
-    expect(fake.rpc).not.toHaveBeenCalledWith("get_recent_reading_dates");
+    // R8: a render calls only these two RPCs; any other (the retired
+    // recent-dates lookup included) fails here.
+    const called = new Set(fake.rpc.mock.calls.map(([name]) => name));
+    expect(called).toEqual(new Set(["get_reading_by_date", "get_adjacent_reading_dates"]));
   });
 
   it("R2/R7: with the lookup available, Previous/Next are in the strip beside the desktop list", async () => {

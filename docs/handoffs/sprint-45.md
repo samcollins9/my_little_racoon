@@ -64,3 +64,21 @@ I ran `next dev` against a PostgREST stand-in ([fake45.mjs](sprint-45/fake45.mjs
 ### Questions for QA1
 
 1. **R5 on desktop.** Is a hover-only tooltip on the marked, unlinked current date enough for "its description still shows"? The alternative is giving that `<span>` a `tabIndex={0}`, which adds a tab stop that isn't a link. I chose not to.
+
+## Round 2
+
+**Status:** ready for QA1's re-audit. This round makes QA1's two required fixes from round 1 and changes nothing else.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (43 test files, 502 tests).
+
+### Fix 1: R8's acceptance grep
+
+Round 1's R8 row was wrong. I ran the grep before writing `notable-dates-page.test.ts`, which then added a match, and I reported the earlier result without re-running it. QA1's exit 0 was the real result at `a8f063f`.
+
+- **Change:** `app/date/[date]/notable-dates-page.test.ts`'s R2 test no longer asserts that one named RPC wasn't called. It now collects every RPC name the fake received and asserts that the set is exactly `{get_reading_by_date, get_adjacent_reading_dates}`. Any other RPC fails the test, not just the retired one. The string isn't disguised anywhere.
+- **Result, re-run after the change:** `grep -rn "get_recent_reading_dates\|RecentReadingDate\|Recently written" app lib` matched nothing and exited 1. Run unpiped as `…; echo "grep exit=$?"`, it printed `grep exit=1`.
+
+### Not changed
+
+- **QA1's ruling on question 1:** hover-only for the current date. No `tabIndex` was added.
+- **LiveQA's watch item:** horizontal scroll from hidden tooltips at about 1000px wide. I left it for LiveQA, as QA1 noted it outside the verdict. One point that may help LiveQA: the desktop `.card` is a fixed `width: 1320px` (`reading.module.css`, unchanged since before this sprint). Any scroll seen between 901 and 1319px should be checked against the card itself before blaming the tooltips.
