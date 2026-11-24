@@ -1,17 +1,17 @@
 {
   "id": 44,
   "title": "Front page lands on today's actual date",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "7572be3a62a4cfa6069d898599422f2097e9a714adf6a29690b99b8e4e24b756",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "e84cb77cb65e952a568d5bb6258c74480312b47266dc9646390026efec85e5f7",
   "last_shipped_commit": "34eebd2e05a1829140d704fcd22c43de4bbce48b",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-24T12:59:32+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=34eebd2 | ci=green: 1 CI run(s) for 34eebd2e05a1829140d704fcd22c43de4bbce48b all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-24T13:17:13+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). Steps 1 to 3 were done on production. Step 4 was not run at midnight; the existing utcToday tests carry it. No defects.\n\nTested 2026-11-24, about 13:16 to 13:20 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 34eebd2. Production serves the pushed tip 7ff7030: /api/health/db reports status ok, connected true, commit 7ff7030, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat 34eebd2 origin/main touches only docs/sprints/state/sprint-44.json.\nTools: curl; headless Chromium (Playwright 1.57) at 1440x1000, at 390x844 (isMobile, hasTouch) with JS on, and at 390x844 with JS off.\n\nSTEP 1, curl -sI /: PASS. At 13:16:42 GMT (shell clock 13:16:40 UTC): \"HTTP/2 307\", location /date/2026-11-24, today's UTC date. It is no longer Sprint 41's /date/2023-11-24, which I recorded at 12:54 UTC today.\n\nSTEP 2, not cached: PASS. Two requests, at 13:16:42 and 13:16:50 GMT, were both 307 to /date/2026-11-24, both with age 0, cache-control \"private, no-cache, no-store, max-age=0, must-revalidate\", and x-vercel-cache MISS.\n\nSTEP 3, follow the redirect: PASS, as the sprint file expects. Results at 1440, 390, and 390 with no JS:\n- The chain is \"307 / > 200 /date/2026-11-24\".\n- The events status reads \"on this day, other years\".\n- Five year links, each to its own 11-24 date:\n  - 2023 to /date/2023-11-24, \"Hibiscus Rising, a sculpture commemorating the life of David Oluwale, ...\";\n  - 2009 to /date/2009-11-24;\n  - 1976 to /date/1976-11-24;\n  - 1971 to /date/1971-11-24;\n  - 1963 to /date/1963-11-24.\n- The reading section shows Sprint 39's message: \"The reading NO EXACT-DATE EVENTS We have no recorded events for this exact date, so we can't write an accurate horoscope for it. Pick a different date above, or choose one of the years listed under \"W...\".\n- There is no POST form and no reveal details element.\n- The Sprint 43 banner is present.\n- scrollWidth is 1440 and 390, with 0 console or page errors.\n\nSTEP 4: tested at about 13:16 UTC, not within an hour of midnight. The utcToday tests carry it, including page.test.ts's 23:59:59.999Z to 00:00Z boundary test, which QA1 confirmed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-24T13:10:22+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-24T13:17:13+00:00"
   }
 }
