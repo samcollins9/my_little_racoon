@@ -244,8 +244,8 @@
     "41": {
       "title": "Front page lands on today in the latest year with an event",
       "epic": "Date pages (PRD v3)",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-41_front-page-lands-on-today-in-the-latest-year-with-an-event.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-41_front-page-lands-on-today-in-the-latest-year-with-an-event.md"
     },
     "42": {
       "title": "Strip \"(pictured)\" notes from event text",
