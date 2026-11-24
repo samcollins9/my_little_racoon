@@ -2,7 +2,7 @@
 id: 43
 title: "Ask Reloy site banner"
 epic: "Site identity"
-status: in_progress
+status: done
 created: 2026-11-24T02:09:23+00:00
 ---
 
