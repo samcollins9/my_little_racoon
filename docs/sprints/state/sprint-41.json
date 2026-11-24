@@ -1,16 +1,16 @@
 {
   "id": 41,
   "title": "Front page lands on today in the latest year with an event",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "c26b3ffbf2ca41e2ef171b93eb914d581d238f4d123cfa99d050b1dc586e0b0f",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "79a560d14d4407b2eb39731ebf1feabfc517e380123da2547b07b5c06b5e45ea",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-24T03:02:27+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T03:09:18+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate-1 audit, Sprint 41, commit 0aad17a (main HEAD). Verdict: PASS.\n\nSprint file: re-read fresh. It is unchanged since Dev Team 1's start (d638916) apart from the lifecycle status line.\n\nHandoff: read at 0aad17a with git show. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0 with 41 files and 510 tests. QA1's own npm run verify at 0aad17a (clean tree): verify=0, 41 files, 510 tests, and the build's route table shows \"\u0192 /\" (dynamic). The diff from d638916 to 0aad17a also includes state/sprint-43.json, which is excluded from the tree hash and is Sprint 43's own bookkeeping.\n\nR1: met. front-door.ts frontDoorDateFromYears takes the largest year that is no later than today's year and for which linkableEventDate(year, today) is non-null. linkableEventDate is Sprint 39's helper: integer, padded, then parseDatePageParam, so 1700-2100 and a real date. The feed's order doesn't matter, because of the best-so-far skip. Tests: [1650, 1801, 1999, 2019] with 2026-11-24 gives 2019-11-24; only years before 1700 falls back to today; 1699 is skipped and 1700 taken; future years 2027 and 2050 are skipped; BC, fractional and NaN years are skipped.\n\nR2: met. The year rule is now one exported function, entryMatchesDateYear. fetchDayEvents filters with it, and the selector requires it of every candidate, so there is one rule rather than two that agree. The shared-fixture test runs the selector, then fetchDayEvents(chosen): matchedYear true, events exactly the 2019 entries, one fetch call.\n\nR3: met. Null, empty and no-qualifying-year all return today, with tests for both the pure selector and the real feed path (rejected fetch, 503, no selected, empty). QA1 traced every throw site on / :\n- fetchDayEventYears wraps fetchSelectedEntries and the map in try/catch, logs with console.error and returns null. A malformed entry throws inside the try.\n- frontDoorDateFromYears calls only numeric comparisons, linkableEventDate (which returns null and never throws on bad input) and entryMatchesDateYear.\n- today comes from utcToday.\nNo path throws past /, except redirect()'s own control-flow throw, which is intended.\n\nR4: met. await connection() is still first, and redirect() is from a server component, so it answers 307. The route table shows \u0192 /. The handoff's live and offline evidence shows a 307 with no-store, and the second request has no age header.\n\nR5: met. fetchDayEventYears reads the existing private fetchSelectedEntries, so the URL, FETCH_TIMEOUT_MS, USER_AGENT and the entriesByMonthDay cache are the same code, not copies. Failures stay uncached, as before. A test shows / and the landed page together make one request. grep of fetch( in app and lib (non-test) finds only wikipedia.ts and the OpenAI call.\n\nR6: met. QA1 walked /'s import closure:\n- app/page.tsx imports front-door and params;\n- front-door imports wikipedia and accuracy;\n- accuracy imports wikipedia, matched and params;\n- params imports ephemeris/adapter;\n- wikipedia imports only a type from chart/model.\ngrep finds no supabase in that closure or in lib/ephemeris. app/page.test.ts asserts the only request is the feed.\n\nR7: met. The route list describes the year choice, the 1700-to-this-year range, the feed and its timeout, and the fallback to /date/<today>. That matches the code.\n- Answer to Dev Team's Q1: updating \"Local setup\"'s paragraph about / is in scope. R7's acceptance criterion is that the README's text matches the behaviour, and that paragraph would otherwise have been false. The line-353 history passage is fine to leave, because it's history.\n\nR8: met. Every named case has a test, verify exit=0 as above, and the clock is injected through utcToday(now) with midnight-boundary tests.\n- Answer to Q2: yes. In a non-leap current year, today can never be 29 February, so the criterion's non-leap half is vacuous as literally written. Dev Team tested the boundary it was evidently after (28 February to 1 March across UTC midnight, and a 28 February feed). The leap-year half is fully covered: 2028-02-29 skips 1900, 2025 and 2027.\n- For Master Controller, not blocking: that bullet in R8 asks for something that can't occur. Worth wording precisely next time, along the lines of qa1.md's step 1 about criteria that can't be satisfied as written.\n\nR9: met; the handoff was read from the commit.\n\nObservations, not defects:\n- The month/day cache never expires within a server instance. If Wikipedia adds an entry for this year during the day, a warm instance won't see it until it recycles. This was already true for fetchDayEvents. It can only make / pick an older qualifying year, never a non-qualifying one.\n- There is no in-flight dedupe, and the cache is per instance; both are disclosed.\n- LiveQA's step 4 asks for resolver blocking. Dev Team's unshare -rn offline run is equivalent evidence for the local check, but LiveQA still owns its own step.\n\nNo Human Prerequisites."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T03:02:27+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-24T03:09:18+00:00"
   }
 }
