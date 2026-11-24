@@ -2,7 +2,7 @@
 id: 44
 title: "Front page lands on today's actual date"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-24T12:47:48+00:00
 ---
 

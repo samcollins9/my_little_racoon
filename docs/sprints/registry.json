@@ -262,8 +262,8 @@
     "44": {
       "title": "Front page lands on today's actual date",
       "epic": "Date pages (PRD v3)",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-44_front-page-lands-on-today-s-actual-date.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-44_front-page-lands-on-today-s-actual-date.md"
     }
   }
 }
