@@ -93,8 +93,11 @@ The service role key `npx supabase start` prints is the local stack's
 well-known demo key, the same on every machine; production's service role
 key (from Vercel or the hosted Supabase project) never goes in `.env.local`,
 or anywhere else on a developer machine.
-`supabase start` applies every migration in `supabase/migrations/` to the
-local database automatically.
+`supabase start` applies every migration in `supabase/migrations/` only when
+it creates a new local database; after a `supabase stop`, the next `start`
+restores the old database as it was, without migrations added since.
+`npx supabase db reset` reapplies them all to a fresh local database (and
+deletes its data).
 
 ## Authoring a migration
 
@@ -289,10 +292,13 @@ creating one.
 
 A `.env.local` pointing at the **local** Docker stack (the values
 `npx supabase start` prints, per [Local setup](#local-setup)) is the normal
-one. A `.env.local` holding the **production** project's URL and keys means
-`npm run dev` and `npm run start` read and write the production database:
-every reading you save is a real production row. Use one only deliberately,
-and delete it afterwards.
+one. A `.env.local` pointing at the **production** project may hold only its
+public URL and anon key (`NEXT_PUBLIC_SUPABASE_URL` and
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`), never production's service role key or
+OpenAI key. With only those two, `npm run dev` and `npm run start` can read
+production's saved readings but can't save a reading or write a horoscope,
+because every write goes through the service role key (Sprint 28, R12). Use
+one only deliberately, and delete it afterwards.
 
 ### What only CI can check
 
@@ -307,8 +313,9 @@ CI's `migrate` job, which runs only on pushes to `main`, after `build` and
 None of it can run locally. Every step needs the project's secrets
 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`,
 `VERCEL_DEPLOY_HOOK_URL`), which exist only in GitHub Actions, and every step
-acts on production. Tier 2's `supabase start` applies the same migrations to a
-fresh local database. That shows they apply cleanly from scratch, not that
+acts on production. Tier 2's `supabase db reset` applies the same migrations to
+a fresh local database (`supabase start` alone applies them only when it
+creates one). That shows they apply cleanly from scratch, not that
 they apply on top of production's current state or that production hasn't
 drifted.
 

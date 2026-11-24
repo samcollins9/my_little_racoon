@@ -66,3 +66,41 @@ No exit code was read through a pipe. The one pipe, inside step 3's `$(…)`, is
 
 1. Is `db reset` as the fix acceptable, given that it deletes local data? I chose it over `supabase migration up` because it matches CI's fresh stack exactly. `migration up` would only add the missing migrations on top of whatever rows were already there.
 2. Does "Which `.env.local` is which" fail R3's check that grep finds no instruction to put production's key in `.env.local`? I read it as a warning, not an instruction. If you disagree, the fix is outside this sprint's allowed edits.
+
+## Round 2
+
+**Status:** ready for QA1's gate-1 audit, against the sprint file as amended in `0d20707` (Requirements 6–8).
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (35 test files, 444 tests).
+
+**Only `README.md` changed in this round.**
+
+### Round 1's questions, now settled by the amendment
+
+- **Question 1 (`db reset`):** settled by Master Controller. Requirement 6 now requires it, and Round 1 already added it.
+- **Question 2 ("Which `.env.local` is which"):** settled by the amendment. The section did contradict Requirement 3. Requirement 8 below rewrites it.
+
+### What changed
+
+| Req | Where | How |
+|---|---|---|
+| R6 | Tier 2 recipe | Already in Round 1's commit `2ddb696`, unchanged since: `db reset` straight after `start`. The paragraph beside it says the reset "deletes the local database's data". |
+| R7 | "Local setup" (~line 96) | It now says `supabase start` applies every migration only when it creates a new local database. After a `stop`, the next `start` restores the old database without later migrations, and `npx supabase db reset` reapplies them all (deleting its data). |
+| R7 | "What only CI can check" (~line 316) | "Tier 2's `supabase start` applies the same migrations…" now reads "Tier 2's `supabase db reset` applies…", with a note that `start` alone applies them only when it creates a database. |
+| R8 | "Which `.env.local` is which" (~line 293) | A production `.env.local` may hold only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, never production's service role key or OpenAI key. With only those, the app reads production but can't save a reading or write a horoscope, because every write goes through the service role key (Sprint 28, R12). "Delete it afterwards" is kept. |
+
+### Checks for this round
+
+- **The write claim in R8:** both writes use the admin (service role) writer. Those are `lib/readings/insert.ts:42` (`.insert`) and `lib/llm/generate.ts:152` (`set_reading_horoscope`). The writer comes from `lib/supabase/admin.ts`, whose missing-key error is the one the Tier 2 paragraph quotes.
+- **R7 grep:** `grep -n "applies" README.md` finds no remaining claim that `start` alone applies every migration. The remaining matches are:
+  - line 96 (corrected) and line 238 (Round 1's Tier 2 paragraph), both saying "only when it creates";
+  - line 117, about a new migration "applies cleanly" after `db reset`;
+  - lines 303 and 324, about `db push` on production;
+  - line 394, about preview branches.
+- **R8 grep:** the only mentions of production keys and `.env.local` are lines 94 ("never goes in `.env.local`"), 254 (the same) and 297 ("never production's service role key or OpenAI key").
+
+### Evidence (R5, R6)
+
+- **Not rerun, because the Tier 2 block didn't change this round.** `diff` of the README's Tier 2 `bash` block, extracted the same way as in Round 1, against [recipe-as-run.sh](sprint-40/recipe-as-run.sh) is empty (`exit=0`).
+- **Round 1's evidence still applies:** [tier2-run.log](sprint-40/tier2-run.log) records the run with `step4_exit=0` and 43/43 tests.
+- **R6 count:** `supabase/migrations/` has 12 files at this commit, and the log has 12 "Applying migration" lines.
