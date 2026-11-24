@@ -23,7 +23,6 @@ export const ok = (data: unknown): FakeResult => ({ data, error: null, status: 2
 
 export const NAVIGATION_RPCS = {
   get_adjacent_reading_dates: ok([{ previous_date: null, next_date: null }]),
-  get_recent_reading_dates: ok([]),
 };
 
 export function useAnon(rpc: Record<string, FakeResult>) {

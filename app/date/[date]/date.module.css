@@ -83,15 +83,17 @@
 }
 
 /*
- * Sprint 29, R2/R3/R6: navigation to other dates with a reading, directly
- * under the picker in the same strip. Everything wraps; nothing has a
- * fixed width, so it lays out at ~390px without horizontal scroll.
+ * Sprint 29, R2/R6: navigation directly under the picker in the same
+ * strip -- Previous/Next reading, and (Sprint 45, desktop) "Other notable
+ * dates". Everything wraps; nothing has a fixed width.
+ *
+ * No `display` on .dateNav, .notableStrip or .notableSection on purpose:
+ * each can share its element with reading.module.css's
+ * desktopOnly/mobileOnly, which own visibility, and two single-class
+ * display rules from different modules would be decided by bundle order.
  */
 
 .dateNav {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--om-rule);
@@ -119,7 +121,7 @@
 }
 
 .adjacentLabel,
-.recentTitle {
+.navTitle {
   font-family: var(--font-mono), monospace;
   font-size: 9.5px;
   font-weight: normal;
@@ -134,24 +136,27 @@
 
 .adjacentLink:hover .adjacentDate,
 .adjacentLink:focus-visible .adjacentDate,
-.recentLink:hover,
-.recentLink:focus-visible {
+.notableLink:hover,
+.notableLink:focus-visible {
   color: var(--om-verdigris-light);
 }
 
-/* No `display` here on purpose: .recent shares its element with
-   reading.module.css's desktopOnly/mobileOnly, which own visibility, and
-   two single-class display rules from different modules would be decided
-   by bundle order. */
-.recent {
+/* ---- Sprint 45, R3: "Other notable dates", desktop copy ---- */
+
+.notableStrip {
   min-width: 0;
 }
 
-.recentTitle {
+.adjacent + .notableStrip {
+  margin-top: 12px;
+}
+
+.navTitle {
   margin: 0 0 6px;
 }
 
-.recentList {
+/* The same list and link look as Sprint 29's recent-readings list. */
+.notableList {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 16px;
@@ -163,17 +168,96 @@
   letter-spacing: 0.04em;
 }
 
-.recentLink {
+.notableItem {
+  position: relative;
+}
+
+.notableLink {
   color: var(--om-grey);
   text-decoration: underline;
   text-decoration-color: var(--om-rule-strong);
   text-underline-offset: 3px;
 }
 
-.recentCurrent {
+.notableCurrent {
   color: var(--om-verdigris);
 }
 
-.recentSummary {
-  cursor: pointer;
+/* R3: hidden until its date is hovered or its link has keyboard focus.
+   visibility, not display, so aria-describedby still has text to read
+   whenever it's hidden. It sits flush under the date with no gap, so the
+   pointer can move onto it without it closing. */
+.notableTooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 2;
+  width: max-content;
+  max-width: 32ch;
+  padding: 6px 10px;
+  border: 1px solid var(--om-rule-strong);
+  background: var(--om-ink-sunk);
+  color: var(--om-bone-dim);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 15px;
+  letter-spacing: normal;
+  line-height: 1.4;
+  visibility: hidden;
+}
+
+.notableItem:hover > .notableTooltip,
+.notableLink:focus-visible + .notableTooltip {
+  visibility: visible;
+}
+
+/* ---- Sprint 45, R4: "Other notable dates", phone copy ---- */
+
+/* After the reading section, outside its sticky reveal (Sprint 38): its
+   own section at the foot of the card, ruled off like the page's others. */
+.notableSection {
+  padding: 18px 24px 28px;
+  border-top: 1px solid var(--om-rule);
+}
+
+.notableSectionList {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The whole row is the link, a touch target clearing 44px (Sprint 20, R4). */
+.notableSectionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 44px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--om-rule-faint);
+  text-decoration: none;
+}
+
+.notableSectionDate {
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--om-bone-dim);
+  text-decoration: underline;
+  text-decoration-color: var(--om-rule-strong);
+  text-underline-offset: 3px;
+}
+
+.notableSectionDescription {
+  font-size: 15.5px;
+  line-height: 1.4;
+  color: var(--om-grey);
+}
+
+.notableSectionLink:hover .notableSectionDate,
+.notableSectionLink:focus-visible .notableSectionDate {
+  color: var(--om-verdigris-light);
+}
+
+.notableSectionCurrent .notableSectionDate {
+  color: var(--om-verdigris);
+  text-decoration: none;
 }

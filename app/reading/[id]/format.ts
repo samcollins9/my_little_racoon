@@ -48,6 +48,12 @@ export function formatLongDate(isoDate: string): LongDate {
   };
 }
 
+/** "1969-07-20" -> "20 July 1969": formatLongDate as one string, for the date page's links. */
+export function formatLongDateText(isoDate: string): string {
+  const { day, month, year } = formatLongDate(isoDate);
+  return `${day} ${month} ${year}`;
+}
+
 // R2: read from the stored payload's matchedYear, not inferred. null when
 // there's no events payload at all -- the header status is omitted in
 // that case, and eventsLabel(null)'s sentence carries the null case in

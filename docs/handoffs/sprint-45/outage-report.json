@@ -1,0 +1,299 @@
+{
+  "url": "http://127.0.0.1:3145/date/2012-11-11",
+  "mode": "desktop",
+  "initial": {
+    "path": "/date/2012-11-11",
+    "vw": 1280,
+    "docW": 1280,
+    "recentlyWrittenOnPage": false,
+    "adjacent": null,
+    "strip": {
+      "visible": true,
+      "heading": "Other notable dates",
+      "inStrip": true,
+      "count": 20,
+      "items": [
+        {
+          "text": "15 April 1912",
+          "href": "/date/1912-04-15",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "28 June 1914",
+          "href": "/date/1914-06-28",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "11 November 1918",
+          "href": "/date/1918-11-11",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "24 October 1929",
+          "href": "/date/1929-10-24",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "1 September 1939",
+          "href": "/date/1939-09-01",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "6 June 1944",
+          "href": "/date/1944-06-06",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "8 May 1945",
+          "href": "/date/1945-05-08",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "6 August 1945",
+          "href": "/date/1945-08-06",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "24 October 1945",
+          "href": "/date/1945-10-24",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "15 August 1947",
+          "href": "/date/1947-08-15",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "1 December 1955",
+          "href": "/date/1955-12-01",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "12 April 1961",
+          "href": "/date/1961-04-12",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "28 August 1963",
+          "href": "/date/1963-08-28",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "22 November 1963",
+          "href": "/date/1963-11-22",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "20 July 1969",
+          "href": "/date/1969-07-20",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "28 January 1986",
+          "href": "/date/1986-01-28",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "9 November 1989",
+          "href": "/date/1989-11-09",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "11 February 1990",
+          "href": "/date/1990-02-11",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "11 September 2001",
+          "href": "/date/2001-09-11",
+          "current": false,
+          "h": 15
+        },
+        {
+          "text": "11 March 2020",
+          "href": "/date/2020-03-11",
+          "current": false,
+          "h": 15
+        }
+      ]
+    },
+    "section": {
+      "visible": false,
+      "heading": "Other notable dates",
+      "headingFont": "23px",
+      "inStrip": false,
+      "insideDetails": false,
+      "insideReading": false,
+      "afterReading": true,
+      "count": 20,
+      "items": [
+        {
+          "text": "15 April 1912The Titanic sinks in the North Atlantic",
+          "href": "/date/1912-04-15",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "28 June 1914Archduke Franz Ferdinand is assassinated in Sarajevo",
+          "href": "/date/1914-06-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 November 1918The armistice ends fighting in World War I",
+          "href": "/date/1918-11-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "24 October 1929Black Thursday begins the Wall Street Crash",
+          "href": "/date/1929-10-24",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "1 September 1939Germany invades Poland, starting World War II",
+          "href": "/date/1939-09-01",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "6 June 1944D-Day: the Allies land in Normandy",
+          "href": "/date/1944-06-06",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "8 May 1945VE Day: the war in Europe ends",
+          "href": "/date/1945-05-08",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "6 August 1945An atomic bomb is dropped on Hiroshima",
+          "href": "/date/1945-08-06",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "24 October 1945The United Nations is founded",
+          "href": "/date/1945-10-24",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "15 August 1947India becomes independent",
+          "href": "/date/1947-08-15",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "1 December 1955Rosa Parks is arrested in Montgomery",
+          "href": "/date/1955-12-01",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "12 April 1961Yuri Gagarin becomes the first person in space",
+          "href": "/date/1961-04-12",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "28 August 1963Martin Luther King Jr. gives his \"I Have a Dream\" speech",
+          "href": "/date/1963-08-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "22 November 1963President John F. Kennedy is assassinated",
+          "href": "/date/1963-11-22",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "20 July 1969Apollo 11 lands on the Moon",
+          "href": "/date/1969-07-20",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "28 January 1986The Space Shuttle Challenger breaks apart",
+          "href": "/date/1986-01-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "9 November 1989The Berlin Wall falls",
+          "href": "/date/1989-11-09",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 February 1990Nelson Mandela is released from prison",
+          "href": "/date/1990-02-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 September 2001The September 11 attacks",
+          "href": "/date/2001-09-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 March 2020The WHO declares COVID-19 a pandemic",
+          "href": "/date/2020-03-11",
+          "current": false,
+          "h": 0
+        }
+      ]
+    },
+    "readingSectionHasDetails": false
+  },
+  "keyboard": {
+    "tabs": 12,
+    "active": "/date/1944-06-06",
+    "activeText": "6 June 1944",
+    "describedBy": "notable-tooltip-1944-06-06",
+    "tooltipText": "D-Day: the Allies land in Normandy",
+    "tooltipVisibility": "visible",
+    "focusVisible": true,
+    "ax": {
+      "role": "link",
+      "name": "6 June 1944",
+      "description": "D-Day: the Allies land in Normandy"
+    }
+  },
+  "otherTooltipsVisibleWhileFocused": [
+    "D-Day: the Allies land in Normandy"
+  ],
+  "hover": {
+    "visibility": "visible",
+    "text": "The WHO declares COVID-19 a pandemic",
+    "right": 639,
+    "vw": 1280,
+    "visibleTooltips": [
+      "The WHO declares COVID-19 a pandemic"
+    ]
+  },
+  "afterHoverOut": "hidden"
+}

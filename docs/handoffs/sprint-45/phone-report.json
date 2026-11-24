@@ -1,0 +1,300 @@
+{
+  "url": "http://127.0.0.1:3145/date/1969-07-20",
+  "mode": "phone",
+  "initial": {
+    "path": "/date/1969-07-20",
+    "vw": 390,
+    "docW": 390,
+    "recentlyWrittenOnPage": false,
+    "adjacent": {
+      "visible": true,
+      "text": "← PREVIOUS READING 12 April 1961 NEXT READING → 11 September 2001",
+      "inStrip": true
+    },
+    "strip": {
+      "visible": false,
+      "heading": "Other notable dates",
+      "inStrip": true,
+      "count": 20,
+      "items": [
+        {
+          "text": "15 April 1912The Titanic sinks in the North Atlantic",
+          "href": "/date/1912-04-15",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "28 June 1914Archduke Franz Ferdinand is assassinated in Sarajevo",
+          "href": "/date/1914-06-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 November 1918The armistice ends fighting in World War I",
+          "href": "/date/1918-11-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "24 October 1929Black Thursday begins the Wall Street Crash",
+          "href": "/date/1929-10-24",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "1 September 1939Germany invades Poland, starting World War II",
+          "href": "/date/1939-09-01",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "6 June 1944D-Day: the Allies land in Normandy",
+          "href": "/date/1944-06-06",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "8 May 1945VE Day: the war in Europe ends",
+          "href": "/date/1945-05-08",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "6 August 1945An atomic bomb is dropped on Hiroshima",
+          "href": "/date/1945-08-06",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "24 October 1945The United Nations is founded",
+          "href": "/date/1945-10-24",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "15 August 1947India becomes independent",
+          "href": "/date/1947-08-15",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "1 December 1955Rosa Parks is arrested in Montgomery",
+          "href": "/date/1955-12-01",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "12 April 1961Yuri Gagarin becomes the first person in space",
+          "href": "/date/1961-04-12",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "28 August 1963Martin Luther King Jr. gives his \"I Have a Dream\" speech",
+          "href": "/date/1963-08-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "22 November 1963President John F. Kennedy is assassinated",
+          "href": "/date/1963-11-22",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "20 July 1969Apollo 11 lands on the Moon",
+          "href": null,
+          "current": true,
+          "h": 0
+        },
+        {
+          "text": "28 January 1986The Space Shuttle Challenger breaks apart",
+          "href": "/date/1986-01-28",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "9 November 1989The Berlin Wall falls",
+          "href": "/date/1989-11-09",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 February 1990Nelson Mandela is released from prison",
+          "href": "/date/1990-02-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 September 2001The September 11 attacks",
+          "href": "/date/2001-09-11",
+          "current": false,
+          "h": 0
+        },
+        {
+          "text": "11 March 2020The WHO declares COVID-19 a pandemic",
+          "href": "/date/2020-03-11",
+          "current": false,
+          "h": 0
+        }
+      ]
+    },
+    "section": {
+      "visible": true,
+      "heading": "Other notable dates",
+      "headingFont": "21px",
+      "inStrip": false,
+      "insideDetails": false,
+      "insideReading": false,
+      "afterReading": true,
+      "count": 20,
+      "items": [
+        {
+          "text": "15 April 1912 The Titanic sinks in the North Atlantic",
+          "href": "/date/1912-04-15",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "28 June 1914 Archduke Franz Ferdinand is assassinated in Sarajevo",
+          "href": "/date/1914-06-28",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "11 November 1918 The armistice ends fighting in World War I",
+          "href": "/date/1918-11-11",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "24 October 1929 Black Thursday begins the Wall Street Crash",
+          "href": "/date/1929-10-24",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "1 September 1939 Germany invades Poland, starting World War II",
+          "href": "/date/1939-09-01",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "6 June 1944 D-Day: the Allies land in Normandy",
+          "href": "/date/1944-06-06",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "8 May 1945 VE Day: the war in Europe ends",
+          "href": "/date/1945-05-08",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "6 August 1945 An atomic bomb is dropped on Hiroshima",
+          "href": "/date/1945-08-06",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "24 October 1945 The United Nations is founded",
+          "href": "/date/1945-10-24",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "15 August 1947 India becomes independent",
+          "href": "/date/1947-08-15",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "1 December 1955 Rosa Parks is arrested in Montgomery",
+          "href": "/date/1955-12-01",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "12 April 1961 Yuri Gagarin becomes the first person in space",
+          "href": "/date/1961-04-12",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "28 August 1963 Martin Luther King Jr. gives his \"I Have a Dream\" speech",
+          "href": "/date/1963-08-28",
+          "current": false,
+          "h": 81
+        },
+        {
+          "text": "22 November 1963 President John F. Kennedy is assassinated",
+          "href": "/date/1963-11-22",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "20 July 1969 Apollo 11 lands on the Moon",
+          "href": null,
+          "current": true,
+          "h": 63
+        },
+        {
+          "text": "28 January 1986 The Space Shuttle Challenger breaks apart",
+          "href": "/date/1986-01-28",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "9 November 1989 The Berlin Wall falls",
+          "href": "/date/1989-11-09",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "11 February 1990 Nelson Mandela is released from prison",
+          "href": "/date/1990-02-11",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "11 September 2001 The September 11 attacks",
+          "href": "/date/2001-09-11",
+          "current": false,
+          "h": 63
+        },
+        {
+          "text": "11 March 2020 The WHO declares COVID-19 a pandemic",
+          "href": "/date/2020-03-11",
+          "current": false,
+          "h": 63
+        }
+      ]
+    },
+    "readingSectionHasDetails": true
+  },
+  "atBottom": {
+    "scrollY": 3419,
+    "docH": 4263,
+    "points": [
+      {
+        "y": 840,
+        "inList": false,
+        "tag": "HTML",
+        "cls": "cormorant_garamond_23e09cee-module__jrbN8a__variable ibm_ple"
+      },
+      {
+        "y": 784,
+        "inList": true,
+        "tag": "SPAN",
+        "cls": "date-module__yTtfzW__notableSectionDescription"
+      },
+      {
+        "y": 644,
+        "inList": true,
+        "tag": "A",
+        "cls": "date-module__yTtfzW__notableSectionRow date-module__yTtfzW__"
+      }
+    ]
+  }
+}

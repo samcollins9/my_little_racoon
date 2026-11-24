@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
-import { eventsStatusLabel, formatLongDate } from "./format";
+import { eventsStatusLabel, formatLongDate, formatLongDateText } from "./format";
 
 function events(overrides: Partial<WikipediaEventsPayload> = {}): WikipediaEventsPayload {
   return {
@@ -31,6 +31,13 @@ describe("formatLongDate", () => {
     // A Date-based parse in a UTC-negative local timezone would show the
     // 19th here if it round-tripped through a Date object's local getters.
     expect(formatLongDate("1969-07-20")).toEqual({ day: "20", month: "July", year: "1969" });
+  });
+});
+
+describe("formatLongDateText", () => {
+  it("joins day, month and year, with no leading zero on the day", () => {
+    expect(formatLongDateText("1969-07-20")).toBe("20 July 1969");
+    expect(formatLongDateText("1912-04-05")).toBe("5 April 1912");
   });
 });
 

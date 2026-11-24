@@ -1,0 +1,13 @@
+RPC get_reading_by_date {"reading_date":"1969-07-20"} -> 1
+RPC get_adjacent_reading_dates {"reading_date":"1969-07-20"} -> 1
+RPC get_reading_by_date {"reading_date":"1969-07-20"} -> 1
+RPC get_adjacent_reading_dates {"reading_date":"1969-07-20"} -> 1
+RPC get_reading_by_date {"reading_date":"1969-07-20"} -> 1
+RPC get_adjacent_reading_dates {"reading_date":"1969-07-20"} -> 1
+RPC get_reading_by_date {"reading_date":"1969-07-20"} -> 1
+RPC get_adjacent_reading_dates {"reading_date":"1969-07-20"} -> 1
+--- ADJACENT=down run ---
+RPC get_reading_by_date {"reading_date":"2012-11-11"} -> 0
+RPC get_adjacent_reading_dates {"reading_date":"2012-11-11"} -> 500
+RPC get_reading_by_date {"reading_date":"2012-11-11"} -> 0
+RPC get_adjacent_reading_dates {"reading_date":"2012-11-11"} -> 500

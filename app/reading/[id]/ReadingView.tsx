@@ -44,6 +44,12 @@ type ReadingViewProps = {
   jdNote?: string;
   /** The strip between the date band and the body (the date page's picker and navigation). */
   belowDateBand?: ReactNode;
+  /**
+   * Sprint 45, R4: after the body, so on phones it follows the reading
+   * section and sits outside its sticky reveal (the date page's "Other
+   * notable dates").
+   */
+  afterBody?: ReactNode;
   /** Contents of "The reading" section. */
   children: ReactNode;
 };
@@ -74,6 +80,7 @@ export function ReadingView({
   tagline,
   jdNote,
   belowDateBand,
+  afterBody,
   children,
 }: ReadingViewProps) {
   const chart = composeChart(eventDate, positions);
@@ -226,6 +233,8 @@ export function ReadingView({
             <section className={styles.readingSection}>{children}</section>
           </div>
         </div>
+
+        {afterBody}
       </main>
     </div>
   );

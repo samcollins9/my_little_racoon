@@ -20,6 +20,7 @@ import readingStyles from "@/app/reading/[id]/reading.module.css";
 import { castHoroscope } from "./actions";
 import { DateNavigation } from "./DateNavigation";
 import { DatePicker } from "./DatePicker";
+import { NotableDatesSection } from "./NotableDates";
 import styles from "./date.module.css";
 
 /**
@@ -28,7 +29,7 @@ import styles from "./date.module.css";
  *
  * Rendering writes nothing (R3): loadDatePage's only database call is the
  * read-only get_reading_by_date lookup, loadDateNavigation's (Sprint 29)
- * are the two read-only date-only lookups, and the horoscope is written
+ * is the read-only adjacent-dates lookup, and the horoscope is written
  * only by the castHoroscope action, on a form submission.
  *
  * Dynamic per request (R2's risk, applied here too): `connection()` opts
@@ -57,8 +58,9 @@ export default async function DatePage({
   if (!isoDate) notFound();
 
   // Sprint 29, R4: the navigation is loaded alongside the page, not inside
-  // loadDatePage, so its failure can only ever remove the navigation --
-  // the chart, events and Sprint 28's own R6 notice don't depend on it.
+  // loadDatePage, so its failure can only ever remove Previous/Next --
+  // the chart, events, Sprint 28's own R6 notice and (Sprint 45, R2) the
+  // notable dates don't depend on it.
   const anon = createAnonClient();
   const [page, navigation] = await Promise.all([
     loadDatePage(anon, isoDate),
@@ -85,9 +87,11 @@ export default async function DatePage({
       belowDateBand={
         <>
           <DatePicker isoDate={isoDate} />
-          <DateNavigation navigation={navigation} />
+          <DateNavigation navigation={navigation} isoDate={isoDate} />
         </>
       }
+      // Sprint 45, R4: the phone copy of "Other notable dates".
+      afterBody={<NotableDatesSection isoDate={isoDate} />}
     >
       {availability.kind !== "writable" ? (
         <HoroscopeUnavailableSection availability={availability} />

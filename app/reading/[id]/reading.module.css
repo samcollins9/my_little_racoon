@@ -257,7 +257,7 @@
 
 /* Sprint 39, R1: an other-year event's year, linked to that year's date
    page. Underlined like the date navigation's links (date.module.css's
-   .recentLink), so a linked year reads as a link and a plain one doesn't.
+   .notableLink), so a linked year reads as a link and a plain one doesn't.
    The vertical padding, cancelled by the negative margin, enlarges the
    tap target without moving the row. */
 .eventYearLink {
