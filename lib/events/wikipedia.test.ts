@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { entryMatchesDateYear, fetchDayEvents, fetchDayEventYears } from "./wikipedia";
+import { fetchDayEvents } from "./wikipedia";
 
 let errorSpy: ReturnType<typeof vi.spyOn>;
 
@@ -177,68 +177,5 @@ describe("fetchDayEvents", () => {
     // Cached: the second call reuses the first's result rather than
     // hitting the network again.
     expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("entryMatchesDateYear (Sprint 41, R2)", () => {
-  it("is true only for the date's own year", () => {
-    expect(entryMatchesDateYear(1969, "1969-07-20")).toBe(true);
-    expect(entryMatchesDateYear(1968, "1969-07-20")).toBe(false);
-    expect(entryMatchesDateYear(1970, "1969-07-20")).toBe(false);
-  });
-});
-
-describe("fetchDayEventYears (Sprint 41)", () => {
-  it("returns the entries' years in feed order, from the same request fetchDayEvents makes (R5)", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      jsonResponse({ selected: [selectedEntry(1999, "A"), selectedEntry(1801, "B"), selectedEntry(2019, "C")] })
-    );
-    vi.stubGlobal("fetch", fetchMock);
-
-    expect(await fetchDayEventYears("2026-06-14")).toEqual([1999, 1801, 2019]);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toBe("https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/selected/06/14");
-    expect(init.headers["User-Agent"]).toMatch(/^RetroactiveHoroscope\/1\.0 /);
-    expect(init.signal).toBeInstanceOf(AbortSignal);
-  });
-
-  it("shares fetchDayEvents' month/day cache in both directions -- one request in total (R5)", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ selected: [selectedEntry(2019, "C")] }));
-    vi.stubGlobal("fetch", fetchMock);
-
-    await fetchDayEventYears("2026-06-15");
-    const payload = await fetchDayEvents("2019-06-15");
-    expect(await fetchDayEventYears("2027-06-15")).toEqual([2019]);
-
-    expect(payload!.matchedYear).toBe(true);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("resolves null and logs when the request fails, never throwing", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network down")));
-
-    await expect(fetchDayEventYears("2026-06-16")).resolves.toBeNull();
-    expect(errorSpy).toHaveBeenCalledWith("fetchDayEventYears failed", expect.any(Error));
-  });
-
-  it("resolves null for a non-2xx response or a missing `selected`, and caches neither", async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce(jsonResponse({}, false, 503))
-      .mockResolvedValueOnce(jsonResponse({ unexpected: true }))
-      .mockResolvedValueOnce(jsonResponse({ selected: [selectedEntry(2001, "X")] }));
-    vi.stubGlobal("fetch", fetchMock);
-
-    expect(await fetchDayEventYears("2026-06-17")).toBeNull();
-    expect(await fetchDayEventYears("2026-06-17")).toBeNull();
-    expect(await fetchDayEventYears("2026-06-17")).toEqual([2001]);
-    expect(fetchMock).toHaveBeenCalledTimes(3);
-  });
-
-  it("resolves an empty list for a genuinely empty feed", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ selected: [] })));
-
-    expect(await fetchDayEventYears("2026-06-18")).toEqual([]);
   });
 });

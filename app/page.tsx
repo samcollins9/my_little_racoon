@@ -1,14 +1,13 @@
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { frontDoorDate } from "@/lib/date-page/front-door";
 import { datePagePath, utcToday } from "@/lib/date-page/params";
 
 /**
- * Sprint 28, R2: `/` lands on a date page worked out per request, today
- * meaning the UTC date (decision d). Sprint 41 keeps today's month and day
- * but picks the latest year with a Wikipedia event on it, falling back to
- * today itself (lib/date-page/front-door.ts). Nothing here touches the
- * database.
+ * Sprint 28, R2: `/` lands on today's date page, today meaning the UTC date
+ * (decision d). This replaces Sprint 11's static redirect to /chart in
+ * next.config.ts, which couldn't work out a date at all. Sprint 44 confirmed
+ * it as the user's decision (docs/decisions.md). Rendering `/` makes no
+ * outbound call: no Wikipedia, no database.
  *
  * What keeps it per request: `connection()` tells Next this render depends
  * on the incoming request, so the route is never prerendered at build time
@@ -16,10 +15,9 @@ import { datePagePath, utcToday } from "@/lib/date-page/params";
  * request, and the landing page follows midnight UTC without a redeploy.
  * redirect() from a server component answers 307 (temporary): a 308 would
  * be cached by browsers and CDNs past midnight, Sprint 11's reason for
- * avoiding one. The landing year can change too, so the same reasoning
- * holds for it.
+ * avoiding one.
  */
 export default async function Home() {
   await connection();
-  redirect(datePagePath(await frontDoorDate(utcToday())));
+  redirect(datePagePath(utcToday()));
 }

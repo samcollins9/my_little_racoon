@@ -1,0 +1,10 @@
+# 2026-11-24T13:01:09Z curl -sI http://127.0.0.1:3144/ (production build)
+HTTP/1.1 307 Temporary Redirect
+location: /date/2026-11-24
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+curl_exit=0
+# 2026-11-24T13:01:13Z second request, 4s later
+HTTP/1.1 307 Temporary Redirect
+location: /date/2026-11-24
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+curl_exit=0

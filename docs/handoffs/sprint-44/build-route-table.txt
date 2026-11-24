@@ -1,0 +1,12 @@
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/health/db
+├ ƒ /chart
+├ ƒ /date
+├ ƒ /date/[date]
+└ ƒ /reading/[id]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

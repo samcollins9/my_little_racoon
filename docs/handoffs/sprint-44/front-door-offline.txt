@@ -1,0 +1,5 @@
+# 2026-11-24T13:01:22Z production build, network namespace with only loopback (unshare -rn)
+wikimedia_curl_exit=6
+HTTP/1.1 307 Temporary Redirect
+location: /date/2026-11-24
+curl_exit=0
