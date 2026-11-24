@@ -1,7 +1,7 @@
 {
   "id": 44,
   "title": "Front page lands on today's actual date",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "7572be3a62a4cfa6069d898599422f2097e9a714adf6a29690b99b8e4e24b756",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: QA1 gate-1 audit, Sprint 44, commit 34eebd2 (main HEAD). Verdict: PASS.\n\nSprint file: re-read fresh. It is unchanged since Dev Team 1's start (d7fc413) apart from the lifecycle status line. Its dependency (Sprint 41 resolved first) is satisfied: Sprint 41 was closed in c9c01d9, before this build.\n\nHandoff: read at 34eebd2 with git show. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0 with 40 files and 486 tests. QA1's own npm run verify at 34eebd2 (clean tree): verify=0, 40 files, 486 tests, and the route table shows \"\u0192 /\". The test count is consistent: 510 minus 19 front-door tests minus 6 wikipedia tests, with page.test.ts rewritten.\n\nApproach: Dev Team restored Sprint 41's files from d638916, the commit just before 0aad17a. QA1 confirmed:\n- git diff d638916 34eebd2 -- README.md lib/events is empty, so both are byte-identical to pre-41;\n- git log d638916..34eebd2 on those paths shows only 0aad17a and 34eebd2, so the checkout reverted no one else's change, and Sprint 40's README work (pre-d638916) is intact.\n\nR1: met. app/page.tsx is await connection(); redirect(datePagePath(utcToday())). It is a server component redirect, so 307. \u0192 / is in QA1's own build. The handoff's live evidence shows 307 to /date/2026-11-24 with no-store and no age header.\n\nR2: met. The import closure of / is:\n- app/page.tsx imports next/navigation, next/server and lib/date-page/params;\n- params imports ephemeris/adapter;\n- adapter imports astronomy-engine and ./zodiac.\nThere is no Wikipedia module and no Supabase. page.test.ts asserts fetch is never called.\n\nR3: met. front-door.ts and its test are deleted. fetchDayEventYears is removed. grep of frontDoorDate, front-door, fetchDayEventYears, entryMatchesDateYear and feedMonthDay in app and lib finds nothing (exit 1).\n- Dev Team's choice, stated in the handoff: entryMatchesDateYear and feedMonthDay are also removed, which the sprint allowed.\n- fetchDayEvents and its tests are byte-identical to pre-41. Sprint 41 only appended to wikipedia.test.ts, so the fetchDayEvents tests are the same text before, during and after 41. Both its behaviour and its tests are unchanged.\n\nR4: met. The page.tsx header is Sprint 28's comment, plus one sentence: Sprint 44 confirmed it as the user's decision, and / makes no outbound call. There is no latest-year mention.\n\nR5: met. The route list says \"/ redirects (307) to /date/<today, UTC>\", and Local setup's paragraph says the same. Both are pre-41 text, which matches the behaviour.\n\nR6: met, see Handoff.\n\nTests: page.test.ts covers connection before redirect, the UTC midnight boundary (23:59:59.999Z to 00:00Z moves the day on) and no fetch. They're meaningful for a two-line page.\n\nNo defects, no questions from Dev Team, no Human Prerequisites. LiveQA step 3 (Sprint 39's message on today's page) is expected behaviour per the sprint file."
+    },
+    {
+      "ts": "2026-11-24T13:03:50+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-24T13:03:26+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-24T13:03:50+00:00"
   }
 }
