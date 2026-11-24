@@ -1,16 +1,16 @@
 {
   "id": 46,
   "title": "Install Google Analytics through Google Tag Manager",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "36bb112f28487d9787abc55bf831c48262f13d5f9c6c5f43c8770f7675110dde",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "1cdab833f53c33f4417fb4f057dcbb8baca01fd2973c3e88078ac2964f54fc61",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-24T22:10:13+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T22:32:02+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS, gate 1, audit of 2a74097.\n\nSprint file: read fresh at this commit (status in_progress, created 22:07:51). The handoff was read at the audited commit with git show 2a74097:docs/handoffs/sprint-46.md. It has a Round 1 section that quotes VERIFY PASS (lint, typecheck, test, build) exit=0, with 45 files and 511 tests.\n\nMy own check: npm run verify at 2a74097, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 45 test files and 511 tests passed.\n\nRequirements:\n- R1 Met. app/layout.tsx renders TagManager once, inside body. grep finds TagManager or googletagmanager only in app/TagManager.tsx, app/layout.tsx, lib/analytics/tag-manager.ts and their tests. No page renders it.\n- R2 Met. Google's snippet verbatim, through next/script: the inline half is beforeInteractive, the container is afterInteractive. A test pins the text exactly. Next 16's own docs (02-components/script.md:75) require beforeInteractive in the root layout, and TagManager is rendered only from there. The no-new-dependency choice over @next/third-parties is justified in the handoff. grep -rnE for G- IDs or gtag/js over app and lib exits 0, but the only hit is the test comment at tag-manager.test.ts:21. No measurement ID is in the code; G-NFY3Q9KSXH appears only in the handoff evidence, as what the container itself sent.\n- R3 Met. shouldLoadTagManager is a strict equality check for production. TagManager has no use client, so it's a server component, and it returns null otherwise. grep for NEXT_PUBLIC_VERCEL_ENV across source exits 1. Production deploys through the CI deploy hook, so Vercel builds and runs with VERCEL_ENV=production. The GitHub Actions test job doesn't set VERCEL_ENV, so the test asserting it's unset holds in CI.\n- R4 Met. GTM-T9WQSKH3 appears once outside tests, at lib/analytics/tag-manager.ts:7 (grep exit 0, one line). A broader GTM- pattern gives the same single hit.\n- R5 Met. Outside new files, only app/layout.tsx changed. The reworded font comment is accurate.\n- R6 Met. Tests cover production, preview, development, unset, empty and wrong-case values, the real process.env path via vi.stubEnv, and the exact ID and URL.\n- R7 Met. The README Analytics section covers the ID, that only production loads it, and that GA4 is configured in Tag Manager, with a double-count warning and the history-change note.\n- R8 Met. No new dependency.\n\nDev Team's question 1, the 500 error shell: ACCEPTABLE, not a defect under R2. Next serves the bare error document with the root layout rendered only on the client, so no server-rendered beforeInteractive is possible there with any of R2's allowed approaches. The container still ran once, and GTM creates dataLayer itself. R2's dataLayer-first holds on every page the layout server-renders, which is every page R1 names. Master Controller may record this ruling in the sprint file if wanted. It does not need a code change.\n\nEvidence files: I checked docs/handoffs/sprint-46 for keys (eyJ, service_role) and found none (exit 1).\n\nNotes for the user and LiveQA:\n- The 4 real GA4 hits from Dev Team's first local probe (127.0.0.1 and localhost hostnames) are in the stream. The user may want to filter or ignore them. This is informational, not a blocker.\n- Dev Team's local production build already saw the container send a page_view, so the GA4 tag looks configured. Per the handoff, in-app navigation sent no second page_view, which matches the sprint's own Human Prerequisite on history-change page views. LiveQA records step 4 either way.\n\nNo issues found. Nothing new for Human Prerequisites beyond those already in the sprint file."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T22:10:13+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-24T22:32:02+00:00"
   }
 }
