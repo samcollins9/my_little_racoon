@@ -1,12 +1,12 @@
 {
   "id": 41,
   "title": "Front page lands on today in the latest year with an event",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "c26b3ffbf2ca41e2ef171b93eb914d581d238f4d123cfa99d050b1dc586e0b0f",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "79a560d14d4407b2eb39731ebf1feabfc517e380123da2547b07b5c06b5e45ea",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "0aad17a23c02336288f604df6213b04bea740a94",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T03:16:15+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=0aad17a | ci=green: 1 CI run(s) for 0aad17a23c02336288f604df6213b04bea740a94 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T03:10:32+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-24T03:16:15+00:00"
   }
 }
