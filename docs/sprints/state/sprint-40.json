@@ -1,16 +1,16 @@
 {
   "id": 40,
   "title": "README: export the service role key for local database tests",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "f6c88eb951660c8b149d72cb12f909e1676132967cad828d784ad76d9c7ec416",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "fd221fda4d3d2e6b0ad6976c66be055ac1c119e029c0d99264f0285ec22abfed",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-24T00:44:02+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T02:23:31+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate-1 audit, Sprint 40, audited commit c682803. The PASS is recorded at main HEAD 3a5af87. Everything between c682803 and HEAD touches only tree-hash-excluded paths: the sprint 43 file, the sprint 42 done-rename, registry.json and state/sprint-42.json (git diff --stat c682803 main). Verdict: PASS.\n\nSprint file: re-read fresh as amended (R3 amended; R5 amended for db reset; R6-R8 added; Human Prerequisites amended for Docker). Audited against the current file.\n\nHandoff: read at c682803 with git show. Round 1 and Round 2 sections are present, and each quotes VERIFY PASS (lint, typecheck, test, build) exit=0. QA1's own npm run verify at HEAD: verify=0, 35 files, 444 tests.\n\nR1: met.\n- The recipe's three --override-name lines are character-identical to ci.yml lines 78-80.\n- The filter is grep -E on the anchored names, so it keeps exactly the three variables.\n- QA1 ran npx supabase start (no reset) and then npx supabase status -o env with the three overrides against the real local stack (CLI 2.114.0), followed by npx supabase stop. Output names: DB_URL, FUNCTIONS_URL, ... NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SUPABASE_URL, ... SUPABASE_SERVICE_ROLE_KEY. The README's filter kept exactly those three, all non-empty, with quotes stripped. All three would be set.\n- The prose names all three variables and CI's step by its current name, \"Export local stack URL/anon key/service role key\".\n\nR2: met. The policy-tests section now links to the Tier 2 heading; the anchor slug matches the heading \"Tier 2: CI's rls-tests job, locally\". grep test:rls finds only line 157 (prose) and line 234 (inside the one recipe, after the export).\n\nR3: met.\n- The Vitest/.env.local explanation is at lines 250-252.\n- The demo-key and never-production sentences are in Tier 2 (252-255) and Local setup (92-95).\n- Local setup's copy-into-.env.local instruction (88-91) is unchanged.\n- No README text tells the reader to put production's service role key in .env.local; there is no vercel env pull or similar.\n\nR4: met. The diff from edc08b7 to c682803 touches README.md, docs/handoffs/sprint-40.md and docs/handoffs/sprint-40/ (plus the excluded sprint file and state). No code, ci.yml or tests.\n\nR5: met.\n- tier2-run.log: preset_supabase_vars=0, and step1 to step5 all exit=0. test:rls ran 5 files, 43/43.\n- recipe-as-run.sh is the README's Tier 2 block. QA1 re-extracted the block from README at c682803 and diffed it against that file: empty, exit 0. So Round 2's no-rerun claim holds; the evidence is from the recipe as now written.\n\nR6: met. db reset follows start, and the data-loss sentence is at lines 243-245. supabase/migrations has 12 files at c682803, and the log has 12 \"Applying migration\" lines.\n\nR7: met. Both named instances are corrected (line 96 and lines 316-318). grep applies finds no remaining claim that start alone applies every migration. The remaining hits are about db reset, db push on production and preview branches.\n\nR8: met. The section names NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY as the only production values allowed and excludes the service role and OpenAI keys. It says writes fail without the service role key; QA1 confirmed that the only DB writes are insert.ts:42 (readings insert) and generate.ts:152 (set_reading_horoscope rpc), both on the admin writer, and every other call is an anon read rpc. \"Delete it afterwards\" is kept.\n\nOut of scope respected: the \"Running the built app locally\" route list (Sprint 41's) is untouched.\n\nRound 1 questions: both are settled by MC's amendment (R6 requires db reset; R8 rewrote the .env.local section). Nothing left for QA1 to rule on.\n\nNo new Human Prerequisites. The existing Docker one stands: docker info exits 0 on this machine as of this audit. QA1 did not run db reset, because it deletes local data; the reset is LiveQA's run to make, per the sprint file."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T00:44:02+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-24T02:23:31+00:00"
   }
 }
