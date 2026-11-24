@@ -1,5 +1,5 @@
 {
-  "next_id": 45,
+  "next_id": 46,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -264,6 +264,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-44_front-page-lands-on-today-s-actual-date--done.md"
+    },
+    "45": {
+      "title": "Notable dates replace the recently written list",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-45_notable-dates-replace-the-recently-written-list.md"
     }
   }
 }
