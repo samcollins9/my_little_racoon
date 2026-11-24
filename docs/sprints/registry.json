@@ -1,5 +1,5 @@
 {
-  "next_id": 44,
+  "next_id": 45,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -258,6 +258,12 @@
       "epic": "Site identity",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-43_ask-reloy-site-banner--done.md"
+    },
+    "44": {
+      "title": "Front page lands on today's actual date",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-44_front-page-lands-on-today-s-actual-date.md"
     }
   }
 }

@@ -80,3 +80,12 @@ Decided by the user. `/` lands on today's UTC month and day, in the most recent 
 this day" event on it. That date is always writable. If the feed can't be used, `/`
 falls back to today's date as before. This amends decision 4 for `/` only: "today" is
 still the UTC date, and `/date/<today>` is unchanged.
+
+## 24 Nov 2026: the front page lands on today's actual date (Sprint 44, reversing Sprint 41)
+
+Decided by the user, after seeing Sprint 41 live: `/` resolved to 2023-11-24,
+because 2023 is the newest year in the feed for 24 November. `/` goes back to
+today's actual UTC date, restoring decision 4 as originally written. The user
+accepts that today will usually show the "can't write an accurate horoscope"
+message, with its links to other years. The 24 Nov 2026 entry "where the front
+page lands (Sprint 41)" above is superseded.
