@@ -2,7 +2,7 @@
 id: 42
 title: "Strip \"(pictured)\" notes from event text"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-24T00:32:11+00:00
 ---
 
