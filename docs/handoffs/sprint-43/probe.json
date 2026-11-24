@@ -1,0 +1,269 @@
+{
+  "desktop": {
+    "bannerRect": {
+      "x": 73,
+      "y": 65,
+      "width": 1294,
+      "height": 155,
+      "top": 65,
+      "right": 1367,
+      "bottom": 220,
+      "left": 73
+    },
+    "imgRect": {
+      "x": 113,
+      "y": 81,
+      "width": 133,
+      "height": 138,
+      "top": 81,
+      "right": 246,
+      "bottom": 219,
+      "left": 113
+    },
+    "imgNatural": [
+      133,
+      138
+    ],
+    "imgRendering": "pixelated",
+    "portraitWindow": {
+      "x": 113,
+      "y": 81,
+      "width": 133,
+      "height": 138,
+      "top": 81,
+      "right": 246,
+      "bottom": 219,
+      "left": 113
+    },
+    "tagline": "Unlock the mysteries of what was to be.",
+    "taglineDisplay": "block",
+    "taglineRect": {
+      "x": 270,
+      "y": 155,
+      "width": 520,
+      "height": 46,
+      "top": 155,
+      "right": 790,
+      "bottom": 201,
+      "left": 270
+    },
+    "taglineClipped": false,
+    "wordmarkFont": "300 52px / 49.4px \"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+    "focusableLinks": [
+      [
+        "/",
+        "Ask Reloy — home"
+      ]
+    ],
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "bannerPosition": "static",
+    "dateBandTop": 277
+  },
+  "tagline8": {
+    "height": 46,
+    "clipped": false,
+    "lines": 2
+  },
+  "firstTabStop": null,
+  "tabStops": {
+    "firstStop": [
+      "A",
+      "/",
+      "Ask Reloy — home"
+    ],
+    "secondStop": [
+      "INPUT",
+      "after banner",
+      ""
+    ]
+  },
+  "portraitClickLandedOn": "/date/2026-11-24",
+  "wordmarkClickLandedOn": "/date/2026-11-24",
+  "design": {
+    "a": {
+      "x": 64,
+      "y": 176.375,
+      "width": 1312,
+      "height": 365.390625
+    },
+    "e": {
+      "x": 64,
+      "y": 1758.765625,
+      "width": 1312,
+      "height": 424
+    },
+    "seer": {
+      "x": 64,
+      "y": 1794.765625,
+      "width": 392,
+      "height": 146
+    }
+  },
+  "phone": {
+    "bannerRect": {
+      "x": 8,
+      "y": 8,
+      "width": 374,
+      "height": 103,
+      "top": 8,
+      "right": 382,
+      "bottom": 111,
+      "left": 8
+    },
+    "imgRect": {
+      "x": 2,
+      "y": -28,
+      "width": 133,
+      "height": 138,
+      "top": -28,
+      "right": 135,
+      "bottom": 110,
+      "left": 2
+    },
+    "imgNatural": [
+      133,
+      138
+    ],
+    "imgRendering": "pixelated",
+    "portraitWindow": {
+      "x": 2,
+      "y": 18,
+      "width": 133,
+      "height": 92,
+      "top": 18,
+      "right": 135,
+      "bottom": 110,
+      "left": 2
+    },
+    "tagline": "Discover what destiny had in store for you.",
+    "taglineDisplay": "none",
+    "taglineRect": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    },
+    "taglineClipped": false,
+    "wordmarkFont": "300 32px / 32px \"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+    "focusableLinks": [
+      [
+        "/",
+        "Ask Reloy — home"
+      ]
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "bannerPosition": "static",
+    "dateBandTop": 152
+  },
+  "phoneAfterScroll": -151,
+  "errorBoundary": {
+    "bannerRect": {
+      "x": 401,
+      "y": 65,
+      "width": 638,
+      "height": 155,
+      "top": 65,
+      "right": 1039,
+      "bottom": 220,
+      "left": 401
+    },
+    "imgRect": {
+      "x": 441,
+      "y": 81,
+      "width": 133,
+      "height": 138,
+      "top": 81,
+      "right": 574,
+      "bottom": 219,
+      "left": 441
+    },
+    "imgNatural": [
+      133,
+      138
+    ],
+    "imgRendering": "pixelated",
+    "portraitWindow": {
+      "x": 441,
+      "y": 81,
+      "width": 133,
+      "height": 138,
+      "top": 81,
+      "right": 574,
+      "bottom": 219,
+      "left": 441
+    },
+    "tagline": null,
+    "taglineDisplay": null,
+    "taglineRect": null,
+    "taglineClipped": null,
+    "wordmarkFont": "300 52px / 49.4px \"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+    "focusableLinks": [
+      [
+        "/",
+        "Ask Reloy — home"
+      ]
+    ],
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "bannerPosition": "static",
+    "dateBandTop": 292
+  },
+  "errorBoundaryPhone": {
+    "bannerRect": {
+      "x": 25,
+      "y": 65,
+      "width": 340,
+      "height": 103,
+      "top": 65,
+      "right": 365,
+      "bottom": 168,
+      "left": 25
+    },
+    "imgRect": {
+      "x": 19,
+      "y": 29,
+      "width": 133,
+      "height": 138,
+      "top": 29,
+      "right": 152,
+      "bottom": 167,
+      "left": 19
+    },
+    "imgNatural": [
+      133,
+      138
+    ],
+    "imgRendering": "pixelated",
+    "portraitWindow": {
+      "x": 19,
+      "y": 75,
+      "width": 133,
+      "height": 92,
+      "top": 75,
+      "right": 152,
+      "bottom": 167,
+      "left": 19
+    },
+    "tagline": null,
+    "taglineDisplay": null,
+    "taglineRect": null,
+    "taglineClipped": null,
+    "wordmarkFont": "300 32px / 32px \"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+    "focusableLinks": [
+      [
+        "/",
+        "Ask Reloy — home"
+      ]
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "bannerPosition": "static",
+    "dateBandTop": 228
+  }
+}

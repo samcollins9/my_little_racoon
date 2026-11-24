@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { calculationInstantForDate, computePositions } from "@/lib/ephemeris/adapter";
 import { AspectsPanel, NO_ASPECTS_TEXT } from "./ChartKeyTables";
 import { ChartTabs, ChartTabsView, INITIAL_TAB_INDEX, nextTabIndex, type ChartTab } from "./ChartTabs";
+import { TAGLINES } from "../../../lib/banner/taglines";
 import { ReadingView } from "./ReadingView";
 
 // Sprint 37, R1/R2/R9: the chart panel's tabs.
@@ -119,7 +120,12 @@ describe("nextTabIndex: the keyboard (R2)", () => {
 describe("the reading view's chart panel (R1/R2/R5)", () => {
   const DATE = "1969-07-20";
   const html = renderToStaticMarkup(
-    <ReadingView eventDate={DATE} positions={computePositions(calculationInstantForDate(DATE))} events={null}>
+    <ReadingView
+      eventDate={DATE}
+      positions={computePositions(calculationInstantForDate(DATE))}
+      events={null}
+      tagline={TAGLINES[0]}
+    >
       {null}
     </ReadingView>
   );
