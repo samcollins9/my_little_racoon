@@ -1,0 +1,285 @@
+{
+  "url": "http://127.0.0.1:3145/date/1969-07-20",
+  "browser": "Chrome/156.0.8078.4",
+  "widths": [
+    {
+      "width": 901,
+      "closed": {
+        "vw": 901,
+        "docW": 901,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 901,
+        "flippedLeftwards": [
+          "6 June 1944",
+          "12 April 1961",
+          "11 February 1990"
+        ],
+        "rightmost": {
+          "date": "11 February 1990",
+          "shown": 1,
+          "text": "Nelson Mandela is released from prison",
+          "left": 558,
+          "right": 809,
+          "cardLeft": 40,
+          "cardRight": 861,
+          "flipped": true,
+          "flushUnderDate": true,
+          "docW": 901
+        }
+      }
+    },
+    {
+      "width": 1000,
+      "closed": {
+        "vw": 1000,
+        "docW": 1000,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1000,
+        "flippedLeftwards": [
+          "6 June 1944",
+          "12 April 1961",
+          "11 February 1990"
+        ],
+        "rightmost": {
+          "date": "11 February 1990",
+          "shown": 1,
+          "text": "Nelson Mandela is released from prison",
+          "left": 590,
+          "right": 841,
+          "cardLeft": 72,
+          "cardRight": 928,
+          "flipped": true,
+          "flushUnderDate": true,
+          "docW": 1000
+        }
+      }
+    },
+    {
+      "width": 1100,
+      "closed": {
+        "vw": 1100,
+        "docW": 1100,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1100,
+        "flippedLeftwards": [
+          "8 May 1945",
+          "22 November 1963"
+        ],
+        "rightmost": {
+          "date": "11 March 2020",
+          "shown": 1,
+          "text": "The WHO declares COVID-19 a pandemic",
+          "left": 745,
+          "right": 996,
+          "cardLeft": 72,
+          "cardRight": 1028,
+          "flipped": false,
+          "flushUnderDate": true,
+          "docW": 1100
+        }
+      }
+    },
+    {
+      "width": 1200,
+      "closed": {
+        "vw": 1200,
+        "docW": 1200,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1200,
+        "flippedLeftwards": [
+          "6 August 1945",
+          "28 January 1986"
+        ],
+        "rightmost": {
+          "date": "28 January 1986",
+          "shown": 1,
+          "text": "The Space Shuttle Challenger breaks apart",
+          "left": 813,
+          "right": 1064,
+          "cardLeft": 72,
+          "cardRight": 1128,
+          "flipped": true,
+          "flushUnderDate": true,
+          "docW": 1200
+        }
+      }
+    },
+    {
+      "width": 1279,
+      "closed": {
+        "vw": 1279,
+        "docW": 1279,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1279,
+        "flippedLeftwards": [
+          "24 October 1945"
+        ],
+        "rightmost": {
+          "date": "6 August 1945",
+          "shown": 1,
+          "text": "An atomic bomb is dropped on Hiroshima",
+          "left": 910,
+          "right": 1160,
+          "cardLeft": 72,
+          "cardRight": 1207,
+          "flipped": false,
+          "flushUnderDate": true,
+          "docW": 1279
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "closed": {
+        "vw": 1280,
+        "docW": 1280,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1280,
+        "flippedLeftwards": [
+          "24 October 1945"
+        ],
+        "rightmost": {
+          "date": "6 August 1945",
+          "shown": 1,
+          "text": "An atomic bomb is dropped on Hiroshima",
+          "left": 910,
+          "right": 1160,
+          "cardLeft": 72,
+          "cardRight": 1208,
+          "flipped": false,
+          "flushUnderDate": true,
+          "docW": 1280
+        }
+      }
+    },
+    {
+      "width": 1320,
+      "closed": {
+        "vw": 1320,
+        "docW": 1320,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1320,
+        "flippedLeftwards": [
+          "11 February 1990"
+        ],
+        "rightmost": {
+          "date": "24 October 1945",
+          "shown": 1,
+          "text": "The United Nations is founded",
+          "left": 1021,
+          "right": 1223,
+          "cardLeft": 72,
+          "cardRight": 1248,
+          "flipped": false,
+          "flushUnderDate": true,
+          "docW": 1320
+        }
+      }
+    },
+    {
+      "width": 1440,
+      "closed": {
+        "vw": 1440,
+        "docW": 1440,
+        "shownTooltips": 0
+      },
+      "hoverAll": {
+        "count": 20,
+        "everyOneShowsExactlyOne": true,
+        "everyOneFlushUnderItsDate": true,
+        "everyOneInsideCard": true,
+        "everyOneInsideViewport": true,
+        "maxDocWWhileOpen": 1440,
+        "flippedLeftwards": [],
+        "rightmost": {
+          "date": "15 August 1947",
+          "shown": 1,
+          "text": "India becomes independent",
+          "left": 1148,
+          "right": 1331,
+          "cardLeft": 72,
+          "cardRight": 1368,
+          "flipped": false,
+          "flushUnderDate": true,
+          "docW": 1440
+        }
+      }
+    }
+  ],
+  "keyboard1000": {
+    "focused": "11 February 1990",
+    "focusVisible": true,
+    "shown": [
+      "Nelson Mandela is released from prison"
+    ],
+    "right": 841,
+    "vw": 1000,
+    "docW": 1000
+  },
+  "accessibility1000": {
+    "linksWithDescriptionWhileAllClosed": 19,
+    "sample": [
+      {
+        "name": "15 April 1912",
+        "description": "The Titanic sinks in the North Atlantic"
+      },
+      {
+        "name": "28 June 1914",
+        "description": "Archduke Franz Ferdinand is assassinated in Sarajevo"
+      },
+      {
+        "name": "11 November 1918",
+        "description": "The armistice ends fighting in World War I"
+      }
+    ]
+  }
+}

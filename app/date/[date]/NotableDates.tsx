@@ -35,8 +35,8 @@ export function NotableDatesStrip({ isoDate }: { isoDate: string }) {
       <ol className={styles.notableList}>
         {NOTABLE_DATES.map(({ isoDate: date, description }) => {
           // R3: the tooltip is the link's accessible description, so a screen
-          // reader announces it with the link. It's visibility:hidden until
-          // hover or focus (date.module.css), which aria-describedby still reads.
+          // reader announces it with the link. It's display:none until hover
+          // or focus (date.module.css), which aria-describedby still reads.
           const tooltipId = `notable-tooltip-${date}`;
           const label = formatLongDateText(date);
           return (

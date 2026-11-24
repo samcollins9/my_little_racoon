@@ -82,3 +82,57 @@ Round 1's R8 row was wrong. I ran the grep before writing `notable-dates-page.te
 
 - **QA1's ruling on question 1:** hover-only for the current date. No `tabIndex` was added.
 - **LiveQA's watch item:** horizontal scroll from hidden tooltips at about 1000px wide. I left it for LiveQA, as QA1 noted it outside the verdict. One point that may help LiveQA: the desktop `.card` is a fixed `width: 1320px` (`reading.module.css`, unchanged since before this sprint). Any scroll seen between 901 and 1319px should be checked against the card itself before blaming the tooltips.
+
+## Round 3
+
+**Status:** ready for QA1's live-loop audit. This round fixes LiveQA round 1's one defect and changes nothing else.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (43 test files, 502 tests).
+
+### The defect (LiveQA round 1, CONDITIONAL)
+
+At desktop widths from 901 to about 1278px, the page scrolled sideways. Closed tooltips were hidden with `visibility: hidden`, so they still counted toward the page's scroll width. The tooltip of the last date on a wrapped row reached past the viewport. An open tooltip there was also cut off at the viewport's right edge.
+
+### Correcting my Round 2 note
+
+Round 2 said the desktop `.card` "is a fixed `width: 1320px`", and suggested any scroll between 901 and 1319px might come from the card. That was wrong. I read the base rule and missed that the card shrinks below 1320px; LiveQA measured it at 821px wide at 901. LiveQA's attribution to the tooltips is correct.
+
+### Fix: `app/date/[date]/date.module.css` only, plus a comment in `NotableDates.tsx`
+
+1. **Closed tooltips use `display: none`, not `visibility: hidden`.** A closed tooltip has no box, so it can't widen the page. Hover and focus set `display: block`, using the same selectors as before. `aria-describedby` still reads text from a `display: none` target: the accessible-name rules include hidden nodes when they're referenced. The markup is unchanged, so every existing R3 test still applies as written.
+2. **An open tooltip stays inside the card**, using CSS anchor positioning, inside `@supports (position-area: block-end) and (anchor-scope: all)`:
+   - Each `.notableItem` is an anchor, scoped to itself with `anchor-scope`, so each tooltip finds its own date.
+   - The tooltip opens with `position-area: block-end span-inline-end`, which puts it flush under its date and running rightwards, as before.
+   - `position-try-fallbacks: flip-inline` makes a tooltip that would run past the edge open leftwards instead, right-aligned under its date.
+   - `main:has(.notableStrip) { position: relative }` makes the card the containing block, on the date page only. My first attempt made the strip itself the containing block. The probe caught that the strip ends only 19px below the last row, so Chrome pushed the 56px tooltip back up over row 2, covering its own date. With the card as containing block there's room below. I checked what else this changes: the only other absolutely positioned elements in the card that had the viewport as their containing block are the chart tabs' visually hidden labels. They have no insets, so they don't move.
+   - Browsers without anchor positioning keep the earlier left-anchored placement (`top: 100%; left: 0` against the `<li>`). With fix 1 they still don't scroll sideways while every tooltip is closed. See Known limitations.
+
+### Manual check
+
+I used the same rig as Round 1: `next dev` against [fake45.mjs](sprint-45/fake45.mjs). The new probe is [cdp45-overflow.mjs](sprint-45/cdp45-overflow.mjs), run against `/date/1969-07-20` in Chrome 156 headless. At each of 901, 1000, 1100, 1200, 1279, 1280, 1320 and 1440px, it measures the page's scroll width with every tooltip closed. It then hovers each of the 20 dates in turn. Results are in [round3-overflow-report.json](sprint-45/round3-overflow-report.json).
+
+- **No sideways scroll at any width,** with every tooltip closed or with any one open. The scroll width equals the viewport width each time, including 901, where LiveQA measured 969.
+- **Every one of the 20 hovers, at every width:**
+  - exactly one tooltip is open;
+  - it sits flush under its own date (its top equals the date's bottom);
+  - it lies inside the card and inside the viewport.
+- **Only the last date on a wrapped row flips.** At 901 and 1000 that's 6 June 1944, 12 April 1961 and 11 February 1990, the dates LiveQA saw overflow. At 1440 nothing flips.
+- **Screenshots:**
+  - [round3-901-hover-rightmost.png](sprint-45/round3-901-hover-rightmost.png): 11 February 1990's tooltip at 901 opens leftwards under the date and ends inside the card.
+  - [round3-1200-hover-rightmost.png](sprint-45/round3-1200-hover-rightmost.png): the same check at 1200.
+  - [round3-1000-keyboard.png](sprint-45/round3-1000-keyboard.png): at 1000, keyboard focus on 11 February 1990 opens its tooltip under the date. The page scroll width stays 1000.
+- **Accessibility tree, with every tooltip closed (`display: none`):** Chrome reports 19 links with descriptions, for example name "15 April 1912", description "The Titanic sinks in the North Atlantic". There are 20 dates, and the 20th, 20 July 1969, is the page's own date, a `<span>`, not a link. So closing tooltips with `display: none` didn't cost any link its description.
+- **Phone 390px:** I re-ran Round 1's phone probe ([cdp45.mjs](sprint-45/cdp45.mjs) `phone`). Its output, [round3-phone-report.json](sprint-45/round3-phone-report.json), is identical, field for field, to Round 1's [phone-report.json](sprint-45/phone-report.json). The new card rule changes nothing on phones.
+
+### Tests
+
+No new unit test. The change is CSS only, and the Vitest suite renders markup without layout, so it can't measure scroll width or tooltip position. The probe above is the evidence. The markup is unchanged, and the existing R3/R5 tests pass against it unmodified.
+
+### Known limitations
+
+- **Without anchor positioning,** an *open* tooltip on the last date of a wrapped row can still reach past the card's edge while it's open, as before. Closed tooltips no longer widen the page in any browser. Anchor positioning is in current Chrome, Edge and Safari; I've only measured Chrome. LiveQA may want to check Firefox, where I haven't confirmed support.
+- Escape still doesn't close the tooltip (unchanged from Round 1).
+
+### Not changed
+
+Everything else from Rounds 1 and 2, including QA1's ruling on the current date's hover-only tooltip.

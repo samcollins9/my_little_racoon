@@ -147,6 +147,18 @@
   min-width: 0;
 }
 
+/* Where anchor positioning is supported, the card is the tooltips'
+   containing block (see .notableTooltip): wide enough to flip within, and
+   tall enough that a tooltip under the last row isn't pushed back up over
+   it, as the strip itself would. Nothing else in the card is placed
+   against its containing block (only the chart tabs' visually-hidden
+   labels, which have no insets), so this moves nothing else. */
+@supports (position-area: block-end) and (anchor-scope: all) {
+  main:has(.notableStrip) {
+    position: relative;
+  }
+}
+
 .adjacent + .notableStrip {
   margin-top: 12px;
 }
@@ -184,10 +196,15 @@
 }
 
 /* R3: hidden until its date is hovered or its link has keyboard focus.
-   visibility, not display, so aria-describedby still has text to read
-   whenever it's hidden. It sits flush under the date with no gap, so the
-   pointer can move onto it without it closing. */
+   Hidden with display:none, not visibility (Sprint 45, LiveQA round 1): a
+   visibility-hidden box still counts toward the page's scroll width, so a
+   closed tooltip at the end of a wrapped row made the page scroll sideways
+   at 901-1278px. aria-describedby still reads a display:none target's
+   text (accname: referenced hidden nodes are included). It sits flush
+   under the date with no gap, so the pointer can move onto it without it
+   closing. */
 .notableTooltip {
+  display: none;
   position: absolute;
   top: 100%;
   left: 0;
@@ -202,12 +219,30 @@
   font-size: 15px;
   letter-spacing: normal;
   line-height: 1.4;
-  visibility: hidden;
 }
 
 .notableItem:hover > .notableTooltip,
 .notableLink:focus-visible + .notableTooltip {
-  visibility: visible;
+  display: block;
+}
+
+/* An open tooltip stays inside the card: it opens rightwards under its
+   date, and flips to open leftwards when that would run past the card's
+   right edge (the last date on a wrapped row). Without anchor positioning
+   it keeps the left-anchored placement above. */
+@supports (position-area: block-end) and (anchor-scope: all) {
+  .notableItem {
+    position: static;
+    anchor-name: --notable-date;
+    anchor-scope: --notable-date;
+  }
+
+  .notableTooltip {
+    inset: auto;
+    position-anchor: --notable-date;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-inline;
+  }
 }
 
 /* ---- Sprint 45, R4: "Other notable dates", phone copy ---- */
