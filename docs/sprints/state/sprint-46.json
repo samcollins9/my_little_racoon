@@ -1,12 +1,12 @@
 {
   "id": 46,
   "title": "Install Google Analytics through Google Tag Manager",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "36bb112f28487d9787abc55bf831c48262f13d5f9c6c5f43c8770f7675110dde",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "1cdab833f53c33f4417fb4f057dcbb8baca01fd2973c3e88078ac2964f54fc61",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "2a7409741549b913fc3139d37da6b487a46768b2",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T22:39:06+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=2a74097 | ci=green: 1 CI run(s) for 2a7409741549b913fc3139d37da6b487a46768b2 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T22:32:30+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-24T22:39:06+00:00"
   }
 }
