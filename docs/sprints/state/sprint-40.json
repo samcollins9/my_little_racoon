@@ -1,12 +1,12 @@
 {
   "id": 40,
   "title": "README: export the service role key for local database tests",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "f6c88eb951660c8b149d72cb12f909e1676132967cad828d784ad76d9c7ec416",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "fd221fda4d3d2e6b0ad6976c66be055ac1c119e029c0d99264f0285ec22abfed",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "3a5af872d9d04189a03c1de5e9af2cb6a4f1e7af",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -32,11 +32,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-24T02:33:16+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=3a5af87 | ci=green: 1 CI run(s) for 3a5af872d9d04189a03c1de5e9af2cb6a4f1e7af all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-24T02:27:02+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-24T02:33:16+00:00"
   }
 }
