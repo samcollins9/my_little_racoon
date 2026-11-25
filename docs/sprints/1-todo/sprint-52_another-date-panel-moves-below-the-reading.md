@@ -41,6 +41,11 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
    - A render test checks the DOM order of R5's landmarks, the strip's contents (day links only), and that there's exactly one date input and at most one random link on the page.
    - Sprint 47's tests that asserted the picker's or the random link's old positions are updated, and listed in the handoff.
 8. **README.** Update any README description of the date page's layout.
+10. **Drop "above" from Sprint 39's message** (added 25 Nov 2026 at the user's request). The picker is now directly below "The reading", so the direction is wrong. In `unavailableMessage` (`lib/date-page/accuracy.ts`), the two "unmatched" strings become exactly:
+    - `Pick a different date, or choose one of the years listed under "What happened" to go to that date instead.`
+    - `Pick a different date.`
+
+    The lead sentences and the lookup-failed message stay as they are. `lib/date-page/accuracy.test.ts` and any page test quoting the old text are updated. No other user-facing text says "above" today, which Master Controller checked with grep on 25 Nov 2026.
 9. **Handoff.** Follow CLAUDE.md's committed-handoff standard: `docs/handoffs/sprint-52.md`, with `npm run verify`'s final line including `exit=0`. Include screenshots under `docs/handoffs/sprint-52/`: the full page at 1280px and at 390px, top and bottom, on an ordinary date. Also one at 390px of today's page, showing the disabled "Next day" in the strip.
 
 ### Acceptance Criteria
@@ -49,6 +54,7 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
 - **R3:** QA1 confirms the styles are reused, not re-created. The 390px screenshot shows the wrap and no horizontal scroll.
 - **R4:** grep finds no second random-link or picker render path. The random-pick function is called once per request.
 - **R6:** the `/reading/[id]` render tests are unchanged.
+- **R10:** grep finds no "date above" in `app/` or `lib/`. The accuracy tests quote the new strings exactly.
 - **R8 and R9:** QA1 reads `docs/handoffs/sprint-52.md` at the audited commit, finds `VERIFY PASS … exit=0`, and opens the screenshots.
 
 **LiveQA (the deployed app):**
@@ -57,12 +63,13 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
 3. The picker works from its new place: choose a past date and press Go, and the page lands there. A future date can't be chosen.
 4. "Discover random reading" works and isn't the current date. Reload a few times and confirm it changes, as Sprint 47 tested.
 5. On today's page, the strip shows the disabled "Next day" with its message.
+7. On a date with no match for its year (today usually works), "The reading" says "Pick a different date, or choose one of the years listed under 'What happened'…" or "Pick a different date.", with no "above". The picker panel sits directly below the reading/events.
 6. Tab from the top: the day links, then the chart and reading controls, then the picker, Go and the random link, then the notable dates.
 
 ### Out of Scope
 
 - **`/reading/[id]`.** See R6.
-- **Changing the picker's or the random link's behaviour, wording or styling.**
+- **Changing the picker's or the random link's behaviour, wording or styling.** R10's change is to Sprint 39's message in "The reading", not to the picker.
 - **Moving "Other notable dates".** Sprint 50 owns its desktop placement.
 
 ### Dependencies
