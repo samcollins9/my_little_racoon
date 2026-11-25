@@ -2,7 +2,7 @@
 id: 48
 title: "Other-years events move below the reading"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-25T15:14:43+00:00
 ---
 
