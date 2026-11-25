@@ -1,5 +1,5 @@
 {
-  "next_id": 50,
+  "next_id": 51,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -294,6 +294,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "todo",
       "file": "docs/sprints/1-todo/sprint-49_page-title-shows-the-date.md"
+    },
+    "50": {
+      "title": "Notable dates move to the page footer on desktop",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-50_notable-dates-move-to-the-page-footer-on-desktop.md"
     }
   }
 }
