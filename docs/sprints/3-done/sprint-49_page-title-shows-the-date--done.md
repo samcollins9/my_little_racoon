@@ -2,7 +2,7 @@
 id: 49
 title: "Page title shows the date"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-25T15:38:57+00:00
 ---
 
