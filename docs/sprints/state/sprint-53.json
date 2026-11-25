@@ -8,7 +8,14 @@
   "qa1_audited_tree_hash": "8b0d109cf52e87817654b976213f28970c40a79fa59d8e4d364fd4fb991d8ae4",
   "last_shipped_commit": "ec772da050042cc6a708ffe4e5e153720f2c430d",
   "groundtruth_result": null,
-  "live_loop_audit_trees": [],
+  "live_loop_audit_trees": [
+    {
+      "ts": "2026-11-25T20:22:44+00:00",
+      "commit": "ec772da050042cc6a708ffe4e5e153720f2c430d",
+      "tree_hash": "8b0d109cf52e87817654b976213f28970c40a79fa59d8e4d364fd4fb991d8ae4",
+      "verdict": "FAIL"
+    }
+  ],
   "pre_block_phase": null,
   "audit_rounds": 1,
   "live_test_rounds": 0,
@@ -38,11 +45,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=ec772da | ci=green: 1 CI run(s) for ec772da050042cc6a708ffe4e5e153720f2c430d all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T20:22:44+00:00",
+      "actor": "qa1",
+      "event": "live_loop_audit",
+      "detail": "FAIL: FAIL, live-loop audit of ec772da, sprint 53's shipped merge commit. A defect my gate-1 PASS of c3c054e missed: the idle-state sigil is squeezed by the reading text's new width.\n\nDefect, against sprint 53's own R2 (\"only the width changes \u2026 nothing outside the reading section changes\") and the spirit of R3 (controls and decorations untouched):\n- In app/reading/[id]/HoroscopeReveal.tsx, IdleBlock renders an svg sigil (width and height attributes of 34) and the .idleText paragraph inside .idleBlock (reading.module.css: display flex, align-items center, gap 22px).\n- .idleSigil has only opacity 0.5, with no flex-shrink or flex rule. Before this sprint, .idleText's max-width of 46ch kept the text item small enough that the 34px sigil kept its size. With the cap removed, the text item grows to the column and the flex row shrinks the svg.\nDemonstrated from committed screenshots at the same page and width:\n- Sprint 52's round 1 desktop-1280-bottom.png (680d041, before sprint 53): a full-size sigil, text starting at about x 729 (673 + 34 + 22).\n- Sprint 52's round 2 desktop-1280-bottom.png (2023e53, after merging sprint 53): text starting at about x 710, sigil reduced to a small glyph.\n- Sprint 53's own after-idle-1945-05-08-1280.png shows the same small sigil.\nThe only app or lib change between those two trees is sprint 53's diff (content-identical to 88ae25a..c3c054e). So the cause is sprint 53's max-width removal on .idleText.\n\nWhy my gate-1 PASS missed it: I opened the unmatched and written-horoscope screenshots but not after-idle. I accepted the handoff's \"idleBlock: flex row \u2026 text item grows to the right edge\" as harmless, without checking what the growing text does to its sibling. The handoff's own R4 list names .idleBlock as checked and left as it is, which is the assumption that failed.\n\nRequired fix: keep the sigil at its own size. For example, .idleSigil gets flex: none (or flex-shrink 0). Check any other flex row in the reading section where a capped text item sat beside a fixed-size element. The disabled and busy rows had no cap before, so they should be unaffected, but confirm with a measurement. Then:\n- add a Round 2 section to docs/handoffs/sprint-53.md, with before and after idle screenshots at 1280 and 390, and the sigil's measured box (34 by 34);\n- QA1 audits the fix commit with --commit, then Pipeman reships.\n\nFor LiveQA's sprint 53 test: the folded \"Reveal the horoscope\" state at 1280 currently shows the shrunken sigil. Expect it to be fixed in the reship, not in what is live now. | commit=ec772da050042cc6a708ffe4e5e153720f2c430d"
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-25T20:07:48+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-25T20:22:44+00:00"
   }
 }
