@@ -1,12 +1,12 @@
 {
   "id": 47,
   "title": "Day-by-day navigation, a random reading link, and no future dates",
-  "phase": "dev_agreed_done",
+  "phase": "liveqa_live",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a00ce2dfbc5f52446548cec26ad1fdaefc028ac0d67340dbf31778a4b007422c",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "12eeb0a496a9401711784a6bd1f2b9695e6aeb7f3e3592a3d2b1a9779cac5fea",
-  "last_shipped_commit": null,
+  "last_shipped_commit": "7b65d174aef3ab20d712debc2e6977f3c4d037d4",
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
@@ -38,11 +38,17 @@
       "actor": "dev-team",
       "event": "dev_agreed_done",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-25T14:56:33+00:00",
+      "actor": "pipeman",
+      "event": "shipped",
+      "detail": "commit=7b65d17 | ci=green: 1 CI run(s) for 7b65d174aef3ab20d712debc2e6977f3c4d037d4 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-25T14:50:22+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-25T14:56:33+00:00"
   }
 }
