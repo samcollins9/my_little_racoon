@@ -79,3 +79,35 @@ I built for production with `next build && next start` against Sprint 47's stand
 ### Questions for QA1
 
 None.
+
+## Round 2
+
+**Status:** ready for QA1's re-audit of the combined tree. This round is a re-verification. **It changes no app code.** It's needed because what ships has to contain Dev Team 2's Sprint 53, which landed on `origin/main` (`ec772da`) after Round 1's audited commit (`680d041`) was built on `4a061b7`. Rebased or merged, the shipped tree can't match the one QA1 audited, so Pipeman can't ship `680d041` as it stands.
+
+**Verify, on the combined tree (`9a3e4c0`):** `VERIFY PASS (lint, typecheck, test, build) exit=0` (55 test files, 611 tests; Sprint 53 adds `reading-text-width.test.ts`).
+
+**Sprint file:** I re-read it at this commit. It's still unchanged since `/sprint-start` (`git log 4a061b7..HEAD` on the file is empty).
+
+### Shape: merge, not rebase
+
+Local `main` was already reconciled with `origin/main` by two merges made in this checkout by another session: `4dae34e` ("Merge origin/main: Sprint 53 merge") and `9a3e4c0` ("reconcile duplicate Sprint 53 ship record"). The latter joins `d5cc9e9` and `50d8a12`, which are the same Sprint 53 ship record, with identical `git patch-id`. `main` is now 0 behind `origin/main`. I left that history as it is rather than rebasing. A rebase would rewrite those two merges, which aren't mine. It would also produce the same tree, so it would buy nothing. Pipeman said either shape is fine as long as the audited tree matches.
+
+### What the combined tree is
+
+`git diff 680d041 9a3e4c0 -- app lib` is, line for line, exactly Sprint 53's own code change (its merge-base to `ec772da`, compared with `diff`, which printed nothing). That's `reading.module.css` (10 lines), one line in `date.module.css`, and `reading-text-width.test.ts`. Nothing from Sprint 52 was lost or altered in the merge, and nothing else came in.
+
+### Re-run of Round 1's checks on a production build of the combined tree
+
+Same rig and probe ([cdp52.mjs](sprint-52/cdp52.mjs)). Results are in [round2/report.json](sprint-52/round2/report.json), with fresh screenshots under [round2/](sprint-52/round2/). Round 1's files are left as they were.
+
+- **1280:** order is banner, day links, date band, body, Another date, Notable dates. The date band to body gap is 0, and the scroll width is 1280. The panel is on one row (input 37px, Go and link 34px), and the heading reads "Notable dates". Screenshots: [round2/desktop-1280-top.png](sprint-52/round2/desktop-1280-top.png) and [round2/desktop-1280-bottom.png](sprint-52/round2/desktop-1280-bottom.png); the bottom shot also shows Sprint 53's wider reading text above the panel.
+- **390:** the same order, and the scroll width is 390. Label, input and Go are on one row, with "or Discover random reading" below. The input, Go and link are each 44px. Screenshots: [round2/phone-390-top.png](sprint-52/round2/phone-390-top.png) and [round2/phone-390-bottom.png](sprint-52/round2/phone-390-bottom.png).
+- **390, today:** the disabled "NEXT DAY → Reloy predicts only the past." sits between the banner and the date band, and the scroll width is 390. Screenshot: [round2/phone-390-today-top.png](sprint-52/round2/phone-390-today-top.png).
+- **Unmatched date (`/date/1931-03-03`):** R10's new message, with no "above". The panel follows the body.
+- **Tab order:** banner, day links, chart, reading, picker, Go, random link, Notable dates. **The picker** lands on `/date/1955-12-01` after submitting.
+
+Every value matches Round 1.
+
+### Not changed
+
+Everything from Round 1: R1–R11, the tests, the README, and the known limitations, including the same 3 lint warnings in my Sprint 45/46 probe scripts.
