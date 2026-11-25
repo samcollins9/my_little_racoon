@@ -101,3 +101,7 @@ The user decided that Reloy predicts only the past. Any date after today (UTC) i
 ## 25 Nov 2026: events placement (Sprint 48)
 
 "What happened" moves below "The reading" only when it lists other years' events (unmatched, with at least one event). A matched list, an empty list and a failed lookup all stay above the reading. This applies to desktop and phones, and to both /date and /reading.
+
+## 25 Nov 2026: one page order on desktop and phones (Sprint 52)
+
+The date page's order on both layouts: banner → date band → Previous/Next day → chart, events and reading → "Another date" panel (with "or Discover random reading") → "Other notable dates". The user confirmed that phones follow the same order.

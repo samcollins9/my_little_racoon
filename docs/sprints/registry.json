@@ -1,5 +1,5 @@
 {
-  "next_id": 52,
+  "next_id": 53,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -306,6 +306,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "todo",
       "file": "docs/sprints/1-todo/sprint-51_this-exact-date-events-drop-the-year-column.md"
+    },
+    "52": {
+      "title": "Another date panel moves below the reading",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-52_another-date-panel-moves-below-the-reading.md"
     }
   }
 }
