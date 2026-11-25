@@ -280,8 +280,8 @@
     "47": {
       "title": "Day-by-day navigation, a random reading link, and no future dates",
       "epic": "Date pages (PRD v3)",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-47_day-by-day-navigation-a-random-reading-link-and-no-future-dates.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-47_day-by-day-navigation-a-random-reading-link-and-no-future-dates.md"
     }
   }
 }

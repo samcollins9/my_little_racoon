@@ -2,7 +2,7 @@
 id: 47
 title: "Day-by-day navigation, a random reading link, and no future dates"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-25T14:25:35+00:00
 ---
 
