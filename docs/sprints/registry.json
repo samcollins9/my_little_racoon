@@ -310,8 +310,8 @@
     "52": {
       "title": "Date page order: day links on top, picker below the reading",
       "epic": "Date pages (PRD v3)",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-52_date-page-order-day-links-on-top-picker-below-the-reading.md",
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-52_date-page-order-day-links-on-top-picker-below-the-reading--done.md",
       "original_title": "Another date panel moves below the reading"
     },
     "53": {
