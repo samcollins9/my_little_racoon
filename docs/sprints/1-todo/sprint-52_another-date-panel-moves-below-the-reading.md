@@ -41,12 +41,12 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
    - A render test checks the DOM order of R5's landmarks, the strip's contents (day links only), and that there's exactly one date input and at most one random link on the page.
    - Sprint 47's tests that asserted the picker's or the random link's old positions are updated, and listed in the handoff.
 8. **README.** Update any README description of the date page's layout.
+9. **Handoff.** Follow CLAUDE.md's committed-handoff standard: `docs/handoffs/sprint-52.md`, with `npm run verify`'s final line including `exit=0`. Include screenshots under `docs/handoffs/sprint-52/`: the full page at 1280px and at 390px, top and bottom, on an ordinary date. Also one at 390px of today's page, showing the disabled "Next day" in the strip.
 10. **Drop "above" from Sprint 39's message** (added 25 Nov 2026 at the user's request). The picker is now directly below "The reading", so the direction is wrong. In `unavailableMessage` (`lib/date-page/accuracy.ts`), the two "unmatched" strings become exactly:
     - `Pick a different date, or choose one of the years listed under "What happened" to go to that date instead.`
     - `Pick a different date.`
 
     The lead sentences and the lookup-failed message stay as they are. `lib/date-page/accuracy.test.ts` and any page test quoting the old text are updated. No other user-facing text says "above" today, which Master Controller checked with grep on 25 Nov 2026.
-9. **Handoff.** Follow CLAUDE.md's committed-handoff standard: `docs/handoffs/sprint-52.md`, with `npm run verify`'s final line including `exit=0`. Include screenshots under `docs/handoffs/sprint-52/`: the full page at 1280px and at 390px, top and bottom, on an ordinary date. Also one at 390px of today's page, showing the disabled "Next day" in the strip.
 
 ### Acceptance Criteria
 
