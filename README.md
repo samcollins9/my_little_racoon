@@ -26,14 +26,18 @@ redirects (307) to today's page, from `/date/<date>` and from the picker's
 (the date page's cast, a reading's "Write the horoscope") writes a
 horoscope for a date after today. The one rule is `isAfterToday` in
 `lib/date-page/params.ts`. A malformed or out-of-range date is still a 404.
-Under the picker, **Previous day / Next day** move one calendar day; on
-today's page "Next day" is shown disabled with "Reloy predicts only the
-past.", and on 1700-01-01 there's no "Previous day". Beside the picker
-on desktop (on phones, at the bottom of the page, after the reading and
-above "Other notable dates"), **Discover random reading** links to one of
-the 20 most recently written readings' dates (`get_recent_reading_dates`),
-picked once per request for both places, never the page's own date or a
-future one; it's left out when that lookup fails.
+
+**The date page, top to bottom (Sprint 52), on desktop and phones alike:**
+the "Ask Reloy" banner; **Previous day / Next day**, which move one
+calendar day (on today's page "Next day" is shown disabled with "Reloy
+predicts only the past.", and on 1700-01-01 there's no "Previous day");
+the date band ("The sky over …"); the chart, events and reading; the
+**"Another date"** panel — the picker, Go, and "or **Discover random
+reading**"; then **"Notable dates"**. Discover random reading links to one
+of the 20 most recently written readings' dates
+(`get_recent_reading_dates`), picked once per request, never the page's
+own date or a future one; it's left out, with its "or", when that lookup
+fails.
 
 `/chart` is now only a redirect (307, Sprint 31), kept so old bookmarks
 and shared links still land somewhere. `/chart?date=YYYY-MM-DD` with a

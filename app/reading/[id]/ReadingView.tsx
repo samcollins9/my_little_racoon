@@ -42,12 +42,16 @@ type ReadingViewProps = {
   tagline: string;
   /** Second line of the JD block under the date band; omitted when absent. */
   jdNote?: string;
-  /** The strip between the date band and the body (the date page's picker and navigation). */
-  belowDateBand?: ReactNode;
+  /**
+   * Sprint 52, R1: the strip between the banner and the date band (the date
+   * page's Previous day / Next day), so "The sky over" sits directly above
+   * the body. Nothing renders between the date band and the body any more.
+   */
+  aboveDateBand?: ReactNode;
   /**
    * Sprint 45, R4: after the body, so on phones it follows the reading
-   * section and sits outside its sticky reveal (the date page's "Other
-   * notable dates").
+   * section and sits outside its sticky reveal (the date page's "Another
+   * date" panel and "Notable dates", Sprint 52).
    */
   afterBody?: ReactNode;
   /** Contents of "The reading" section. */
@@ -79,7 +83,7 @@ export function ReadingView({
   events,
   tagline,
   jdNote,
-  belowDateBand,
+  aboveDateBand,
   afterBody,
   children,
 }: ReadingViewProps) {
@@ -142,6 +146,7 @@ export function ReadingView({
     <div className={styles.page}>
       <main className={styles.card}>
         <SiteBanner tagline={tagline} />
+        {aboveDateBand ? <div className={styles.flowSlot}>{aboveDateBand}</div> : null}
         <div className={styles.dateBand}>
           <div className={styles.dateBandLeft}>
             <span className={styles.eyebrow}>The sky over</span>
@@ -168,8 +173,6 @@ export function ReadingView({
             </span>
           </div>
         </div>
-
-        {belowDateBand ? <div className={styles.flowSlot}>{belowDateBand}</div> : null}
 
         <div className={styles.body}>
           <div className={styles.leftColumn}>

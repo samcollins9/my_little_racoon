@@ -131,24 +131,27 @@ describe("/reading/[id] follows the same rule for its stored events (R4)", () =>
   });
 });
 
-describe("the phone column's order, with Sprint 47's random link (R6)", () => {
+describe("the phone column's order, with Sprint 52's Another date panel (R6)", () => {
+  // Sprint 52 replaced Sprint 47's phone-only random link at the bottom
+  // with the one Another date panel (picker, Go, "or Discover random
+  // reading"), in the same place: right after the body.
   const PHONE = {
     ...HEADINGS,
-    random: '<div class="randomSection mobileOnly">',
+    random: '<form class="picker anotherDate"',
     notable: '<nav class="notableSection mobileOnly"',
   };
 
-  it("other years: The reading, What happened, Discover random reading, Other notable dates", async () => {
+  it("other years: The reading, What happened, Another date (with the random link), Notable dates", async () => {
     wikipediaAnswers([{ year: 1976, text: "Viking event" }]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: ok([{ event_date: "1912-04-15" }]) });
     const html = unhashClasses(await renderDatePage("1931-06-06"));
     expect(order(html, PHONE)).toEqual(["reading", "events", "random", "notable"]);
     // The events still sit inside the card's body, before the phone-only
     // sections that follow it.
-    expect(html).toMatch(/>What happened<\/h2>[\s\S]*<\/section><\/div><\/div><div class="randomSection mobileOnly">/);
+    expect(html).toMatch(/>What happened<\/h2>[\s\S]*<\/section><\/div><\/div><form class="picker anotherDate"/);
   });
 
-  it("this exact date: Sprint 47's order is unchanged", async () => {
+  it("this exact date: events, reading, then the panel and the notable dates", async () => {
     wikipediaAnswers([{ year: 1931, text: "An event from the exact year" }]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: ok([{ event_date: "1912-04-15" }]) });
     const html = unhashClasses(await renderDatePage("1931-07-07"));

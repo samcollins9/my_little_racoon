@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NOTABLE_DATES } from "@/lib/date-page/notable-dates";
 import { NotableDatesPanel, NotableDatesSection } from "./NotableDates";
 
-// Sprint 45: "Other notable dates", read from the rendered markup the way a
+// Sprint 45: "Notable dates" (renamed in Sprint 52, R11), read from the rendered markup the way a
 // browser receives it. NotableDatesPanel is the desktop copy (Sprint 50:
 // at the card's foot, no longer in the strip under the picker);
 // NotableDatesSection is the phone copy. Where each sits on the page, and
@@ -53,10 +53,10 @@ describe("the desktop panel", () => {
     expect(renderPanel()).not.toContain("Dates with readings");
   });
 
-  it("R3: desktop-only, headed 'Other notable dates' and labelled by it, the heading unchanged", () => {
+  it("R3: desktop-only, headed 'Notable dates' (Sprint 52, R11) and labelled by it", () => {
     const panel = renderPanel();
     expect(panel).toMatch(/^<nav class="notablePanel desktopOnly" aria-labelledby="notable-dates-panel-heading">/);
-    expect(panel).toContain('<h2 id="notable-dates-panel-heading" class="navTitle">Other notable dates</h2>');
+    expect(panel).toContain('<h2 id="notable-dates-panel-heading" class="navTitle">Notable dates</h2>');
   });
 
   it("R3: every link's accessible description is its tooltip, holding R1's text", () => {
@@ -91,7 +91,7 @@ describe("the phone copy (R4)", () => {
     const html = renderSection();
     expect(html).toMatch(/^<nav class="notableSection mobileOnly" aria-labelledby="notable-dates-section-heading">/);
     expect(html).toContain(
-      '<h2 id="notable-dates-section-heading" class="sectionTitle">Other notable dates</h2>'
+      '<h2 id="notable-dates-section-heading" class="sectionTitle">Notable dates</h2>'
     );
     expect(html).not.toContain("<details");
   });

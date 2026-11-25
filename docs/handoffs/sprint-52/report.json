@@ -1,0 +1,152 @@
+{
+  "origin": "http://127.0.0.1:3152",
+  "today": "2026-11-25",
+  "browser": "Chrome/156.0.8078.4",
+  "desktop-1280": {
+    "vw": 1280,
+    "scrollWidth": 1280,
+    "order": [
+      "banner",
+      "dayNavigation",
+      "dateBand",
+      "body",
+      "anotherDate",
+      "notableDates"
+    ],
+    "dateBandToBodyGap": 0,
+    "notableHeading": "Notable dates",
+    "panel": {
+      "label": {
+        "top": 1208,
+        "bottom": 1221,
+        "height": 13,
+        "left": 113,
+        "right": 204
+      },
+      "input": {
+        "top": 1196,
+        "bottom": 1233,
+        "height": 37,
+        "left": 220,
+        "right": 354
+      },
+      "go": {
+        "top": 1198,
+        "bottom": 1232,
+        "height": 34,
+        "left": 364,
+        "right": 415
+      },
+      "or": {
+        "top": 1208,
+        "bottom": 1222,
+        "height": 14,
+        "left": 425,
+        "right": 441
+      },
+      "random": {
+        "top": 1198,
+        "bottom": 1232,
+        "height": 34,
+        "left": 451,
+        "right": 673
+      },
+      "form": {
+        "top": 1181,
+        "bottom": 1247,
+        "height": 66,
+        "left": 73,
+        "right": 1207
+      },
+      "labelInputGoOneRow": true,
+      "randomOnSameRowAsGo": true,
+      "insideCard": true
+    },
+    "readingMessage": null
+  },
+  "phone-390": {
+    "vw": 390,
+    "scrollWidth": 390,
+    "order": [
+      "banner",
+      "dayNavigation",
+      "dateBand",
+      "body",
+      "anotherDate",
+      "notableDates"
+    ],
+    "dateBandToBodyGap": 0,
+    "notableHeading": "Notable dates",
+    "panel": {
+      "label": {
+        "top": 992,
+        "bottom": 1005,
+        "height": 13,
+        "left": 32,
+        "right": 123
+      },
+      "input": {
+        "top": 977,
+        "bottom": 1021,
+        "height": 44,
+        "left": 139,
+        "right": 279
+      },
+      "go": {
+        "top": 977,
+        "bottom": 1021,
+        "height": 44,
+        "left": 295,
+        "right": 346
+      },
+      "or": {
+        "top": 1046,
+        "bottom": 1060,
+        "height": 14,
+        "left": 32,
+        "right": 48
+      },
+      "random": {
+        "top": 1031,
+        "bottom": 1075,
+        "height": 44,
+        "left": 58,
+        "right": 281
+      },
+      "form": {
+        "top": 966,
+        "bottom": 1085,
+        "height": 119,
+        "left": 8,
+        "right": 382
+      },
+      "labelInputGoOneRow": true,
+      "randomOnSameRowAsGo": false,
+      "insideCard": true
+    },
+    "readingMessage": null
+  },
+  "phoneToday": {
+    "disabledText": "NEXT DAY → Reloy predicts only the past.",
+    "betweenBannerAndBand": true,
+    "scrollWidth": 390
+  },
+  "unmatched": {
+    "message": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. Pick a different date, or choose one of the years listed under \"What happened\" to go to that date instead.",
+    "panelFollowsBody": true
+  },
+  "tabOrder": [
+    "banner",
+    "dayLinks",
+    "chart",
+    "reading",
+    "picker",
+    "go",
+    "randomLink",
+    "notableDates",
+    "body"
+  ],
+  "pickerSubmit": {
+    "landed": "/date/1955-12-01"
+  }
+}

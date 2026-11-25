@@ -6,7 +6,7 @@ import readingStyles from "@/app/reading/[id]/reading.module.css";
 import styles from "./date.module.css";
 
 /**
- * Sprint 45: "Other notable dates", the fixed list from
+ * Sprint 45: "Notable dates" (Sprint 52, R11), the fixed list from
  * lib/date-page/notable-dates.ts. Two copies, one display:none at each
  * width, the same way ReadingView renders its two constellations:
  *
@@ -21,7 +21,8 @@ import styles from "./date.module.css";
  * marked with aria-current and not linked (R5), and keeps its description.
  */
 
-const HEADING = "Other notable dates";
+// Sprint 52, R11: the one heading, for both copies.
+const HEADING = "Notable dates";
 
 export function NotableDatesPanel({ isoDate }: { isoDate: string }) {
   const headingId = "notable-dates-panel-heading";

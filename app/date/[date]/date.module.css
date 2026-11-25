@@ -73,11 +73,20 @@
   text-decoration: none;
 }
 
-/* The desktop copy and its "or", one flex item on the picker row. No
-   `display` here: it shares its element with desktopOnly, which owns it
-   (see .dateNav below). */
+/* "or" and the random link, one flex item on the picker row, so a phone
+   wraps them to the next line together (Sprint 52, R3). */
 .pickerRandom {
   white-space: nowrap;
+}
+
+/* Sprint 52, R2/R3: the picker is now its own section, after the page
+   body, so it takes the strip's own section spacing and rule rather than
+   new ones: .flowSlot's padding (14px 40px; 10px 24px on phones, below)
+   and .flowSlot's 1px --om-rule, on top here because the panel follows
+   the body instead of preceding it. */
+.anotherDate {
+  padding: 14px 40px;
+  border-top: 1px solid var(--om-rule);
 }
 
 .pickerOr {
@@ -103,14 +112,44 @@
   .unavailableText {
     font-size: 17px;
   }
+
+  /* Sprint 52, R3: .flowSlot's phone padding, as above. */
+  .anotherDate {
+    padding: 10px 24px;
+  }
+
+  /* Sprint 52, R3: the label, the input and Go keep one row on a phone,
+     and "or Discover random reading" (one non-wrapping span) drops to the
+     line below, inside the panel. The controls' wrapper steps aside, so
+     the input, Go and that span wrap as items of the form's own row: the
+     first three fit beside the label at 390px, the span doesn't. */
+  .anotherDate .pickerControls {
+    display: contents;
+  }
+
+  /* Sprint 52, R3: every control in the panel clears a 44px touch target
+     on phones (Sprint 20, R4). The random link wears .pickerButton too;
+     as an <a> it is content-box and inline by default, so it measures and
+     centres its label the way the <button> does. */
+  .pickerInput,
+  .pickerButton {
+    min-height: 44px;
+  }
+
+  .pickerLink {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
 /*
- * Sprint 29, R2/R6: navigation directly under the picker in the same
- * strip -- Previous/Next day (Sprint 47; Sprint 29's links between written
- * readings before). Sprint 45's desktop "Other notable dates" was here
- * too, until Sprint 50 moved it to the card's foot (.notablePanel below).
- * Everything wraps; nothing has a fixed width.
+ * Previous/Next day (Sprint 47; Sprint 29's links between written readings
+ * before). Sprint 52, R1: the strip under the banner, above the date band,
+ * with nothing else in it -- the picker is now its own panel after the
+ * body (.anotherDate), and Sprint 45's desktop "Notable dates" list left
+ * in Sprint 50 (.notablePanel). Everything wraps; nothing has a fixed
+ * width.
  *
  * No `display` on .dateNav, .notablePanel or .notableSection on purpose:
  * each can share its element with reading.module.css's
@@ -118,10 +157,11 @@
  * display rules from different modules would be decided by bundle order.
  */
 
+/* Sprint 52, R1: the strip's own .flowSlot padding and bottom rule
+   (reading.module.css) frame it now. Its former margin-top, padding-top
+   and border-top only separated it from the picker row above it, which
+   is gone, so they went too. */
 .dateNav {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--om-rule);
   min-width: 0;
 }
 
@@ -182,7 +222,7 @@
   color: var(--om-verdigris-light);
 }
 
-/* ---- Sprint 45, R3: "Other notable dates", desktop copy ---- */
+/* ---- Sprint 45, R3: "Notable dates", desktop copy ---- */
 
 /* Sprint 50: the card's last section, after the body. Its look is the
    strip's, carried over, not new (R2): the 40px side gutter is .flowSlot's
@@ -294,17 +334,7 @@
   }
 }
 
-/* ---- Sprint 47, R6: "Discover random reading", phone copy ---- */
-
-/* After the reading section, outside its sticky reveal, directly above
-   "Other notable dates"; ruled off like the page's other sections. No
-   `display`: mobileOnly owns it. */
-.randomSection {
-  padding: 18px 24px;
-  border-top: 1px solid var(--om-rule);
-}
-
-/* ---- Sprint 45, R4: "Other notable dates", phone copy ---- */
+/* ---- Sprint 45, R4: "Notable dates", phone copy ---- */
 
 /* After the reading section, outside its sticky reveal (Sprint 38): its
    own section at the foot of the card, ruled off like the page's others. */

@@ -1,4 +1,4 @@
-/** One entry of the date page's "Other notable dates" list. */
+/** One entry of the date page's "Notable dates" list. */
 export type NotableDate = {
   /** A YYYY-MM-DD the date page accepts (parseDatePageParam). */
   isoDate: string;

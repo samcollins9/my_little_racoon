@@ -6,10 +6,10 @@ import { horoscopeAvailability, linkableEventDate, unavailableMessage } from "./
 
 const R3_TEXT =
   "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
-  'Pick a different date above, or choose one of the years listed under "What happened" to go to that date instead.';
+  'Pick a different date, or choose one of the years listed under "What happened" to go to that date instead.';
 const R4_TEXT =
   "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
-  "Pick a different date above.";
+  "Pick a different date.";
 const R5_TEXT =
   "The events for this date couldn't be loaded, so the horoscope can't be written right now. " +
   "Try again in a few minutes.";

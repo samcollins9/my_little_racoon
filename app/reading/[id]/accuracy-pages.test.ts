@@ -32,8 +32,8 @@ vi.mock("next/server", async (importOriginal) => ({
 const LEAD_UNMATCHED =
   "We have no recorded events for this exact date, so we can&#x27;t write an accurate horoscope for it.";
 const NEXT_R3 =
-  "Pick a different date above, or choose one of the years listed under &quot;What happened&quot; to go to that date instead.";
-const NEXT_R4 = "Pick a different date above.";
+  "Pick a different date, or choose one of the years listed under &quot;What happened&quot; to go to that date instead.";
+const NEXT_R4 = "Pick a different date.";
 const LEAD_FAILED =
   "The events for this date couldn&#x27;t be loaded, so the horoscope can&#x27;t be written right now.";
 const NEXT_R5 = "Try again in a few minutes.";

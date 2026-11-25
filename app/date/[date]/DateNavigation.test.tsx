@@ -68,11 +68,12 @@ describe("the picker row (R3/R6)", () => {
     expect(html).toMatch(/<input [^>]*min="1700-01-01"/);
   });
 
-  it("R6: Go, then 'or' and the random link (Go's own class), both desktop-only", () => {
+  it("R6 / Sprint 52, R2: the one panel -- Go, then 'or' and the random link (Go's own class), on every layout", () => {
     const html = renderPicker("1912-04-15");
+    expect(html).toMatch(/^<form class="picker anotherDate"[^>]* action="\/date"/);
     expect(html).toContain(
       '<button type="submit" class="pickerButton">Go</button>' +
-        '<span class="pickerRandom desktopOnly">' +
+        '<span class="pickerRandom">' +
         '<span class="pickerOr">or</span>' +
         '<a class="pickerButton pickerLink" href="/date/1912-04-15">Discover random reading</a>' +
         "</span>"

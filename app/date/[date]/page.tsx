@@ -28,7 +28,6 @@ import { castHoroscope } from "./actions";
 import { DateNavigation } from "./DateNavigation";
 import { DatePicker } from "./DatePicker";
 import { NotableDatesPanel, NotableDatesSection } from "./NotableDates";
-import { RandomReadingSection } from "./RandomReading";
 import styles from "./date.module.css";
 
 /**
@@ -117,19 +116,17 @@ export default async function DatePage({
       events={page.events}
       // Sprint 43, R8: after connection(), so a fresh pick per request.
       tagline={pickTagline(Math.random)}
-      belowDateBand={
-        <>
-          <DatePicker isoDate={isoDate} today={today} randomDate={randomDate} />
-          <DateNavigation navigation={dayNavigation(isoDate, now)} />
-        </>
-      }
-      // After the page body. Phones: Sprint 47's random link (R6, the same
-      // pick as the picker row's), then Sprint 45's "Other notable dates"
-      // (R4). Desktop: the same list's desktop panel, the card's last
-      // section (Sprint 50, R1). Each copy is shown at one width only.
+      // Sprint 52, R1/R5: Previous day / Next day under the banner, above the
+      // date band. The order is the DOM order, on every layout.
+      aboveDateBand={<DateNavigation navigation={dayNavigation(isoDate, now)} />}
+      // After the page body (Sprint 52, R2/R5): the one "Another date" panel
+      // (picker, Go, "or Discover random reading", one random pick per
+      // request), on every layout; then "Notable dates", whose phone copy
+      // (Sprint 45, R4) and desktop panel (Sprint 50) each show at one
+      // width only.
       afterBody={
         <>
-          <RandomReadingSection date={randomDate} />
+          <DatePicker isoDate={isoDate} today={today} randomDate={randomDate} />
           <NotableDatesSection isoDate={isoDate} />
           <NotableDatesPanel isoDate={isoDate} />
         </>

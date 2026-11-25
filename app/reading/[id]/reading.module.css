@@ -103,11 +103,13 @@
   text-align: right;
 }
 
-/* ---- Strip below the date band (Sprint 24) ---- */
+/* ---- Strip above the date band (Sprint 24; Sprint 52 moved it) ---- */
 
-/* Spacing wrapper only, around whatever ReadingView's belowDateBand holds.
+/* Spacing wrapper only, around whatever ReadingView's aboveDateBand holds.
    Added for Sprint 24's flow indicator; since Sprint 31 only the date page
-   fills it (its picker and navigation), and /reading/[id] renders no strip. */
+   fills it, and /reading/[id] renders no strip. Sprint 52 moved it from
+   below the date band to under the banner, holding only the day
+   navigation. Placement aside, its padding and rule are unchanged. */
 .flowSlot {
   padding: 14px 40px;
   border-bottom: 1px solid var(--om-rule);

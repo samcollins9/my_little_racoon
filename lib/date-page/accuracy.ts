@@ -65,8 +65,8 @@ export function unavailableMessage(availability: UnavailableHoroscope): Unavaila
       return {
         lead: UNMATCHED_EVENTS_REASON,
         next: availability.hasLinkableYear
-          ? 'Pick a different date above, or choose one of the years listed under "What happened" to go to that date instead.'
-          : "Pick a different date above.",
+          ? 'Pick a different date, or choose one of the years listed under "What happened" to go to that date instead.'
+          : "Pick a different date.",
       };
   }
 }

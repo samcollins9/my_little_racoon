@@ -3,7 +3,7 @@ import { NOTABLE_DATES } from "@/lib/date-page/notable-dates";
 import { EMPTY_LOOKUP, PAUSED_LOOKUP } from "@/lib/date-page/test-support";
 import { NAVIGATION_RPCS, renderDatePage, useAnon } from "@/app/reading/[id]/page-test-support";
 
-// Sprint 45, R2/R4: "Other notable dates" through the real date page,
+// Sprint 45, R2/R4: "Notable dates" (Sprint 52, R11) through the real date page,
 // rendered on the server with no client JavaScript -- the same harness as
 // accuracy-pages.test.ts. Wikipedia is down for every case (the page still
 // renders), so the feed's month-day cache never matters here.
@@ -62,29 +62,32 @@ describe("the date page's notable dates (Sprint 45)", () => {
     expect(called).toEqual(new Set(["get_reading_by_date", "get_recent_reading_dates"]));
   });
 
-  it("Sprint 50, R1/R7: the strip holds the picker and the day links, and no notable dates", async () => {
+  it("Sprint 50/52: the strip under the banner holds only the day links -- no picker, no notable dates", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
     const strip = html.match(/<div class="flowSlot">[\s\S]*?<\/nav><\/div><\/div>/)?.[0] ?? "";
 
-    expect(strip).toMatch(/<form [^>]*action="\/date"/);
     expect(strip).toContain("Previous day");
     expect(strip).toContain("Next day");
-    expect(strip).not.toContain("Other notable dates");
+    expect(strip).not.toMatch(/<form /);
+    expect(strip).not.toContain("Notable dates");
     expect(strip).not.toContain("notable-dates-panel-heading");
   });
 
-  it("Sprint 50, R1: the desktop panel is after the body, the card's last child, after the phone copy", async () => {
+  it("Sprint 50/52: after the body, the Another date panel, then the phone copy, then the desktop panel, last in the card", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
+    const picker = html.match(/<form [^>]*class="picker anotherDate"[^>]*>[\s\S]*?<\/form>/)?.[0];
     const section = copy(html, "notable-dates-section-heading");
     const panel = copy(html, "notable-dates-panel-heading");
 
     // The reading section, the right column and the body all close; then
-    // (Sprint 45, R4) the phone copy, and last the desktop panel.
-    expect(html).toContain(`</section></div></div>${section}${panel}</main>`);
+    // the one picker panel (Sprint 52), the phone copy (Sprint 45, R4), and
+    // last the desktop panel (Sprint 50).
+    expect(picker).toBeDefined();
+    expect(html).toContain(`</section></div></div>${picker}${section}${panel}</main>`);
     expect(panel).toMatch(/^<nav class="notablePanel desktopOnly"/);
     expect(section).not.toContain("<details");
   });

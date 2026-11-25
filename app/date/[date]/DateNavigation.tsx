@@ -5,8 +5,10 @@ import { formatLongDateText } from "@/app/reading/[id]/format";
 import styles from "./date.module.css";
 
 /**
- * Sprint 29, R2/R6: the navigation directly under the date picker, so
- * finding another date happens in one place. Dates only, no horoscope text.
+ * Sprint 29, R2/R6: the date page's day navigation. Dates only, no
+ * horoscope text. Sprint 52, R1: rendered under the banner, above the date
+ * band (ReadingView's aboveDateBand); the date picker is its own panel
+ * after the body.
  *
  * Sprint 47, R5: Previous day / Next day, one calendar day either side.
  * They replaced Sprint 29's links between written readings, in the same
@@ -17,9 +19,8 @@ import styles from "./date.module.css";
  *   focusable, aria-disabled, with "Reloy predicts only the past." as
  *   visible text in place of a date, so phones see it too.
  *
- * Sprint 50: Sprint 45's desktop "Other notable dates" no longer follows
- * here; it's at the foot of the card (NotableDatesPanel), so this strip
- * holds only navigation.
+ * Sprint 50: Sprint 45's desktop "Notable dates" list no longer follows
+ * here; it's at the foot of the card (NotableDatesPanel).
  */
 export function DateNavigation({ navigation }: { navigation: DayNavigation }) {
   const { previous, next } = navigation;
