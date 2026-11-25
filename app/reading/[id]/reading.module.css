@@ -385,7 +385,12 @@
   padding: 10px 0 4px;
 }
 
+/* Sprint 53, round 2: flex: none keeps the sigil at its own 34 x 34.
+   Without it, .idleText (uncapped since round 1) grows across the row
+   and the flex row shrinks the svg to a sliver (QA1 live-loop audit of
+   ec772da; LiveQA round 1 measured 15px wide at 1280, 10px at 390). */
 .idleSigil {
+  flex: none;
   opacity: 0.5;
 }
 

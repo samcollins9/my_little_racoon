@@ -88,3 +88,67 @@ The diff touches `reading.module.css` (this sprint's main file) and one rule in 
 
 - **The written state was measured against a stand-in database** with placeholder text, not a real saved reading. The layout path is the real one: the real page, CSS and `ReadingPanel`, with a real stored-row shape. LiveQA's step 1 measures a real one on production.
 - **The `before-` outage and idle states weren't captured.** Their rules had the same `46ch` cap as `.accuracyNote`, whose before/after shows the effect.
+
+## Round 2
+
+**Status:** ready for QA1's live-loop audit.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (55 test files, 612 tests).
+
+### What was wrong
+
+Round 1 removed `.idleText`'s `46ch` cap. `.idleBlock` is a flex row: the 34×34 sigil `<svg>`, a 22px gap, then `.idleText`. `.idleSigil` had no flex rule, so the svg could shrink. Once the text was free to grow across the row, the flex row shrank the sigil to a sliver.
+
+QA1's live-loop audit of `ec772da` found it, and LiveQA round 1 confirmed it on production: 15px wide at 1280, 10px at 390. My round 1 R4 list named `.idleBlock` as "checked and left as it is", but I only checked that its text reached the edge, not what the growing text did to the element beside it. That was the miss.
+
+### The fix
+
+| File | Selector | Change |
+|---|---|---|
+| `app/reading/[id]/reading.module.css` | `.idleSigil` | adds `flex: none;` with a comment. `opacity: 0.5` is unchanged. |
+
+Nothing else in the CSS changed. Round 1's width changes all stand, and the idle text still runs to the event text's right edge.
+
+`app/reading/[id]/reading-text-width.test.ts` has one new test: `.idleBlock` is `display: flex`, and `.idleSigil` has `flex: none`.
+
+### Branch base
+
+This branch was fast-forwarded to main's `c5c3194` (production's code, Sprint 53 plus Sprint 52, with LiveQA's verdict) before the fix. So the fix commit sits directly on what's live, and Pipeman can reship it without another merge.
+
+### Measurements
+
+The setup is as in round 1: local `next build` and `next start`, headless Chromium over the DevTools protocol, and the read-only Supabase stand-in (not committed). `before-` is `c5c3194`, which is what's live, and `after-` is this fix.
+
+| State | Width | Before (sigil box) | After (sigil box) |
+|---|---|---|---|
+| Folded saved horoscope, `/date/1969-07-20` (LiveQA's repro) | 1280 | **15.27 × 34** | **34 × 34** |
+| Folded saved horoscope | 390 | **9.83 × 34** | **34 × 34** |
+| Unwritten, `/date/1945-05-08` | 1280 | 15.27 × 34 | 34 × 34 |
+| Unwritten | 390 | 9.83 × 34 | 34 × 34 |
+| Generation disabled, `/date/1945-05-08` (`HOROSCOPE_ENABLED=false`; the same `IdleBlock` plus the disabled note) | 1280 and 390 | not measured | 34 × 34 |
+| Busy ("revealing", `.busyTop`) | 1280 | 34 × 34; text column 214 wide | 34 × 34; text column 214 wide (unchanged) |
+| Busy | 390 | 30 × 30 (the phone rule's own `width: 30px`); text column 209 wide | 30 × 30 (unchanged) |
+
+**The idle text after the fix** runs from 729 to **1167** at 1280, and from 88 to **358** at 390. 729 is 673 + 34 + 22: the text starts where it did before Sprint 53 and still ends at the event text's right edge. R1 holds.
+
+**The busy row** never changed. Its text column holds one short phrase plus one mono line, about 210px, and never had a cap. So the sigil had room before and after, and I didn't touch `.busySigil`.
+
+**How the busy state was produced:** I pressed "Reveal the horoscope" on `/date/1989-11-09`, which has matched events and no saved reading. The stand-in held that action's lookup for 25 seconds, so the page sat in its pending state while it was measured. After the hold, the stand-in answered "no saved reading", and the action's insert got the stand-in's 404. Nothing was written anywhere, and no OpenAI call was made (none is configured).
+
+`scrollWidth` equals `innerWidth` in every case.
+
+### Screenshots and data (`docs/handoffs/sprint-53/round-2/`)
+
+- `before-folded-1969-07-20-1280.png` and `after-folded-1969-07-20-1280.png`
+- `before-folded-1969-07-20-390.png` and `after-folded-1969-07-20-390.png`: before, the sigil is invisible; after, it's full size.
+- `before-busy-1989-11-09-1280.png` and `after-busy-1989-11-09-1280.png`: identical.
+- `before-round2-measurements.json`, `after-round2-measurements.json`, `after-disabled-round2-measurements.json`
+
+### Other flex rows in the reading section (QA1's ask)
+
+| Row | Fixed-size element | Text beside it | Result |
+|---|---|---|---|
+| `.idleBlock` | the 34px sigil | `.idleText`, uncapped in round 1 | **fixed**, see above |
+| `.busyTop` | `.busySigil` (34px, 30px on phones) | `.busyTextCol`, never capped and about 210px of content | measured unchanged, left as it is |
+| `.readingFooter` (disabled) | none: only `.disabledNote` | — | nothing to squeeze |
+| `.readingFooter` (folded or revealed) | the reveal or fold button | the footer note | no cap removed there in round 1; LiveQA measured it unchanged (872.9 to 1167, 2 lines) |
