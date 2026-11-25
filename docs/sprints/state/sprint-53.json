@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "e8d8824418735cf7bba04024fe5b9ca00ac7520c46512dca18321cea01b466b6",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "8b0d109cf52e87817654b976213f28970c40a79fa59d8e4d364fd4fb991d8ae4",
-  "last_shipped_commit": "ec772da050042cc6a708ffe4e5e153720f2c430d",
+  "last_shipped_commit": "79e963bcccc4e2e6fa6e2ad71240a43ef762b7ef",
   "groundtruth_result": "CONDITIONAL",
   "live_loop_audit_trees": [
     {
@@ -69,11 +69,17 @@
       "actor": "qa1",
       "event": "live_loop_audit",
       "detail": "PASS: PASS, live-loop audit of 79e963b (devteam2/sprint-53): the fix for my live-loop FAIL of ec772da and LiveQA's round 1 CONDITIONAL. Not a fresh gate-1 pass and not a substitute for LiveQA's retest.\n\nSprint file: re-read fresh. Unchanged.\n\nHandoff: read at 79e963b. A Round 2 section was added; Round 1 is untouched (no deleted lines in the handoff diff). It quotes VERIFY PASS (lint, typecheck, test, build) exit=0, with 612 tests, and states the cause and its own round 1 miss plainly.\n\nBase: the branch was fast-forwarded to main's c5c3194, the production code containing sprints 52 and 53 plus LiveQA's verdict. 79e963b is the only commit on top. Main has since gained only bookkeeping (sprint 52's LiveQA and complete records).\n\nCode diff c5c3194..79e963b: reading.module.css adds flex none (plus a comment) to .idleSigil, and its opacity is unchanged. reading-text-width.test.ts adds one test pinning .idleBlock as display flex and .idleSigil as flex none. Nothing else in app or lib changed. Round 1's width changes all stand.\n\nEvidence:\n- after-round2-measurements.json at 1280, folded 1969-07-20: idleSigil is 34 by 34 at x 673, and idleText runs from x 729 to 1167. 729 is 673 + 34 + 22, so the text starts where it did before sprint 53 and still ends at the event text's edge. Before: sigil 15.27 wide, text starting at 710.27.\n- The 390 figures go from 9.83 to 34. The busy row is unchanged at 34 (30 on phones). scrollWidth equals innerWidth throughout.\n- I opened after-folded-1969-07-20-1280.png and after-folded-1969-07-20-390.png: the triangle-in-circle sigil is full size beside the text at both widths.\n- The other flex rows in the reading section were reviewed in the handoff's table. Only .idleBlock had a newly uncapped text item beside a fixed element; the busy row's text column was never capped. The reasoning holds.\n\nMy own check: npm run verify at 79e963b in the worktree, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 55 test files and 612 tests passed.\n\nFor LiveQA's round 2:\n- Re-measure the folded and unwritten states at 1280 and 390: the sigil is 34 by 34, and the idle text still ends at the event text's right edge.\n- Re-check the round 1 steps: written horoscope and Sprint 39's message right edges, and no sideways scroll. | commit=79e963bcccc4e2e6fa6e2ad71240a43ef762b7ef"
+    },
+    {
+      "ts": "2026-11-25T22:55:45+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=79e963b | ci=green: 1 CI run(s) for 79e963bcccc4e2e6fa6e2ad71240a43ef762b7ef all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T22:47:06+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-25T22:55:45+00:00"
   }
 }
