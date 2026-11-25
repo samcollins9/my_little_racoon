@@ -304,8 +304,8 @@
     "51": {
       "title": "This-exact-date events drop the year column",
       "epic": "Date pages (PRD v3)",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-51_this-exact-date-events-drop-the-year-column.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-51_this-exact-date-events-drop-the-year-column--done.md"
     },
     "52": {
       "title": "Date page order: day links on top, picker below the reading",
