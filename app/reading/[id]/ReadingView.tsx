@@ -268,8 +268,9 @@ export function ReadingView({
  * Sprint 39, R1: column 1 of an event row. Since Sprint 51 it's rendered on
  * unmatched ("other years") lists only, so each year is a link to the same
  * month and day in that year when the date page supports that date
- * (linkableEventDate); every other year stays plain text. `eventDate` is the page's date, or the stored row's on
- * /reading/[id], so the link keeps that date's own month and day.
+ * (linkableEventDate); every other year stays plain text. `eventDate` is
+ * the page's date, or the stored row's on /reading/[id], so the link keeps
+ * that date's own month and day.
  *
  * The accessible name spells out the destination ("Go to 9 May 1976") and
  * still contains the visible year, so speech input can say what it sees.
