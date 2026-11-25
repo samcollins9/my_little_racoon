@@ -2,7 +2,6 @@ import Link from "next/link";
 import { FUTURE_DATE_MESSAGE, datePagePath } from "@/lib/date-page/params";
 import type { DayNavigation } from "@/lib/date-page/navigation";
 import { formatLongDateText } from "@/app/reading/[id]/format";
-import { NotableDatesStrip } from "./NotableDates";
 import styles from "./date.module.css";
 
 /**
@@ -18,18 +17,11 @@ import styles from "./date.module.css";
  *   focusable, aria-disabled, with "Reloy predicts only the past." as
  *   visible text in place of a date, so phones see it too.
  *
- * Sprint 45: "Other notable dates" follows on desktop, and needs no
- * database either. On phones it's at the bottom of the page instead
- * (NotableDatesSection).
+ * Sprint 50: Sprint 45's desktop "Other notable dates" no longer follows
+ * here; it's at the foot of the card (NotableDatesPanel), so this strip
+ * holds only navigation.
  */
-export function DateNavigation({
-  navigation,
-  isoDate,
-}: {
-  navigation: DayNavigation;
-  /** The page's own date, marked rather than linked in the notable list. */
-  isoDate: string;
-}) {
+export function DateNavigation({ navigation }: { navigation: DayNavigation }) {
   const { previous, next } = navigation;
 
   return (
@@ -67,7 +59,6 @@ export function DateNavigation({
           </span>
         ) : null}
       </nav>
-      <NotableDatesStrip isoDate={isoDate} />
     </div>
   );
 }

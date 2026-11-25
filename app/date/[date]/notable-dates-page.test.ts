@@ -54,7 +54,7 @@ describe("the date page's notable dates (Sprint 45)", () => {
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
 
-    expect(dateLinks(copy(html, "notable-dates-strip-heading"))).toEqual(ALL_DATES);
+    expect(dateLinks(copy(html, "notable-dates-panel-heading"))).toEqual(ALL_DATES);
     expect(dateLinks(copy(html, "notable-dates-section-heading"))).toEqual(ALL_DATES);
     // A render calls only these two RPCs; any other (Sprint 45's retired
     // lookups included) fails here.
@@ -62,27 +62,30 @@ describe("the date page's notable dates (Sprint 45)", () => {
     expect(called).toEqual(new Set(["get_reading_by_date", "get_recent_reading_dates"]));
   });
 
-  it("R2/R7: the day links are in the strip beside the desktop list", async () => {
+  it("Sprint 50, R1/R7: the strip holds the picker and the day links, and no notable dates", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
-    const strip = html.match(/<div class="flowSlot">[\s\S]*?<\/div><\/div>/)?.[0] ?? "";
+    const strip = html.match(/<div class="flowSlot">[\s\S]*?<\/nav><\/div><\/div>/)?.[0] ?? "";
 
+    expect(strip).toMatch(/<form [^>]*action="\/date"/);
     expect(strip).toContain("Previous day");
     expect(strip).toContain("Next day");
-    expect(strip).toContain('aria-labelledby="notable-dates-strip-heading"');
-    expect(strip).not.toContain("notable-dates-section-heading");
+    expect(strip).not.toContain("Other notable dates");
+    expect(strip).not.toContain("notable-dates-panel-heading");
   });
 
-  it("R4: the phone copy closes the card, after the reading section and outside it", async () => {
+  it("Sprint 50, R1: the desktop panel is after the body, the card's last child, after the phone copy", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
     const section = copy(html, "notable-dates-section-heading");
+    const panel = copy(html, "notable-dates-panel-heading");
 
-    // The reading section, the right column and the body all close, then
-    // the list is the card's last child.
-    expect(html).toContain(`</section></div></div>${section}</main>`);
+    // The reading section, the right column and the body all close; then
+    // (Sprint 45, R4) the phone copy, and last the desktop panel.
+    expect(html).toContain(`</section></div></div>${section}${panel}</main>`);
+    expect(panel).toMatch(/^<nav class="notablePanel desktopOnly"/);
     expect(section).not.toContain("<details");
   });
 
@@ -92,7 +95,7 @@ describe("the date page's notable dates (Sprint 45)", () => {
     const html = unhashClasses(await renderDatePage("1969-07-20"));
     const others = ALL_DATES.filter((d) => d !== "1969-07-20");
 
-    for (const headingId of ["notable-dates-strip-heading", "notable-dates-section-heading"]) {
+    for (const headingId of ["notable-dates-panel-heading", "notable-dates-section-heading"]) {
       const list = copy(html, headingId);
       expect(dateLinks(list)).toEqual(others);
       expect(list).toMatch(/<span [^>]*aria-current="page"[^>]*>(<span [^>]*>)?20 July 1969</);

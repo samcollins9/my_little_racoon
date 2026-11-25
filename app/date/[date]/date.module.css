@@ -108,10 +108,11 @@
 /*
  * Sprint 29, R2/R6: navigation directly under the picker in the same
  * strip -- Previous/Next day (Sprint 47; Sprint 29's links between written
- * readings before),
- * and (Sprint 45, desktop) "Other notable dates". Everything wraps; nothing has a fixed width.
+ * readings before). Sprint 45's desktop "Other notable dates" was here
+ * too, until Sprint 50 moved it to the card's foot (.notablePanel below).
+ * Everything wraps; nothing has a fixed width.
  *
- * No `display` on .dateNav, .notableStrip or .notableSection on purpose:
+ * No `display` on .dateNav, .notablePanel or .notableSection on purpose:
  * each can share its element with reading.module.css's
  * desktopOnly/mobileOnly, which own visibility, and two single-class
  * display rules from different modules would be decided by bundle order.
@@ -183,24 +184,30 @@
 
 /* ---- Sprint 45, R3: "Other notable dates", desktop copy ---- */
 
-.notableStrip {
+/* Sprint 50: the card's last section, after the body. Its look is the
+   strip's, carried over, not new (R2): the 40px side gutter is .flowSlot's
+   (the strip's container); the 12px above the heading is what
+   `.adjacent + .notableStrip` put between it and the day links, and also
+   .dateNav's own 12px from its rule to its content; the 14px below the
+   list is .flowSlot's bottom padding. The rule above it is .dateNav's
+   (1px --om-rule), at the one place the card's section rules already put
+   one: between the body and what follows it. */
+.notablePanel {
   min-width: 0;
+  padding: 12px 40px 14px;
+  border-top: 1px solid var(--om-rule);
 }
 
 /* Where anchor positioning is supported, the card is the tooltips'
-   containing block (see .notableTooltip): wide enough to flip within, and
-   tall enough that a tooltip under the last row isn't pushed back up over
-   it, as the strip itself would. Nothing else in the card is placed
-   against its containing block (only the chart tabs' visually-hidden
-   labels, which have no insets), so this moves nothing else. */
+   containing block (see .notableTooltip): the box they flip within, both
+   sideways and (Sprint 50, at the card's foot) upward. Nothing else in the
+   card is placed against its containing block (only the chart tabs'
+   visually-hidden labels, which have no insets), so this moves nothing
+   else. */
 @supports (position-area: block-end) and (anchor-scope: all) {
-  main:has(.notableStrip) {
+  main:has(.notablePanel) {
     position: relative;
   }
-}
-
-.adjacent + .notableStrip {
-  margin-top: 12px;
 }
 
 .navTitle {
@@ -268,8 +275,10 @@
 
 /* An open tooltip stays inside the card: it opens rightwards under its
    date, and flips to open leftwards when that would run past the card's
-   right edge (the last date on a wrapped row). Without anchor positioning
-   it keeps the left-anchored placement above. */
+   right edge (the last date on a wrapped row). Sprint 50, R4: at the
+   card's foot, a tooltip that would cross the card's bottom edge opens
+   upward instead, flush above its date, flipped sideways too if needed.
+   Without anchor positioning it keeps the left-anchored placement above. */
 @supports (position-area: block-end) and (anchor-scope: all) {
   .notableItem {
     position: static;
@@ -281,7 +290,7 @@
     inset: auto;
     position-anchor: --notable-date;
     position-area: block-end span-inline-end;
-    position-try-fallbacks: flip-inline;
+    position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
   }
 }
 

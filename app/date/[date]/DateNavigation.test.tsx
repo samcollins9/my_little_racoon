@@ -14,10 +14,10 @@ const unhashClasses = (html: string) => html.replace(/\b_([A-Za-z][A-Za-z0-9]*)_
 
 const renderDays = (isoDate: string) =>
   unhashClasses(
-    renderToStaticMarkup(<DateNavigation navigation={dayNavigation(isoDate, NOW)} isoDate={isoDate} />)
+    renderToStaticMarkup(<DateNavigation navigation={dayNavigation(isoDate, NOW)} />)
   );
 
-/** The day links' <nav>, without the notable dates that follow it. */
+/** The day links' <nav>. */
 const daysNav = (html: string) => html.match(/<nav class="adjacent"[\s\S]*?<\/nav>/)?.[0] ?? "";
 
 const links = (html: string) => [...html.matchAll(/<a [^>]*>[\s\S]*?<\/a>/g)].map((m) => m[0]);

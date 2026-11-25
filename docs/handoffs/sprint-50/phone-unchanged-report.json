@@ -1,0 +1,256 @@
+{
+  "origin": "http://127.0.0.1:3150",
+  "browser": "Chrome/156.0.8078.4",
+  "pages": [
+    {
+      "name": "matched",
+      "width": "desktop-1280",
+      "screenshot": "desktop-1280-matched.png",
+      "path": "/date/1969-07-20",
+      "vw": 1280,
+      "docW": 1280,
+      "status": "this exact date",
+      "domOrder": [
+        "events",
+        "reading"
+      ],
+      "visualOrder": [
+        "events",
+        "reading"
+      ],
+      "gapBetween": 0,
+      "rulesBetween": 1,
+      "events": {
+        "box": {
+          "top": 475,
+          "bottom": 619,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "1px solid",
+          "flexGrow": "0"
+        }
+      },
+      "reading": {
+        "box": {
+          "top": 619,
+          "bottom": 1245,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "1"
+        }
+      },
+      "column": {
+        "top": 475,
+        "bottom": 1245,
+        "shown": true
+      },
+      "afterLastEventRow": {
+        "lastRowBorderBottom": "1px",
+        "eventsPaddingBottom": "26px",
+        "gapToNextSection": 27,
+        "nextBorderTop": "0px"
+      },
+      "cssReordering": [
+        "0",
+        "0",
+        "column"
+      ],
+      "tab": {
+        "firstReadingStop": 12,
+        "firstEventYearLinkStop": null
+      }
+    },
+    {
+      "name": "matched",
+      "width": "phone-390",
+      "screenshot": "phone-390-matched.png",
+      "path": "/date/1969-07-20",
+      "vw": 390,
+      "docW": 390,
+      "status": "this exact date",
+      "domOrder": [
+        "events",
+        "reading"
+      ],
+      "visualOrder": [
+        "events",
+        "reading",
+        "random",
+        "notable"
+      ],
+      "gapBetween": 0,
+      "rulesBetween": 0,
+      "events": {
+        "box": {
+          "top": 664,
+          "bottom": 760,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "0"
+        }
+      },
+      "reading": {
+        "box": {
+          "top": 760,
+          "bottom": 1030,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "1"
+        }
+      },
+      "column": {
+        "top": 664,
+        "bottom": 1030,
+        "shown": true
+      },
+      "afterLastEventRow": {
+        "lastRowBorderBottom": "1px",
+        "eventsPaddingBottom": "0px",
+        "gapToNextSection": 0,
+        "nextBorderTop": "0px"
+      },
+      "cssReordering": [
+        "0",
+        "0",
+        "column"
+      ],
+      "footScreenshot": "phone-390-matched-foot.png"
+    },
+    {
+      "name": "other-years",
+      "width": "desktop-1280",
+      "screenshot": "desktop-1280-other-years.png",
+      "path": "/date/1931-03-03",
+      "vw": 1280,
+      "docW": 1280,
+      "status": "on this day, other years",
+      "domOrder": [
+        "reading",
+        "events"
+      ],
+      "visualOrder": [
+        "reading",
+        "events"
+      ],
+      "gapBetween": 0,
+      "rulesBetween": 1,
+      "events": {
+        "box": {
+          "top": 719,
+          "bottom": 1286,
+          "shown": true
+        },
+        "rules": {
+          "top": "1px solid",
+          "bottom": "0px none",
+          "flexGrow": "0"
+        }
+      },
+      "reading": {
+        "box": {
+          "top": 475,
+          "bottom": 719,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "0"
+        }
+      },
+      "column": {
+        "top": 475,
+        "bottom": 1286,
+        "shown": true
+      },
+      "afterLastEventRow": {
+        "lastRowBorderBottom": "1px",
+        "eventsPaddingBottom": "26px",
+        "gapToNextSection": -1260,
+        "nextBorderTop": "1px"
+      },
+      "cssReordering": [
+        "0",
+        "0",
+        "column"
+      ],
+      "tab": {
+        "firstReadingStop": null,
+        "firstEventYearLinkStop": 12
+      }
+    },
+    {
+      "name": "other-years",
+      "width": "phone-390",
+      "screenshot": "phone-390-other-years.png",
+      "path": "/date/1931-03-03",
+      "vw": 390,
+      "docW": 390,
+      "status": "on this day, other years",
+      "domOrder": [
+        "reading",
+        "events"
+      ],
+      "visualOrder": [
+        "reading",
+        "events",
+        "random",
+        "notable"
+      ],
+      "gapBetween": 0,
+      "rulesBetween": 0,
+      "events": {
+        "box": {
+          "top": 893,
+          "bottom": 1559,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "0"
+        }
+      },
+      "reading": {
+        "box": {
+          "top": 664,
+          "bottom": 893,
+          "shown": true
+        },
+        "rules": {
+          "top": "0px none",
+          "bottom": "0px none",
+          "flexGrow": "0"
+        }
+      },
+      "column": {
+        "top": 664,
+        "bottom": 1559,
+        "shown": true
+      },
+      "afterLastEventRow": {
+        "lastRowBorderBottom": "1px",
+        "eventsPaddingBottom": "24px",
+        "gapToNextSection": 24,
+        "nextBorderTop": "1px"
+      },
+      "cssReordering": [
+        "0",
+        "0",
+        "column"
+      ],
+      "footScreenshot": "phone-390-other-years-foot.png"
+    }
+  ]
+}

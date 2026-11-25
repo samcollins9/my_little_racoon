@@ -10,9 +10,10 @@ import styles from "./date.module.css";
  * lib/date-page/notable-dates.ts. Two copies, one display:none at each
  * width, the same way ReadingView renders its two constellations:
  *
- * - NotableDatesStrip (R3), desktop only: in the strip under the date
- *   picker, where Sprint 29's recent-readings list was, each description a
- *   tooltip on hover and on keyboard focus.
+ * - NotableDatesPanel (R3), desktop only: each description a tooltip on
+ *   hover and on keyboard focus. Sprint 50 moved it from the strip under
+ *   the date picker to the foot of the card, the last section after the
+ *   page body, where the phone copy sits; its look is unchanged.
  * - NotableDatesSection (R4), phones only: at the bottom of the page,
  *   after the reading section, each description a visible line.
  *
@@ -22,11 +23,11 @@ import styles from "./date.module.css";
 
 const HEADING = "Other notable dates";
 
-export function NotableDatesStrip({ isoDate }: { isoDate: string }) {
-  const headingId = "notable-dates-strip-heading";
+export function NotableDatesPanel({ isoDate }: { isoDate: string }) {
+  const headingId = "notable-dates-panel-heading";
   return (
     <nav
-      className={`${styles.notableStrip} ${readingStyles.desktopOnly}`}
+      className={`${styles.notablePanel} ${readingStyles.desktopOnly}`}
       aria-labelledby={headingId}
     >
       <h2 id={headingId} className={styles.navTitle}>

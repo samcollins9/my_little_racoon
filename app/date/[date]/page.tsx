@@ -27,7 +27,7 @@ import readingStyles from "@/app/reading/[id]/reading.module.css";
 import { castHoroscope } from "./actions";
 import { DateNavigation } from "./DateNavigation";
 import { DatePicker } from "./DatePicker";
-import { NotableDatesSection } from "./NotableDates";
+import { NotableDatesPanel, NotableDatesSection } from "./NotableDates";
 import { RandomReadingSection } from "./RandomReading";
 import styles from "./date.module.css";
 
@@ -120,16 +120,18 @@ export default async function DatePage({
       belowDateBand={
         <>
           <DatePicker isoDate={isoDate} today={today} randomDate={randomDate} />
-          <DateNavigation navigation={dayNavigation(isoDate, now)} isoDate={isoDate} />
+          <DateNavigation navigation={dayNavigation(isoDate, now)} />
         </>
       }
-      // Phones only, after the reading section: Sprint 47's random link
-      // (R6, the same pick as the picker row's), then Sprint 45's "Other
-      // notable dates" (R4).
+      // After the page body. Phones: Sprint 47's random link (R6, the same
+      // pick as the picker row's), then Sprint 45's "Other notable dates"
+      // (R4). Desktop: the same list's desktop panel, the card's last
+      // section (Sprint 50, R1). Each copy is shown at one width only.
       afterBody={
         <>
           <RandomReadingSection date={randomDate} />
           <NotableDatesSection isoDate={isoDate} />
+          <NotableDatesPanel isoDate={isoDate} />
         </>
       }
     >

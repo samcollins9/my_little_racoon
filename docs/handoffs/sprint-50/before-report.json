@@ -1,0 +1,1334 @@
+{
+  "origin": "http://127.0.0.1:3150",
+  "label": "before",
+  "browser": "Chrome/156.0.8078.4",
+  "fingerprint": {
+    "heading": {
+      "text": "Other notable dates",
+      "font-family": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+      "font-size": "9.5px",
+      "font-weight": "400",
+      "font-style": "normal",
+      "letter-spacing": "1.9px",
+      "text-transform": "uppercase",
+      "line-height": "normal",
+      "color": "lab(34.9061 1.49192 -5.42677)",
+      "text-decoration-line": "none",
+      "text-decoration-color": "lab(34.9061 1.49192 -5.42677)",
+      "text-underline-offset": "auto",
+      "margin-top": "0px",
+      "margin-right": "0px",
+      "margin-bottom": "6px",
+      "margin-left": "0px",
+      "padding-top": "0px",
+      "padding-right": "0px",
+      "padding-bottom": "0px",
+      "padding-left": "0px"
+    },
+    "list": {
+      "display": "flex",
+      "flex-wrap": "wrap",
+      "row-gap": "4px",
+      "column-gap": "16px",
+      "font-family": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+      "font-size": "11.5px",
+      "letter-spacing": "0.46px",
+      "margin-top": "0px",
+      "margin-right": "0px",
+      "margin-bottom": "0px",
+      "margin-left": "0px",
+      "padding-top": "0px",
+      "padding-right": "0px",
+      "padding-bottom": "0px",
+      "padding-left": "0px"
+    },
+    "link": {
+      "font-family": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+      "font-size": "11.5px",
+      "font-weight": "400",
+      "font-style": "normal",
+      "letter-spacing": "0.46px",
+      "text-transform": "none",
+      "line-height": "normal",
+      "color": "lab(53.4684 1.45921 -5.44518)",
+      "text-decoration-line": "underline",
+      "text-decoration-color": "lab(17.4393 2.4759 -7.04291)",
+      "text-underline-offset": "3px"
+    },
+    "current": {
+      "text": "20 July 1969",
+      "color": "lab(66.8006 -36.4154 29.7015)",
+      "font-size": "11.5px",
+      "font-family": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace"
+    },
+    "tooltipClosed": {
+      "display": "none",
+      "position": "absolute",
+      "max-width": "228.961px",
+      "padding-top": "6px",
+      "padding-left": "10px",
+      "border-top-width": "1px",
+      "border-top-color": "lab(17.4393 2.4759 -7.04291)",
+      "background-color": "lab(1.0141 0.370815 -1.30305)",
+      "color": "lab(81.4873 0.358075 4.58539)",
+      "font-family": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "font-size": "15px",
+      "line-height": "21px"
+    },
+    "layout": {
+      "leftGutter": 41,
+      "rightGutter": 41,
+      "listWidth": 1054,
+      "headingToList": 6,
+      "rows": 3,
+      "firstRowLeft": 41
+    },
+    "tooltipOpen": {
+      "text": "The Titanic sinks in the North Atlantic",
+      "display": "block",
+      "maxWidth": "228.961px",
+      "padding": "6px 10px",
+      "border": "1px solid lab(17.4393 2.4759 -7.04291)",
+      "background": "lab(1.0141 0.370815 -1.30305)",
+      "color": "lab(81.4873 0.358075 4.58539)",
+      "font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif 15px/21px"
+    }
+  },
+  "placement": {
+    "panelInStrip": true,
+    "panelAfterBody": false,
+    "panelIsLastShownSectionInCard": false,
+    "strip": {
+      "picker": true,
+      "randomLink": true,
+      "dayLinks": [
+        "/date/1969-07-19",
+        "/date/1969-07-21"
+      ],
+      "notableInside": true
+    },
+    "panelRuleAbove": "0px none",
+    "count": 20,
+    "currentMarked": "20 July 1969",
+    "describedBy": true
+  },
+  "tabOrder": [
+    "notable",
+    "chart",
+    "reading",
+    "body"
+  ],
+  "widths": [
+    {
+      "width": 901,
+      "closedScrollWidth": 901,
+      "closedScrollHeight": 1447,
+      "maxScrollWidthWhileOpen": 901,
+      "maxScrollHeightWhileOpen": 1447,
+      "rows": 4,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "9 November 1989",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 February 1990",
+          "open": 0,
+          "docW": 901,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1000,
+      "closedScrollWidth": 1000,
+      "closedScrollHeight": 1447,
+      "maxScrollWidthWhileOpen": 1000,
+      "maxScrollHeightWhileOpen": 1447,
+      "rows": 4,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "9 November 1989",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 February 1990",
+          "open": 0,
+          "docW": 1000,
+          "docH": 1447,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1100,
+      "closedScrollWidth": 1100,
+      "closedScrollHeight": 1428,
+      "maxScrollWidthWhileOpen": 1100,
+      "maxScrollHeightWhileOpen": 1428,
+      "rows": 3,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1100,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1200,
+      "closedScrollWidth": 1200,
+      "closedScrollHeight": 1428,
+      "maxScrollWidthWhileOpen": 1200,
+      "maxScrollHeightWhileOpen": 1428,
+      "rows": 3,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 1200,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1279,
+      "closedScrollWidth": 1279,
+      "closedScrollHeight": 1428,
+      "maxScrollWidthWhileOpen": 1279,
+      "maxScrollHeightWhileOpen": 1428,
+      "rows": 3,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "9 November 1989",
+          "open": 0,
+          "docW": 1279,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "closedScrollWidth": 1280,
+      "closedScrollHeight": 1428,
+      "maxScrollWidthWhileOpen": 1280,
+      "maxScrollHeightWhileOpen": 1428,
+      "rows": 3,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "9 November 1989",
+          "open": 0,
+          "docW": 1280,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "closedScrollWidth": 1440,
+      "closedScrollHeight": 1428,
+      "maxScrollWidthWhileOpen": 1440,
+      "maxScrollHeightWhileOpen": 1428,
+      "rows": 3,
+      "allOpenExactlyOne": false,
+      "allInsideCard": false,
+      "allInsideViewport": false,
+      "noneDetached": true,
+      "lastRowOpens": [
+        "below"
+      ],
+      "firstRowOpens": [
+        null
+      ],
+      "failures": [
+        {
+          "date": "15 April 1912",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 June 1914",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 November 1918",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1929",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 September 1939",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 June 1944",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "8 May 1945",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "6 August 1945",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "24 October 1945",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "15 August 1947",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "1 December 1955",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "12 April 1961",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 August 1963",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "22 November 1963",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "20 July 1969",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "28 January 1986",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "9 November 1989",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 February 1990",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        },
+        {
+          "date": "11 September 2001",
+          "open": 0,
+          "docW": 1440,
+          "docH": 1428,
+          "insideCard": false,
+          "insideViewport": false,
+          "opens": null
+        }
+      ]
+    }
+  ]
+}
