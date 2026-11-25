@@ -1,16 +1,16 @@
 {
   "id": 52,
   "title": "Date page order: day links on top, picker below the reading",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "9f4d5a0fee421e89d6bdb85ef3acf2e445f25a5c642f2c03de73817cef8f2cad",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "6bc5723e43568e3298f1f951966011d45523461091b562768d046d215b2c90de",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-25T19:50:56+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-25T20:00:27+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS, gate 1, audit of 680d041.\n\nSprint file: read fresh. Its amendments (8db70fd, ac5ce6b at 14:30) all predate start (4a061b7 at 14:50), and nothing has touched it since. The build follows the amended version: day links above the date band, R10, and R11.\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 604 tests.\n\nDiff 4a061b7..680d041. My own check: npm run verify at 680d041, on a clean primary checkout. Result: verify=0, VERIFY PASS exit=0, 54 test files and 604 tests passed.\n\n- R1 Met. ReadingView's belowDateBand became aboveDateBand. It renders in the same flowSlot wrapper right after SiteBanner, before the date band. The date page passes only DateNavigation. Nothing renders between the date band and the body.\n  The .dateNav adjustments are exactly the three properties that separated it from the now-gone picker row (margin-top, padding-top, border-top). They are named in the handoff. The .adjacent link styles are untouched.\n- R2 and R4 Met. DatePicker is the one panel, rendered once at the start of afterBody, with no desktopOnly or mobileOnly. RandomReading.tsx and .randomSection are deleted.\n  A grep finds DatePicker rendered only at page.tsx:129, and loadRandomReadingDate called only at page.tsx:99. There is no RandomReading, randomSection or belowDateBand left in app or lib.\n  The form's GET to /date, min, max = today and required are unchanged. The link's markup moved inline unchanged. The \"or\" and link still render together, only when there's a date.\n- R3 Met. On desktop, the picker, label, input, button, link and \"or\" rules are unchanged. .anotherDate reuses flowSlot's padding and rule.\n  The phone-only additions are layout, for R3's stated limits, not new visual treatment:\n  - display contents on pickerControls, so label, input and Go share a row and the or-plus-link span wraps;\n  - min-height 44px on the input and button;\n  - border-box and inline-flex centring on the link, so it measures like the button.\n  I opened phone-390-bottom.png: label, input and Go on one row, then \"or Discover random reading\" below, inside the panel. The handoff reports 44px controls and scrollWidth 390.\n- R5 Met. The DOM order is banner, day links, date band, body, Another date, then the phone and desktop Notable dates copies. The CSS grep for order, column-reverse or row-reverse exits 1. Tab order is reported in the same order.\n- R6 Met. The only /reading test edits are R10's two quoted strings in accuracy-pages.test.ts, plus the phone-order expectation in events-placement-pages.test.ts. That one renders the date page's afterBody, so it is not a /reading assertion. /reading/[id]'s page code is untouched.\n- R7 Met. The new page-order.test.ts checks the landmark order, that nothing sits between the date band and the body, the day links alone in the strip, exactly one date input, and at most one random link. Sprint 47's two-copy test is retired and replaced, and the updated tests are listed in the handoff.\n- R8 Met. The README now describes the top-to-bottom order.\n- R9 Met. I opened desktop-1280-top, desktop-1280-bottom, phone-390-bottom and phone-390-today-top. They show the day links under the banner (with today's disabled Next day and message on the phone shot), the date band directly above the chart, the panel after the body, then Notable dates.\n- R10 Met. The two strings in lib/date-page/accuracy.ts are exactly as specified. The grep for \"date above\" exits 1.\n- R11 Met. HEADING is \"Notable dates\", one constant for both copies. The grep for \"Other notable dates\" exits 1.\n\nNote for Master Controller: an UNOWNED item I routed in sprint 48, the picker wording on /reading/[id], is now smaller but still there. That page has no picker, and its message now reads \"Pick a different date.\" without \"above\". It is still an instruction with no control on that page. Not this sprint's scope (R6), and not part of this verdict.\n\nFor Pipeman: sprint 53 (Dev Team 2, devteam2/sprint-53) also edits reading.module.css and date.module.css, in different rules from this sprint (the max-width lines versus flowSlot comments, dateNav and the new picker rules). Expect at most a small textual merge.\n\nNo issues found. Still UNOWNED, with Master Controller: the 3 lint warnings in the sprint 45 and 46 probe scripts."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-25T19:50:56+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-25T20:00:27+00:00"
   }
 }
