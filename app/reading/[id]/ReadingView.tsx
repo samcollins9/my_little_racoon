@@ -88,6 +88,10 @@ export function ReadingView({
   const status = eventsStatusLabel(events);
   // Sprint 48: other years' events follow the reading (eventsPlacement).
   const eventsBelow = eventsPlacement(events) === "below";
+  // Sprint 51, R1/R4: a "this exact date" list is all from the page's own
+  // year, already in the date band, so its rows drop the year column. The
+  // same rule as the status label, read from the one place it's stated.
+  const matched = hasMatchedEvents(events);
 
   const bodies = computeBodies(chart.positions);
   const threads = computeThreads(chart.aspects, bodies);
@@ -108,12 +112,13 @@ export function ReadingView({
       {events && events.events.length > 0 ? (
         <div className={styles.eventsList}>
           {events.events.map((event, i) => (
-            <div key={i} className={styles.eventRow}>
-              <EventYear
-                year={event.year}
-                eventDate={eventDate}
-                linked={!hasMatchedEvents(events)}
-              />
+            <div
+              key={i}
+              className={matched ? `${styles.eventRow} ${styles.eventRowSingle}` : styles.eventRow}
+            >
+              {/* Absent, not hidden, on a matched list (R1): nothing for a
+                  screen reader to announce on every row. */}
+              {matched ? null : <EventYear year={event.year} eventDate={eventDate} />}
               <span className={styles.eventText}>
                 {/* Sprint 42: we never show Wikipedia's picture, so its "(pictured)" note goes. */}
                 {stripPictureNotes(event.text)}
@@ -260,17 +265,17 @@ export function ReadingView({
 }
 
 /**
- * Sprint 39, R1: column 1 of an event row. On an unmatched date each year is
- * a link to the same month and day in that year, when the date page
- * supports that date (linkableEventDate); every other year stays plain
- * text. `eventDate` is the page's date, or the stored row's on
+ * Sprint 39, R1: column 1 of an event row. Since Sprint 51 it's rendered on
+ * unmatched ("other years") lists only, so each year is a link to the same
+ * month and day in that year when the date page supports that date
+ * (linkableEventDate); every other year stays plain text. `eventDate` is the page's date, or the stored row's on
  * /reading/[id], so the link keeps that date's own month and day.
  *
  * The accessible name spells out the destination ("Go to 9 May 1976") and
  * still contains the visible year, so speech input can say what it sees.
  */
-function EventYear({ year, eventDate, linked }: { year: number; eventDate: string; linked: boolean }) {
-  const target = linked ? linkableEventDate(year, eventDate) : null;
+function EventYear({ year, eventDate }: { year: number; eventDate: string }) {
+  const target = linkableEventDate(year, eventDate);
   if (!target) return <span className={styles.eventYear}>{year}</span>;
 
   const long = formatLongDate(target);
