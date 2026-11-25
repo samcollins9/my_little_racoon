@@ -105,3 +105,7 @@ The user decided that Reloy predicts only the past. Any date after today (UTC) i
 ## 25 Nov 2026: one page order on desktop and phones (Sprint 52)
 
 The date page's order on both layouts: banner → date band → Previous/Next day → chart, events and reading → "Another date" panel (with "or Discover random reading") → "Other notable dates". The user confirmed that phones follow the same order.
+
+## 25 Nov 2026: page order amended, footer renamed (Sprint 52)
+
+This supersedes the order recorded above. Previous/Next day sit directly under the banner, above the date band, so "The sky over <date>" sits directly above the chart. The full order on both layouts: banner → Previous/Next day → date band → chart, events and reading → "Another date" panel → "Notable dates", renamed from "Other notable dates".

@@ -1,5 +1,5 @@
 {
-  "next_id": 53,
+  "next_id": 54,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -313,6 +313,12 @@
       "status": "todo",
       "file": "docs/sprints/1-todo/sprint-52_date-page-order-day-links-on-top-picker-below-the-reading.md",
       "original_title": "Another date panel moves below the reading"
+    },
+    "53": {
+      "title": "Reading text uses the full column width",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-53_reading-text-uses-the-full-column-width.md"
     }
   }
 }
