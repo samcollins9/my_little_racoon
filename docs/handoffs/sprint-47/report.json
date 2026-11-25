@@ -1,0 +1,436 @@
+{
+  "origin": "http://127.0.0.1:3147",
+  "today": "2026-11-25",
+  "browser": "Chrome/156.0.8078.4",
+  "desktopOrdinary": {
+    "path": "/date/1969-07-20",
+    "vw": 1280,
+    "docW": 1280,
+    "picker": {
+      "min": "1700-01-01",
+      "max": "2026-11-25",
+      "value": "1969-07-20"
+    },
+    "dayLinks": [
+      {
+        "href": "/date/1969-07-19",
+        "rel": "prev",
+        "text": "← PREVIOUS DAY 19 July 1969",
+        "rect": {
+          "left": 113,
+          "top": 426,
+          "right": 219,
+          "bottom": 460,
+          "visible": true
+        }
+      },
+      {
+        "href": "/date/1969-07-21",
+        "rel": "next",
+        "text": "NEXT DAY → 21 July 1969",
+        "rect": {
+          "left": 1091,
+          "top": 426,
+          "right": 1167,
+          "bottom": 460,
+          "visible": true
+        }
+      }
+    ],
+    "disabledNext": null,
+    "go": {
+      "rect": {
+        "left": 364,
+        "top": 364,
+        "right": 415,
+        "bottom": 398,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "or": {
+      "text": "or",
+      "rect": {
+        "left": 425,
+        "top": 374,
+        "right": 441,
+        "bottom": 388,
+        "visible": true
+      }
+    },
+    "random": {
+      "href": "/date/1989-11-09",
+      "rect": {
+        "left": 451,
+        "top": 364,
+        "right": 673,
+        "bottom": 398,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "notableStripVisible": true,
+    "notableSectionVisible": false,
+    "randomMatchesGo": {
+      "borderTop": true,
+      "fontFamily": true,
+      "fontSize": true,
+      "letterSpacing": true,
+      "textTransform": true,
+      "padding": true,
+      "color": true
+    },
+    "hover": {
+      "go": {
+        "color": "lab(78.0628 -27.9663 22.3194)",
+        "borderColor": "lab(66.8006 -36.4154 29.7015)"
+      },
+      "random": {
+        "color": "lab(78.0628 -27.9663 22.3194)",
+        "borderColor": "lab(66.8006 -36.4154 29.7015)"
+      }
+    }
+  },
+  "randomTargets": [
+    "/date/1961-04-12",
+    "/date/1961-04-12",
+    "/date/2001-09-11",
+    "/date/1989-11-09",
+    "/date/2001-09-11"
+  ],
+  "desktopToday": {
+    "path": "/date/2026-11-25",
+    "vw": 1280,
+    "docW": 1280,
+    "picker": {
+      "min": "1700-01-01",
+      "max": "2026-11-25",
+      "value": "2026-11-25"
+    },
+    "dayLinks": [
+      {
+        "href": "/date/2026-11-24",
+        "rel": "prev",
+        "text": "← PREVIOUS DAY 24 November 2026",
+        "rect": {
+          "left": 113,
+          "top": 426,
+          "right": 220,
+          "bottom": 460,
+          "visible": true
+        }
+      }
+    ],
+    "disabledNext": {
+      "tag": "SPAN",
+      "role": "link",
+      "ariaDisabled": "true",
+      "text": "NEXT DAY → Reloy predicts only the past.",
+      "tabIndex": -1,
+      "labelColor": "lab(17.4393 2.4759 -7.04291)",
+      "rect": {
+        "left": 1018,
+        "top": 426,
+        "right": 1167,
+        "bottom": 460,
+        "visible": true
+      }
+    },
+    "go": {
+      "rect": {
+        "left": 364,
+        "top": 364,
+        "right": 415,
+        "bottom": 398,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "or": {
+      "text": "or",
+      "rect": {
+        "left": 425,
+        "top": 374,
+        "right": 441,
+        "bottom": 388,
+        "visible": true
+      }
+    },
+    "random": {
+      "href": "/date/2001-09-11",
+      "rect": {
+        "left": 451,
+        "top": 364,
+        "right": 673,
+        "bottom": 398,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "notableStripVisible": true,
+    "notableSectionVisible": false,
+    "tabStops": [
+      "A /",
+      "INPUT",
+      "INPUT",
+      "INPUT",
+      "INPUT",
+      "BUTTON",
+      "A /date/2001-09-11",
+      "A /date/2026-11-24",
+      "A /date/1912-04-15",
+      "A /date/1914-06-28",
+      "A /date/1918-11-11",
+      "A /date/1929-10-24",
+      "A /date/1939-09-01",
+      "A /date/1944-06-06",
+      "A /date/1945-05-08",
+      "A /date/1945-08-06",
+      "A /date/1945-10-24",
+      "A /date/1947-08-15",
+      "A /date/1955-12-01",
+      "A /date/1961-04-12",
+      "A /date/1963-08-28",
+      "A /date/1963-11-22",
+      "A /date/1969-07-20",
+      "A /date/1986-01-28",
+      "A /date/1989-11-09",
+      "A /date/1990-02-11",
+      "A /date/2001-09-11",
+      "A /date/2020-03-11",
+      "BUTTON",
+      "SECTION",
+      "A /date/2013-11-25",
+      "A https://en.wikipedia.org/wiki/One_Direction",
+      "A /date/1984-11-25",
+      "A https://en.wikipedia.org/wiki/Do_They_Know_It's_Christmas%3F",
+      "A /date/1981-11-25",
+      "A https://en.wikipedia.org/wiki/Gang_of_25",
+      "A /date/1975-11-25",
+      "A https://en.wikipedia.org/wiki/Johan_Ferrier",
+      "A /date/1970-11-25",
+      "A https://en.wikipedia.org/wiki/Mishima_incident"
+    ],
+    "tabEverReachedDisabled": false,
+    "tabEverReachedTomorrow": false,
+    "clickOnDisabled": {
+      "before": "/date/2026-11-25",
+      "after": "/date/2026-11-25"
+    }
+  },
+  "phone": {
+    "path": "/date/1969-07-20",
+    "vw": 390,
+    "docW": 390,
+    "picker": {
+      "min": "1700-01-01",
+      "max": "2026-11-25",
+      "value": "1969-07-20"
+    },
+    "dayLinks": [
+      {
+        "href": "/date/1969-07-19",
+        "rel": "prev",
+        "text": "← PREVIOUS DAY 19 July 1969",
+        "rect": {
+          "left": 32,
+          "top": 342,
+          "right": 138,
+          "bottom": 376,
+          "visible": true
+        }
+      },
+      {
+        "href": "/date/1969-07-21",
+        "rel": "next",
+        "text": "NEXT DAY → 21 July 1969",
+        "rect": {
+          "left": 282,
+          "top": 342,
+          "right": 358,
+          "bottom": 376,
+          "visible": true
+        }
+      }
+    ],
+    "disabledNext": null,
+    "go": {
+      "rect": {
+        "left": 182,
+        "top": 236,
+        "right": 232,
+        "bottom": 270,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "or": {
+      "text": "or",
+      "rect": {
+        "left": 242,
+        "top": 246,
+        "right": 259,
+        "bottom": 260,
+        "visible": true
+      }
+    },
+    "random": {
+      "href": "/date/2001-09-11",
+      "rect": {
+        "left": 32,
+        "top": 281,
+        "right": 254,
+        "bottom": 315,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "notableStripVisible": false,
+    "notableSectionVisible": true,
+    "randomWrappedBelowGo": true
+  },
+  "phoneToday": {
+    "path": "/date/2026-11-25",
+    "vw": 390,
+    "docW": 390,
+    "picker": {
+      "min": "1700-01-01",
+      "max": "2026-11-25",
+      "value": "2026-11-25"
+    },
+    "dayLinks": [
+      {
+        "href": "/date/2026-11-24",
+        "rel": "prev",
+        "text": "← PREVIOUS DAY 24 November 2026",
+        "rect": {
+          "left": 32,
+          "top": 342,
+          "right": 139,
+          "bottom": 376,
+          "visible": true
+        }
+      }
+    ],
+    "disabledNext": {
+      "tag": "SPAN",
+      "role": "link",
+      "ariaDisabled": "true",
+      "text": "NEXT DAY → Reloy predicts only the past.",
+      "tabIndex": -1,
+      "labelColor": "lab(17.4393 2.4759 -7.04291)",
+      "rect": {
+        "left": 209,
+        "top": 342,
+        "right": 358,
+        "bottom": 376,
+        "visible": true
+      }
+    },
+    "go": {
+      "rect": {
+        "left": 182,
+        "top": 236,
+        "right": 232,
+        "bottom": 270,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "or": {
+      "text": "or",
+      "rect": {
+        "left": 242,
+        "top": 246,
+        "right": 259,
+        "bottom": 260,
+        "visible": true
+      }
+    },
+    "random": {
+      "href": "/date/1969-07-20",
+      "rect": {
+        "left": 32,
+        "top": 281,
+        "right": 254,
+        "bottom": 315,
+        "visible": true
+      },
+      "style": {
+        "borderTop": "1px solid lab(17.4393 2.4759 -7.04291)",
+        "fontFamily": "\"IBM Plex Mono\", \"IBM Plex Mono Fallback\", monospace",
+        "fontSize": "10.5px",
+        "letterSpacing": "1.89px",
+        "textTransform": "uppercase",
+        "padding": "9px 16px",
+        "color": "lab(67.3894 1.44428 -5.45396)",
+        "textDecorationLine": "none"
+      }
+    },
+    "notableStripVisible": false,
+    "notableSectionVisible": true
+  }
+}

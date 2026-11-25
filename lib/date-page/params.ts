@@ -15,6 +15,31 @@ export function utcToday(now: Date = new Date()): string {
 }
 
 /**
+ * Sprint 47, R1: the one rule for "the future". A date after today (UTC,
+ * utcToday above) is refused everywhere -- the date page and the picker's
+ * target redirect it to today, the picker's `max` stops at today, and
+ * neither horoscope write path will write it. Today itself is allowed.
+ * Zero-padded YYYY-MM-DD, so string order is date order (Sprint 32).
+ */
+export function isAfterToday(isoDate: string, now: Date = new Date()): boolean {
+  return isoDate > utcToday(now);
+}
+
+/** Sprint 47: the user's wording (25 Nov 2026), wherever a future date is refused. */
+export const FUTURE_DATE_MESSAGE = "Reloy predicts only the past.";
+
+/**
+ * Sprint 47, R5: the calendar date `days` days from `isoDate`, in UTC, so
+ * month ends, year ends and 29 February come out right. `isoDate` must be
+ * a valid YYYY-MM-DD; the result isn't range-checked here.
+ */
+export function addDays(isoDate: string, days: number): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const shifted = new Date(Date.UTC(year, month - 1, day + days));
+  return shifted.toISOString().slice(0, 10);
+}
+
+/**
  * R1/R7: the one validator for a date-page parameter. Returns the date
  * unchanged when it is a real YYYY-MM-DD calendar date inside the engine's
  * supported range, and null for anything else -- callers turn null into

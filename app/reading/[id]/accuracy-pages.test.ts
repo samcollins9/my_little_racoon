@@ -115,7 +115,7 @@ describe("the date page on an unmatched date", () => {
     ]);
     const fake = useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-05-09");
+    const html = await renderDatePage("1931-05-09");
     const events = eventsColumn(html);
 
     expect(events).toMatch(/<a [^>]*href="\/date\/1976-05-09"[^>]*>1976<\/a>/);
@@ -138,7 +138,7 @@ describe("the date page on an unmatched date", () => {
     ]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-06-10");
+    const html = await renderDatePage("1931-06-10");
 
     expect(eventsColumn(html)).not.toContain("<a ");
     expect(readingSection(html)).toContain(LEAD_UNMATCHED);
@@ -151,7 +151,7 @@ describe("the date page on an unmatched date", () => {
     wikipediaAnswers([]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-07-11");
+    const html = await renderDatePage("1931-07-11");
 
     expect(eventsColumn(html)).toContain("No recorded events for this day.");
     expect(readingSection(html)).toContain(`</strong> ${NEXT_R4}</p>`);
@@ -163,7 +163,7 @@ describe("the date page on an unmatched date", () => {
     wikipediaAnswers([{ year: 1976, text: "Viking event" }]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-08-12");
+    const html = await renderDatePage("1931-08-12");
 
     expect(readingSection(html)).toContain(NEXT_R3);
     expectOnlyTheMessage(html);
@@ -173,7 +173,7 @@ describe("the date page on an unmatched date", () => {
     wikipediaAnswers([{ year: 1976, text: "Viking event" }]);
     const fake = useAnon({ get_reading_by_date: PAUSED_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-09-13");
+    const html = await renderDatePage("1931-09-13");
 
     expect(readingSection(html)).toContain(NEXT_R3);
     expectOnlyTheMessage(html);
@@ -184,12 +184,12 @@ describe("the date page on an unmatched date", () => {
     wikipediaAnswers([{ year: 1976, text: "A fresh event" }]);
     const fake = useAnon({
       get_reading_by_date: ok([
-        storedRow("2031-10-14", unmatchedPayload("2031-10-14", [{ year: 1918, text: "The stored event" }])),
+        storedRow("1931-10-14", unmatchedPayload("1931-10-14", [{ year: 1918, text: "The stored event" }])),
       ]),
       ...NAVIGATION_RPCS,
     });
 
-    const html = await renderDatePage("2031-10-14", { revealed: "1" });
+    const html = await renderDatePage("1931-10-14", { revealed: "1" });
 
     expect(html).not.toContain(SAVED_TEXT);
     // As if nothing was saved: the events are the fresh lookup's, not the row's.
@@ -202,9 +202,9 @@ describe("the date page on an unmatched date", () => {
 
   it("R7: a horoscope saved on a row with null events is never shown either", async () => {
     wikipediaAnswers([{ year: 1976, text: "A fresh event" }]);
-    useAnon({ get_reading_by_date: ok([storedRow("2031-11-15", null)]), ...NAVIGATION_RPCS });
+    useAnon({ get_reading_by_date: ok([storedRow("1931-11-15", null)]), ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-11-15", { revealed: "1" });
+    const html = await renderDatePage("1931-11-15", { revealed: "1" });
 
     expect(html).not.toContain(SAVED_TEXT);
     expectOnlyTheMessage(html);
@@ -216,7 +216,7 @@ describe("the date page when the Wikipedia lookup fails (R5)", () => {
     wikipediaAnswers(null);
     const fake = useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
-    const html = await renderDatePage("2031-12-16");
+    const html = await renderDatePage("1931-12-16");
 
     expect(readingSection(html)).toContain(LEAD_FAILED);
     expect(readingSection(html)).toContain(NEXT_R5);

@@ -1,11 +1,16 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { pickTagline } from "@/lib/banner/taglines";
 import { composeChart } from "@/lib/chart/model";
 import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import { loadDatePage } from "@/lib/date-page/load";
-import { loadDateNavigation } from "@/lib/date-page/navigation";
-import { parseDatePageParam } from "@/lib/date-page/params";
+import { dayNavigation, loadRandomReadingDate } from "@/lib/date-page/navigation";
+import {
+  datePagePath,
+  isAfterToday,
+  parseDatePageParam,
+  utcToday,
+} from "@/lib/date-page/params";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import { horoscopeParagraphs } from "@/app/reading/[id]/display";
@@ -28,8 +33,8 @@ import styles from "./date.module.css";
  * /reading/[id] (R1, through the shared ReadingView), addressed by date.
  *
  * Rendering writes nothing (R3): loadDatePage's only database call is the
- * read-only get_reading_by_date lookup, loadDateNavigation's (Sprint 29)
- * is the read-only adjacent-dates lookup, and the horoscope is written
+ * read-only get_reading_by_date lookup, loadRandomReadingDate's (Sprint 47)
+ * is the read-only recent-dates lookup, and the horoscope is written
  * only by the castHoroscope action, on a form submission.
  *
  * Dynamic per request (R2's risk, applied here too): `connection()` opts
@@ -57,14 +62,22 @@ export default async function DatePage({
   const isoDate = parseDatePageParam(date);
   if (!isoDate) notFound();
 
-  // Sprint 29, R4: the navigation is loaded alongside the page, not inside
-  // loadDatePage, so its failure can only ever remove Previous/Next --
-  // the chart, events, Sprint 28's own R6 notice and (Sprint 45, R2) the
-  // notable dates don't depend on it.
+  // Sprint 47, R2: a valid date after today (UTC) goes to today's page,
+  // before anything is looked up. Reloy predicts only the past.
+  // One clock reading per request, so the redirect, the picker's max, the
+  // day links and the random pick all agree on "today" across midnight.
+  const now = new Date();
+  const today = utcToday(now);
+  if (isAfterToday(isoDate, now)) redirect(datePagePath(today));
+
+  // Sprint 47, R6: the random link's lookup runs alongside the page, not
+  // inside loadDatePage, so its failure can only ever remove that link --
+  // the chart, events, Sprint 28's R6 notice, the day links (R5, no
+  // database) and Sprint 45's notable dates don't depend on it.
   const anon = createAnonClient();
-  const [page, navigation] = await Promise.all([
+  const [page, randomDate] = await Promise.all([
     loadDatePage(anon, isoDate),
-    loadDateNavigation(anon, isoDate, "DatePage"),
+    loadRandomReadingDate(anon, isoDate, "DatePage", Math.random, now),
   ]);
   const horoscope = page.saved.kind === "found" ? page.saved.reading.horoscope : null;
   const castError = typeof error === "string" && error ? error : null;
@@ -86,8 +99,8 @@ export default async function DatePage({
       tagline={pickTagline(Math.random)}
       belowDateBand={
         <>
-          <DatePicker isoDate={isoDate} />
-          <DateNavigation navigation={navigation} isoDate={isoDate} />
+          <DatePicker isoDate={isoDate} today={today} randomDate={randomDate} />
+          <DateNavigation navigation={dayNavigation(isoDate, now)} isoDate={isoDate} />
         </>
       }
       // Sprint 45, R4: the phone copy of "Other notable dates".

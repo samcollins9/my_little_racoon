@@ -75,14 +75,14 @@ const RENDER_PATHS: [string, () => Promise<string>][] = [
     "/date: no saved horoscope (the write form)",
     async () => {
       useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
-      return renderDatePage("2032-01-15");
+      return renderDatePage("1932-01-15");
     },
   ],
   [
     "/date: saved horoscopes unavailable (paused database)",
     async () => {
       useAnon({ get_reading_by_date: PAUSED_LOOKUP, ...NAVIGATION_RPCS });
-      return renderDatePage("2032-02-16");
+      return renderDatePage("1932-02-16");
     },
   ],
   [
@@ -90,7 +90,7 @@ const RENDER_PATHS: [string, () => Promise<string>][] = [
     async () => {
       vi.stubEnv("HOROSCOPE_ENABLED", "false");
       useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
-      return renderDatePage("2032-03-17");
+      return renderDatePage("1932-03-17");
     },
   ],
   [
@@ -149,7 +149,7 @@ describe("the tagline is picked on the server, per request (Sprint 43, R8)", () 
   it("each page's pick comes from Math.random on the server: 0 gives the first, just under 1 the last", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
     vi.spyOn(Math, "random").mockReturnValue(0);
-    expect(taglineOf(await renderDatePage("2032-04-18"))).toBe(TAGLINES[0]);
+    expect(taglineOf(await renderDatePage("1932-04-18"))).toBe(TAGLINES[0]);
 
     vi.spyOn(Math, "random").mockReturnValue(1 - Number.EPSILON);
     useAnon({ get_reading_by_id: ok([storedRow("1969-07-20", matched("1969-07-20"), null)]) });
@@ -159,8 +159,8 @@ describe("the tagline is picked on the server, per request (Sprint 43, R8)", () 
   it("two requests can show different taglines", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
     vi.spyOn(Math, "random").mockReturnValueOnce(0.1).mockReturnValue(0.9);
-    const first = taglineOf(await renderDatePage("2032-05-19"));
-    const second = taglineOf(await renderDatePage("2032-05-19"));
+    const first = taglineOf(await renderDatePage("1932-05-19"));
+    const second = taglineOf(await renderDatePage("1932-05-19"));
 
     expect(first).toBe(TAGLINES[1]);
     expect(second).toBe(TAGLINES[17]);

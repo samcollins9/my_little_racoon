@@ -21,8 +21,9 @@ import ReadingPage from "./page";
 
 export const ok = (data: unknown): FakeResult => ({ data, error: null, status: 200 });
 
+/** The date page's one lookup besides get_reading_by_date: Sprint 47's random link. */
 export const NAVIGATION_RPCS = {
-  get_adjacent_reading_dates: ok([{ previous_date: null, next_date: null }]),
+  get_recent_reading_dates: ok([]),
 };
 
 export function useAnon(rpc: Record<string, FakeResult>) {

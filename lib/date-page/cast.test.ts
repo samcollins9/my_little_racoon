@@ -8,6 +8,7 @@ import {
   CAST_UNAVAILABLE_MESSAGE,
   castHoroscopeForDate,
 } from "./cast";
+import { FUTURE_DATE_MESSAGE, addDays, utcToday } from "./params";
 import { EMPTY_LOOKUP, PAUSED_LOOKUP, fakeSupabase, type FakeResult } from "./test-support";
 
 const DATE = "2012-11-11";
@@ -203,5 +204,37 @@ describe("castHoroscopeForDate refuses without exact-year events (Sprint 39, R8)
     expect(await castHoroscopeForDate(c.pair, DATE, d)).toEqual({ ok: false, message: UNMATCHED_EVENTS_REASON });
     expect(c.writer.from).not.toHaveBeenCalled();
     expect(d.generate).not.toHaveBeenCalled();
+  });
+});
+
+describe("castHoroscopeForDate refuses future dates (Sprint 47, R4)", () => {
+  it.each([
+    ["tomorrow (UTC)", addDays(utcToday(), 1)],
+    ["the engine's last supported date", "2100-12-31"],
+  ])("%s: refuses before the lookup, the insert, the events fetch or generation", async (_, date) => {
+    vi.stubEnv("HOROSCOPE_ENABLED", "true");
+    const c = clients();
+    const d = deps();
+
+    const result = await castHoroscopeForDate(c.pair, date, d);
+
+    expect(result).toEqual({ ok: false, message: FUTURE_DATE_MESSAGE });
+    expect(c.reader.rpc).not.toHaveBeenCalled();
+    expect(c.writer.from).not.toHaveBeenCalled();
+    expect(c.writer.insert).not.toHaveBeenCalled();
+    expect(d.fetchEvents).not.toHaveBeenCalled();
+    expect(d.generate).not.toHaveBeenCalled();
+  });
+
+  it("today itself is still written", async () => {
+    vi.stubEnv("HOROSCOPE_ENABLED", "true");
+    const today = utcToday();
+    const c = clients();
+    const d = deps({ ok: true }, { ...EVENTS, requestedDate: today, events: [{ year: Number(today.slice(0, 4)), text: "x" }] });
+
+    const result = await castHoroscopeForDate(c.pair, today, d);
+
+    expect(result).toEqual({ ok: true });
+    expect(d.generate).toHaveBeenCalledTimes(1);
   });
 });

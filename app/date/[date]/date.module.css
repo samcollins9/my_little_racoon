@@ -66,6 +66,21 @@
   color: var(--om-verdigris-light);
 }
 
+/* Sprint 47, R6: "Discover random reading" is an <a> wearing .pickerButton.
+   Only what a link needs on top of the button's rules is here. */
+.pickerLink {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.pickerOr {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--om-grey-dim);
+}
+
 .unavailableText {
   margin: 0;
   padding: 10px 0 4px;
@@ -84,8 +99,9 @@
 
 /*
  * Sprint 29, R2/R6: navigation directly under the picker in the same
- * strip -- Previous/Next reading, and (Sprint 45, desktop) "Other notable
- * dates". Everything wraps; nothing has a fixed width.
+ * strip -- Previous/Next day (Sprint 47; Sprint 29's links between written
+ * readings before),
+ * and (Sprint 45, desktop) "Other notable dates". Everything wraps; nothing has a fixed width.
  *
  * No `display` on .dateNav, .notableStrip or .notableSection on purpose:
  * each can share its element with reading.module.css's
@@ -132,6 +148,22 @@
 
 .adjacentDate {
   font-size: 15px;
+}
+
+/* Sprint 47, R5: "Next day" on today's page. Greyed, with the message
+   where the date would be, so it reads as deliberate rather than broken. */
+.adjacentDisabled {
+  cursor: default;
+}
+
+.adjacentDisabled .adjacentLabel {
+  color: var(--om-rule-strong);
+}
+
+.adjacentNote {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--om-grey);
 }
 
 .adjacentLink:hover .adjacentDate,

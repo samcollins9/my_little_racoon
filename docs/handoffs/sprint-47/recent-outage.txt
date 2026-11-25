@@ -1,0 +1,10 @@
+Stand-in with RECENT=down (get_recent_reading_dates answers 500), GET /date/1969-07-20 -> 200
+  grep -F 'Discover random reading' exit=1
+  grep -F '>or</span>' exit=1
+  grep -F 'href="/date/1969-07-19"' exit=0
+  grep -F 'href="/date/1969-07-21"' exit=0
+  grep -F '>Go</button>' exit=0
+  grep -F 'Other notable dates' exit=0
+RPC get_recent_reading_dates {} -> 500
+  server log: DatePage (recent dates): database unavailable {
+  server log:   status: 500,

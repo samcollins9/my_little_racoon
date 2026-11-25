@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { loadDateNavigation, shapeDateNavigation } from "./navigation";
+import { dayNavigation, loadRandomReadingDate, pickRandomReadingDate } from "./navigation";
 import { PAUSED_LOOKUP, fakeSupabase, type FakeResult } from "./test-support";
 
-const DATE = "2012-11-11";
+const NOW = new Date("2026-11-25T14:00:00.000Z");
+const TODAY = "2026-11-25";
 
 const ok = (data: unknown): FakeResult => ({ data, error: null, status: 200 });
-const NEIGHBOURS = ok([{ previous_date: "2012-10-01", next_date: "2013-01-05" }]);
+const rows = (...dates: string[]) => dates.map((event_date) => ({ event_date }));
 
 let errorSpy: ReturnType<typeof vi.spyOn>;
 
@@ -15,81 +16,101 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks());
 
-describe("shapeDateNavigation (R2)", () => {
-  it("carries both neighbours", () => {
-    expect(shapeDateNavigation([{ previous_date: "2012-10-01", next_date: "2013-01-05" }])).toEqual({
-      kind: "available",
-      previous: "2012-10-01",
-      next: "2013-01-05",
+describe("dayNavigation (Sprint 47, R5)", () => {
+  it("an ordinary date: the day before and the day after, both links", () => {
+    expect(dayNavigation("1969-07-20", NOW)).toEqual({
+      previous: "1969-07-19",
+      next: { kind: "link", date: "1969-07-21" },
     });
   });
 
-  it("no previous and no next: both sides are null", () => {
-    const nav = shapeDateNavigation([{ previous_date: null, next_date: null }]);
-    expect(nav).toMatchObject({ kind: "available", previous: null, next: null });
+  it("crosses month ends, year ends and 29 February", () => {
+    expect(dayNavigation("2000-02-28", NOW).next).toEqual({ kind: "link", date: "2000-02-29" });
+    expect(dayNavigation("2001-02-28", NOW).next).toEqual({ kind: "link", date: "2001-03-01" });
+    expect(dayNavigation("1999-12-31", NOW).next).toEqual({ kind: "link", date: "2000-01-01" });
+    expect(dayNavigation("2000-03-01", NOW).previous).toBe("2000-02-29");
   });
 
-  it("only one side present leaves the other null", () => {
-    expect(shapeDateNavigation([{ previous_date: "2012-10-01", next_date: null }])).toMatchObject({
-      previous: "2012-10-01",
-      next: null,
-    });
-    expect(shapeDateNavigation([{ previous_date: null, next_date: "2013-01-05" }])).toMatchObject({
+  it("on the first supported date, 1700-01-01, there's no previous day", () => {
+    expect(dayNavigation("1700-01-01", NOW)).toEqual({
       previous: null,
-      next: "2013-01-05",
+      next: { kind: "link", date: "1700-01-02" },
     });
   });
 
-  it("null or empty results are 'no neighbours', not an outage", () => {
-    expect(shapeDateNavigation(null)).toEqual({ kind: "available", previous: null, next: null });
-    expect(shapeDateNavigation([])).toMatchObject({ previous: null, next: null });
+  it("on today's page, the next day is the future: disabled, never a link", () => {
+    expect(dayNavigation(TODAY, NOW)).toEqual({ previous: "2026-11-24", next: { kind: "future" } });
+  });
+
+  it("yesterday's page still links to today", () => {
+    expect(dayNavigation("2026-11-24", NOW).next).toEqual({ kind: "link", date: TODAY });
+  });
+
+  it("'today' is the UTC date: just before midnight UTC, tomorrow is still the future", () => {
+    expect(dayNavigation(TODAY, new Date("2026-11-25T23:59:59.999Z")).next).toEqual({ kind: "future" });
+    expect(dayNavigation(TODAY, new Date("2026-11-26T00:00:00.000Z")).next).toEqual({
+      kind: "link",
+      date: "2026-11-26",
+    });
   });
 });
 
-describe("loadDateNavigation (R1/R4/R5)", () => {
-  it("calls only the adjacent RPC, with the date as an explicit argument, and never touches the table", async () => {
-    const fake = fakeSupabase({ rpc: { get_adjacent_reading_dates: NEIGHBOURS } });
-    await loadDateNavigation(fake.client, DATE, "test");
-    expect(fake.rpc).toHaveBeenCalledWith("get_adjacent_reading_dates", { reading_date: DATE });
-    // Sprint 45, R8: the recent-dates lookup is retired.
+describe("pickRandomReadingDate (Sprint 47, R6)", () => {
+  const POOL = rows("2026-11-20", "1969-07-20", "1912-04-15", "2001-09-11");
+
+  it("picks by the injected random source", () => {
+    expect(pickRandomReadingDate(POOL, "2012-11-11", () => 0, NOW)).toBe("2026-11-20");
+    expect(pickRandomReadingDate(POOL, "2012-11-11", () => 0.5, NOW)).toBe("1912-04-15");
+    expect(pickRandomReadingDate(POOL, "2012-11-11", () => 0.999, NOW)).toBe("2001-09-11");
+  });
+
+  it("never picks the page's own date", () => {
+    for (const value of [0, 0.25, 0.5, 0.75, 0.999]) {
+      expect(pickRandomReadingDate(POOL, "1969-07-20", () => value, NOW)).not.toBe("1969-07-20");
+    }
+    expect(pickRandomReadingDate(POOL, "1969-07-20", () => 0.4, NOW)).toBe("1912-04-15");
+  });
+
+  it("never picks a date after today, even if one is saved", () => {
+    const withFuture = rows("2031-11-15", TODAY, "2026-11-26");
+    for (const value of [0, 0.34, 0.67, 0.999]) {
+      expect(pickRandomReadingDate(withFuture, "1969-07-20", () => value, NOW)).toBe(TODAY);
+    }
+  });
+
+  it("nothing left after filtering, or no rows at all, gives null", () => {
+    expect(pickRandomReadingDate(rows("1969-07-20"), "1969-07-20", () => 0, NOW)).toBeNull();
+    expect(pickRandomReadingDate(rows("2031-11-15"), "1969-07-20", () => 0, NOW)).toBeNull();
+    expect(pickRandomReadingDate([], "1969-07-20", () => 0, NOW)).toBeNull();
+    expect(pickRandomReadingDate(null, "1969-07-20", () => 0, NOW)).toBeNull();
+  });
+
+  it("an out-of-range random value still picks from the pool", () => {
+    expect(pickRandomReadingDate(POOL, "2012-11-11", () => 1, NOW)).toBe("2001-09-11");
+    expect(pickRandomReadingDate(POOL, "2012-11-11", () => Number.NaN, NOW)).toBe("2026-11-20");
+  });
+});
+
+describe("loadRandomReadingDate (Sprint 47, R6)", () => {
+  it("calls only get_recent_reading_dates, and never touches the table", async () => {
+    const fake = fakeSupabase({ rpc: { get_recent_reading_dates: ok(rows("1969-07-20")) } });
+    expect(await loadRandomReadingDate(fake.client, "2012-11-11", "test", () => 0)).toBe("1969-07-20");
+    expect(fake.rpc).toHaveBeenCalledWith("get_recent_reading_dates");
     expect(fake.rpc).toHaveBeenCalledTimes(1);
     expect(fake.from).not.toHaveBeenCalled();
     expect(fake.insert).not.toHaveBeenCalled();
   });
 
-  it("shapes successful results", async () => {
-    const fake = fakeSupabase({ rpc: { get_adjacent_reading_dates: NEIGHBOURS } });
-    expect(await loadDateNavigation(fake.client, DATE, "test")).toEqual({
-      kind: "available",
-      previous: "2012-10-01",
-      next: "2013-01-05",
-    });
+  it("a failed lookup gives null and is logged in full", async () => {
+    const fake = fakeSupabase({ rpc: { get_recent_reading_dates: PAUSED_LOOKUP } });
+    expect(await loadRandomReadingDate(fake.client, "2012-11-11", "test", () => 0)).toBeNull();
+    expect(errorSpy).toHaveBeenCalled();
+    expect(String(errorSpy.mock.calls[0][0])).toContain("test (recent dates)");
+  });
+
+  it("an empty result gives null without logging an outage", async () => {
+    const fake = fakeSupabase({ rpc: { get_recent_reading_dates: ok([]) } });
+    expect(await loadRandomReadingDate(fake.client, "2012-11-11", "test", () => 0)).toBeNull();
     expect(errorSpy).not.toHaveBeenCalled();
-  });
-
-  it("the adjacent lookup unavailable: the navigation is unavailable, logged in full", async () => {
-    const fake = fakeSupabase({ rpc: { get_adjacent_reading_dates: PAUSED_LOOKUP } });
-    expect(await loadDateNavigation(fake.client, DATE, "DatePage")).toEqual({ kind: "unavailable" });
-    expect(errorSpy).toHaveBeenCalledTimes(1);
-    expect(errorSpy).toHaveBeenCalledWith("DatePage (adjacent dates): database unavailable", {
-      status: 0,
-      code: "",
-      message: "TypeError: fetch failed",
-      details: "",
-      hint: "",
-    });
-  });
-
-  it("any error code counts as unavailable, even a data-exception one (the date is pre-validated)", async () => {
-    const fake = fakeSupabase({
-      rpc: {
-        get_adjacent_reading_dates: {
-          data: null,
-          error: { code: "22P02", message: "invalid input syntax", details: "", hint: "" },
-          status: 400,
-        },
-      },
-    });
-    expect(await loadDateNavigation(fake.client, DATE, "test")).toEqual({ kind: "unavailable" });
   });
 });

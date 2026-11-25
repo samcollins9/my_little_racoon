@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { calculationInstantForDate, computePositions } from "../ephemeris/adapter";
-import { datePagePath, parseDatePageParam, utcToday } from "./params";
+import {
+  FUTURE_DATE_MESSAGE,
+  addDays,
+  datePagePath,
+  isAfterToday,
+  parseDatePageParam,
+  utcToday,
+} from "./params";
 
 describe("utcToday (decision d: the UTC date)", () => {
   it("is still the previous UTC day one millisecond before midnight UTC", () => {
@@ -70,5 +77,52 @@ describe("parseDatePageParam (R1/R7 validation)", () => {
 describe("datePagePath", () => {
   it("builds /date/YYYY-MM-DD", () => {
     expect(datePagePath("2012-11-11")).toBe("/date/2012-11-11");
+  });
+});
+
+describe("isAfterToday (Sprint 47, R1: the one future-date rule)", () => {
+  const NOW = new Date("2026-11-25T14:00:00.000Z");
+
+  it("allows today and refuses tomorrow", () => {
+    expect(isAfterToday("2026-11-25", NOW)).toBe(false);
+    expect(isAfterToday("2026-11-26", NOW)).toBe(true);
+  });
+
+  it("allows the past, across month and year boundaries", () => {
+    expect(isAfterToday("2026-11-24", NOW)).toBe(false);
+    expect(isAfterToday("1969-07-20", NOW)).toBe(false);
+    expect(isAfterToday("2027-01-01", NOW)).toBe(true);
+  });
+
+  it("is decided on the UTC date, so the boundary is 00:00 UTC", () => {
+    expect(isAfterToday("2026-11-26", new Date("2026-11-25T23:59:59.999Z"))).toBe(true);
+    expect(isAfterToday("2026-11-26", new Date("2026-11-26T00:00:00.000Z"))).toBe(false);
+    // 22:00 in New York on the 25th is already the 26th in UTC.
+    expect(isAfterToday("2026-11-26", new Date("2026-11-25T22:00:00-05:00"))).toBe(false);
+  });
+
+  it("reads the real clock when no instant is given", () => {
+    expect(isAfterToday(utcToday())).toBe(false);
+    expect(isAfterToday(addDays(utcToday(), 1))).toBe(true);
+  });
+
+  it("carries the user's exact wording for the refusal", () => {
+    expect(FUTURE_DATE_MESSAGE).toBe("Reloy predicts only the past.");
+  });
+});
+
+describe("addDays (Sprint 47, R5: UTC calendar arithmetic)", () => {
+  it.each([
+    ["1969-07-20", -1, "1969-07-19"],
+    ["1969-07-20", 1, "1969-07-21"],
+    ["2000-02-28", 1, "2000-02-29"],
+    ["2001-02-28", 1, "2001-03-01"],
+    ["1999-12-31", 1, "2000-01-01"],
+    ["2000-03-01", -1, "2000-02-29"],
+    ["1900-02-28", 1, "1900-03-01"],
+    ["2000-01-01", -1, "1999-12-31"],
+    ["1700-01-01", -1, "1699-12-31"],
+  ])("%s %+d day is %s", (from, days, expected) => {
+    expect(addDays(from, days)).toBe(expected);
   });
 });

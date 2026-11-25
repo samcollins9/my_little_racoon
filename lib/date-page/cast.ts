@@ -6,6 +6,7 @@ import { generateAndPersistHoroscope, isHoroscopeEnabled } from "../llm/generate
 import { insertReading } from "../readings/insert";
 import { isDatabaseUnavailable, logDatabaseUnavailable } from "../supabase/availability";
 import { lookupSavedHoroscope } from "./load";
+import { FUTURE_DATE_MESSAGE, isAfterToday } from "./params";
 
 export const CAST_DISABLED_MESSAGE = "Horoscope generation is currently disabled.";
 export const CAST_UNAVAILABLE_MESSAGE =
@@ -37,6 +38,9 @@ type CastDeps = {
  *
  * Order matters:
  *   1. Generation disabled -> refuse before anything is written.
+ *   1b. Sprint 47, R4: a date after today (UTC) -> refuse, before the
+ *      lookup, the insert or any OpenAI call. The page already redirects
+ *      future dates, so only a stale tab or a hand-built POST gets here.
  *   2. A horoscope is already saved for the date -> nothing to do. Replacing
  *      one is out of scope; a stale tab or a hand-built POST mustn't do it.
  *      (Two casts racing each other can still both write; R4 shows the
@@ -63,6 +67,8 @@ export async function castHoroscopeForDate(
   if (!isHoroscopeEnabled()) {
     return { ok: false, message: CAST_DISABLED_MESSAGE };
   }
+
+  if (isAfterToday(isoDate)) return { ok: false, message: FUTURE_DATE_MESSAGE };
 
   const existing = await lookupSavedHoroscope(reader, isoDate, "castHoroscopeForDate (lookup)");
   if (existing.kind === "unavailable") return { ok: false, message: CAST_UNAVAILABLE_MESSAGE };

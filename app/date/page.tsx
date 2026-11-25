@@ -1,13 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
-import { datePagePath, parseDatePageParam, utcToday } from "@/lib/date-page/params";
+import { datePagePath, isAfterToday, parseDatePageParam, utcToday } from "@/lib/date-page/params";
 
 /**
  * Sprint 28, R7: where the date picker's plain GET form lands
  * (/date?date=YYYY-MM-DD). Validates with the same parseDatePageParam the
  * date page uses and redirects (307) to /date/YYYY-MM-DD; an invalid or
  * out-of-range value gets the same 404 as /date/<bad>, never a 500. With no
- * value at all it goes to today (UTC), like `/`.
+ * value at all it goes to today (UTC), like `/`. Sprint 47, R2: a valid
+ * date after today goes to today too, never to the future date's page.
  */
 export default async function DatePickerTarget({
   searchParams,
@@ -21,6 +22,7 @@ export default async function DatePickerTarget({
 
   const isoDate = parseDatePageParam(date);
   if (!isoDate) notFound();
+  if (isAfterToday(isoDate)) redirect(datePagePath(utcToday()));
 
   redirect(datePagePath(isoDate));
 }

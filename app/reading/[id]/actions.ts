@@ -8,6 +8,7 @@ import {
   isDatabaseUnavailable,
   logDatabaseUnavailable,
 } from "@/lib/supabase/availability";
+import { FUTURE_DATE_MESSAGE, isAfterToday } from "@/lib/date-page/params";
 import { generateAndPersistHoroscope, type StoredReadingForGeneration } from "@/lib/llm/generate";
 import { withRevealed } from "./reveal";
 
@@ -57,6 +58,15 @@ export async function generateReadingHoroscope(formData: FormData) {
   // id -- positions and events come from the stored row, and since R12 every
   // stored row was itself written server-side.
   const reading = data[0] as StoredReadingForGeneration;
+
+  // Sprint 47, R4: a reading saved for a date after today (UTC) gets no
+  // horoscope -- refused before the admin client or any OpenAI call.
+  // Readings like that are left as they are (out of scope); only new
+  // writes stop.
+  if (isAfterToday(reading.event_date)) {
+    redirect(`/reading/${readingId}?error=${encodeURIComponent(FUTURE_DATE_MESSAGE)}`);
+  }
+
   const result = await generateAndPersistHoroscope(createAdminClient(), readingId, reading);
 
   if (!result.ok) {

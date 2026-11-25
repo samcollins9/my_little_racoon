@@ -1,56 +1,85 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isDatabaseUnavailable, logDatabaseUnavailable } from "../supabase/availability";
+import { addDays, isAfterToday, parseDatePageParam } from "./params";
 
 /**
- * Sprint 29, R2: the date page's Previous/Next reading links, as dates.
- * "unavailable" (R4) means the lookup failed; the page then omits
- * Previous/Next and adds no notice of its own, so a visitor sees Sprint
- * 28's R6 notice at most once.
+ * Sprint 47, R5: the date page's Previous day / Next day, one calendar day
+ * either side. Pure date arithmetic, so it never needs the database and
+ * always renders. It replaced Sprint 29's links between written readings,
+ * which needed a database lookup per page; that SQL function stays in the
+ * database, unused (Sprint 47, R7).
  *
- * Sprint 45: the recent-readings list that used to travel with these is
- * gone; its replacement (notable-dates.ts) is static and needs no lookup.
+ * - `previous` is null when the day before is outside the engine's range
+ *   (on 1700-01-01, the first supported date).
+ * - `next` is "future" when the day after is after today (on today's
+ *   page): shown disabled, never linked (R1's rule). It's null only past
+ *   the engine's last supported date, which today never reaches.
  */
-export type DateNavigation =
-  | { kind: "available"; previous: string | null; next: string | null }
-  | { kind: "unavailable" };
+export type DayNavigation = {
+  previous: string | null;
+  next: { kind: "link"; date: string } | { kind: "future" } | null;
+};
 
-type AdjacentRow = { previous_date: string | null; next_date: string | null };
-
-/**
- * The pure half of R2, unit tested on its own: the row
- * get_adjacent_reading_dates returns, shaped for the page. The function
- * always returns one row; an empty result is treated as "no neighbours"
- * rather than an error, since nothing about it means the database is down.
- */
-export function shapeDateNavigation(adjacent: AdjacentRow[] | null): DateNavigation {
-  const neighbours = adjacent?.[0];
+export function dayNavigation(isoDate: string, now: Date = new Date()): DayNavigation {
+  const dayAfter = addDays(isoDate, 1);
   return {
-    kind: "available",
-    previous: neighbours?.previous_date ?? null,
-    next: neighbours?.next_date ?? null,
+    previous: parseDatePageParam(addDays(isoDate, -1)),
+    next: isAfterToday(dayAfter, now)
+      ? { kind: "future" }
+      : parseDatePageParam(dayAfter) === null
+        ? null
+        : { kind: "link", date: dayAfter },
   };
 }
 
+type RecentRow = { event_date: string };
+
 /**
- * R1/R4: the date-only adjacent lookup, read-only, on the anon client (R5:
- * no insert, no set_reading_horoscope, no admin client).
- *
- * `isoDate` must already have passed parseDatePageParam, which is why the
- * call is classified as "dateLookup", the operation that excepts no error
- * code: nothing about a validated date can make it fail, so any error is an
- * outage. A failure is logged in full (Sprint 25, R8).
+ * Sprint 47, R6, the pure half: one date for "Discover random reading",
+ * from the recently written readings' dates, leaving out the page's own
+ * date and anything after today. null when nothing is left. `random` is
+ * injected (as pickTagline's is) so tests choose the pick.
  */
-export async function loadDateNavigation(
+export function pickRandomReadingDate(
+  rows: RecentRow[] | null,
+  isoDate: string,
+  random: () => number,
+  now: Date = new Date()
+): string | null {
+  const pool = (rows ?? [])
+    .map((row) => row.event_date)
+    .filter((date) => date !== isoDate && !isAfterToday(date, now));
+  if (pool.length === 0) return null;
+  const value = random();
+  const index = Number.isFinite(value)
+    ? Math.min(pool.length - 1, Math.max(0, Math.floor(value * pool.length)))
+    : 0;
+  return pool[index];
+}
+
+/**
+ * Sprint 47, R6: the random link's date, read-only, on the anon client.
+ * get_recent_reading_dates returns up to 20 dates with a saved, displayed
+ * horoscope (Sprint 29's SQL, kept in the database by Sprint 45).
+ *
+ * Classified as "dateLookup": the call takes no input, so nothing about a
+ * request can make it fail, and any error is an outage. A failure is
+ * logged in full (Sprint 25, R8) and gives null -- the page then leaves
+ * the link out, with no notice of its own.
+ */
+export async function loadRandomReadingDate(
   anon: SupabaseClient,
   isoDate: string,
-  where: string
-): Promise<DateNavigation> {
-  const adjacent = await anon.rpc("get_adjacent_reading_dates", { reading_date: isoDate });
+  where: string,
+  random: () => number,
+  now: Date = new Date()
+): Promise<string | null> {
+  const recent = await anon.rpc("get_recent_reading_dates");
 
-  if (isDatabaseUnavailable("dateLookup", adjacent)) {
-    logDatabaseUnavailable(`${where} (adjacent dates)`, adjacent);
-    return { kind: "unavailable" };
+  if (isDatabaseUnavailable("dateLookup", recent)) {
+    logDatabaseUnavailable(`${where} (recent dates)`, recent);
+    return null;
   }
 
-  return shapeDateNavigation(adjacent.data);
+  return pickRandomReadingDate(recent.data as RecentRow[] | null, isoDate, random, now);
 }

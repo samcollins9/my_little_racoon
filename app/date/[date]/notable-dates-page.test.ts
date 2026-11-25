@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NOTABLE_DATES } from "@/lib/date-page/notable-dates";
 import { EMPTY_LOOKUP, PAUSED_LOOKUP } from "@/lib/date-page/test-support";
-import { NAVIGATION_RPCS, ok, renderDatePage, useAnon } from "@/app/reading/[id]/page-test-support";
+import { NAVIGATION_RPCS, renderDatePage, useAnon } from "@/app/reading/[id]/page-test-support";
 
 // Sprint 45, R2/R4: "Other notable dates" through the real date page,
 // rendered on the server with no client JavaScript -- the same harness as
@@ -47,32 +47,29 @@ afterEach(() => {
 });
 
 describe("the date page's notable dates (Sprint 45)", () => {
-  it("R2: with the navigation lookup unavailable, both copies keep all 20 links; only Previous/Next go", async () => {
-    const fake = useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_adjacent_reading_dates: PAUSED_LOOKUP });
+  it("R2: with the random link's lookup unavailable, both copies keep all 20 links", async () => {
+    // Sprint 47: the strip's only lookup is now the random link's; the day
+    // links and the notable dates need none.
+    const fake = useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: PAUSED_LOOKUP });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
 
     expect(dateLinks(copy(html, "notable-dates-strip-heading"))).toEqual(ALL_DATES);
     expect(dateLinks(copy(html, "notable-dates-section-heading"))).toEqual(ALL_DATES);
-    expect(html).not.toContain("Previous reading");
-    expect(html).not.toContain("Next reading");
-    // R8: a render calls only these two RPCs; any other (the retired
-    // recent-dates lookup included) fails here.
+    // A render calls only these two RPCs; any other (Sprint 45's retired
+    // lookups included) fails here.
     const called = new Set(fake.rpc.mock.calls.map(([name]) => name));
-    expect(called).toEqual(new Set(["get_reading_by_date", "get_adjacent_reading_dates"]));
+    expect(called).toEqual(new Set(["get_reading_by_date", "get_recent_reading_dates"]));
   });
 
-  it("R2/R7: with the lookup available, Previous/Next are in the strip beside the desktop list", async () => {
-    useAnon({
-      get_reading_by_date: EMPTY_LOOKUP,
-      get_adjacent_reading_dates: ok([{ previous_date: "2012-10-01", next_date: "2013-01-05" }]),
-    });
+  it("R2/R7: the day links are in the strip beside the desktop list", async () => {
+    useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));
     const strip = html.match(/<div class="flowSlot">[\s\S]*?<\/div><\/div>/)?.[0] ?? "";
 
-    expect(strip).toContain("Previous reading");
-    expect(strip).toContain("Next reading");
+    expect(strip).toContain("Previous day");
+    expect(strip).toContain("Next day");
     expect(strip).toContain('aria-labelledby="notable-dates-strip-heading"');
     expect(strip).not.toContain("notable-dates-section-heading");
   });
