@@ -1,7 +1,7 @@
 {
   "id": 47,
   "title": "Day-by-day navigation, a random reading link, and no future dates",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a00ce2dfbc5f52446548cec26ad1fdaefc028ac0d67340dbf31778a4b007422c",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -32,11 +32,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS, gate 1 round 2, audit of 7b65d17. All three required fixes from round 1 are made.\n\nSprint file: re-read fresh. Unchanged since the R6 amendment (git diff 9dc8580 7b65d17 on the sprint file is empty).\n\nHandoff: read at the audited commit. A Round 2 section was added; Round 1 is untouched (no deleted lines in the handoff diff). It quotes VERIFY PASS (lint, typecheck, test, build) exit=0, with 563 tests. It names the cause plainly: no re-read of the sprint file before handing off.\n\nMy own check: npm run verify at 7b65d17, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 48 test files and 563 tests passed.\n\nFix 1, the R6 phone amendment: Met.\n- RandomReading.tsx holds one link component, RandomReadingLink: Go's pickerButton class plus pickerLink, so the styles are reused, not copied.\n- DatePicker wraps the \"or\" and the link in a span with the desktopOnly class. At 900px and below, desktopOnly is display none (reading.module.css, around line 568). So at phone widths the picker row is just the date input and Go.\n- page.tsx passes afterBody as RandomReadingSection (mobileOnly) followed by NotableDatesSection. afterBody renders after the body div, outside the reading section and its sticky reveal.\n- randomDate is computed once and passed to both copies. There is no second pick and no second lookup.\n- No display is set on the new classes, so desktopOnly and mobileOnly own it, matching the existing dateNav convention.\n\nFix 2, tests: Met.\n- The page test renders the real DatePage with Math.random fixed. It asserts exactly two link copies with an identical href, that the picker-row copy sits in pickerRandom desktopOnly together with its \"or\", and that the markup order is: section close, column close, body close, randomSection mobileOnly, notableSection.\n- A no-date test asserts that neither copy renders.\n\nFix 3, R10 screenshots: Met. I opened all four round2 PNGs.\n- Phone top: the picker row is ANOTHER DATE, the date and GO, with no \"or\" and no link. Previous day / Next day follow, then the chart tabs.\n- Phone bottom: the folded reading section (\"Reveal the horoscope\"), then DISCOVER RANDOM READING, ruled off, then Other notable dates.\n- Desktop 1280: GO, then OR, then DISCOVER RANDOM READING on the picker row, with day links for 19 and 21 July 1969.\n- Desktop today: Next day is greyed, with \"Reloy predicts only the past.\" visible in the date's place.\nThe sticky-bar check in round2-report.json shows 0px overlap and the link hit by elementFromPoint at five scroll offsets.\n\nR9: the README paragraph is updated for the phone placement and the shared pick, and is accurate to the code.\n\nUnchanged and still Met from round 1: R1 to R5, R7 (grep exit 1, migrations unchanged) and R8, plus my rulings on Dev Team's two round 1 questions.\n\nStill UNOWNED, routed to Master Controller in round 1: lint's 3 no-unused-expressions warnings, in probe scripts from closed sprints 45 and 46. No decision is on record yet. Not this sprint's code, and lint exits 0.\n\nFor LiveQA: the disabled \"Next day\" label is deliberately faint; the visible message carries the meaning. Judge its contrast on the real device."
+    },
+    {
+      "ts": "2026-11-25T14:50:22+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T14:50:06+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T14:50:22+00:00"
   }
 }
