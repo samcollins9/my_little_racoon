@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { pickTagline } from "@/lib/banner/taglines";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/date-page/params";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
+import { datedTitle } from "@/lib/site-title";
 import { horoscopeParagraphs } from "@/app/reading/[id]/display";
 import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
 import {
@@ -28,6 +30,23 @@ import { DatePicker } from "./DatePicker";
 import { NotableDatesSection } from "./NotableDates";
 import { RandomReadingSection } from "./RandomReading";
 import styles from "./date.module.css";
+
+/**
+ * Sprint 49, R2: "Retroactive Horoscope YYYY-MM-DD", from the URL's date
+ * alone -- parseDatePageParam and isAfterToday, nothing from the database
+ * or Wikipedia. A date the page 404s or redirects (malformed, out of range,
+ * in the future) sets nothing, so the root layout's plain title stands
+ * (R4).
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ date: string }>;
+}): Promise<Metadata> {
+  const isoDate = parseDatePageParam((await params).date);
+  if (!isoDate || isAfterToday(isoDate)) return {};
+  return { title: datedTitle(isoDate) };
+}
 
 /**
  * Sprint 28: the date page, /date/YYYY-MM-DD. The same layout as

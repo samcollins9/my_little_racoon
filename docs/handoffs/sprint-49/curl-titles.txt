@@ -1,0 +1,24 @@
+Checked at 2026-11-25T15:59:51Z, next start on a local production build with app/not-found.tsx, curl's own user agent. First <title> in <head>; HTTP status; robots meta:
+  /date/1969-07-20 -> HTTP 200; head title: <title>Retroactive Horoscope 1969-07-20</title> (1 in head); no robots meta
+  /date/2026-11-25 -> HTTP 200; head title: <title>Retroactive Horoscope 2026-11-25</title> (1 in head); no robots meta
+  /reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b -> HTTP 200; head title: <title>Retroactive Horoscope 1969-07-20</title> (1 in head); no robots meta
+  /date/2024-02-30 -> HTTP 404; head title: <title>Retroactive Horoscope</title> (1 in head); <meta name="robots" content="noindex"/>
+  /date/1969-7-20 -> HTTP 404; head title: <title>Retroactive Horoscope</title> (1 in head); <meta name="robots" content="noindex"/>
+  /reading/00000000-0000-4000-8000-000000000000 -> HTTP 404; head title: <title>Retroactive Horoscope</title> (1 in head); <meta name="robots" content="noindex"/>
+  /reading/not-a-uuid -> HTTP 404; head title: <title>Retroactive Horoscope</title> (1 in head); <meta name="robots" content="noindex"/>
+  /no-such-page -> HTTP 404; head title: <title>Retroactive Horoscope</title> (1 in head); <meta name="robots" content="noindex"/>
+  / -> 307 http://127.0.0.1:3149/date/2026-11-25
+  /date?date=1969-07-21 -> 307 http://127.0.0.1:3149/date/1969-07-21
+  /chart -> 307 http://localhost:3149/
+get_reading_by_id calls per request, counted from the stand-in's RPC log (lines added during each single request):
+  /reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b: 1
+  /reading/00000000-0000-4000-8000-000000000000: 1
+  /reading/not-a-uuid: 1
+  /date/1969-07-20: 0
+Note: the other <title> elements in a date or reading page's body are the chart's SVG labels (unchanged), not page titles.
+Rendered 404 message as an element (">This page could not be found.</h2>"), not the copy every page carries in its flight data:
+  /date/1969-07-20: grep exit=1
+  /reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b: grep exit=1
+  /date/2024-02-30: grep exit=1
+  /reading/00000000-0000-4000-8000-000000000000: grep exit=1
+  /no-such-page: grep exit=0

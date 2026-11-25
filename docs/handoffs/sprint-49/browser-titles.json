@@ -1,0 +1,454 @@
+{
+  "origin": "http://127.0.0.1:3149",
+  "browser": "Chrome/156.0.8078.4",
+  "pages": [
+    {
+      "requested": "/date/1969-07-20",
+      "path": "/date/1969-07-20",
+      "documentTitle": "Retroactive Horoscope 1969-07-20",
+      "visible404": false,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope 1969-07-20",
+          "in": "head"
+        },
+        {
+          "text": "Aries: Fire, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Taurus: Earth, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Gemini: Air, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Cancer: Water, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Leo: Fire, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Virgo: Earth, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Libra: Air, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Scorpio: Water, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Sagittarius: Fire, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Capricorn: Earth, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Aquarius: Air, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Pisces: Water, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Sun in Cancer 27°34′",
+          "in": "body"
+        },
+        {
+          "text": "Moon in Libra 3°29′",
+          "in": "body"
+        },
+        {
+          "text": "Mercury in Cancer 25°06′",
+          "in": "body"
+        },
+        {
+          "text": "Venus in Gemini 14°39′",
+          "in": "body"
+        },
+        {
+          "text": "Mars in Sagittarius 2°43′",
+          "in": "body"
+        },
+        {
+          "text": "Jupiter in Libra 0°41′",
+          "in": "body"
+        },
+        {
+          "text": "Saturn in Taurus 8°04′",
+          "in": "body"
+        },
+        {
+          "text": "Uranus in Libra 0°40′",
+          "in": "body"
+        },
+        {
+          "text": "Neptune in Scorpio 26°01′, retrograde",
+          "in": "body"
+        },
+        {
+          "text": "Pluto in Virgo 22°59′",
+          "in": "body"
+        }
+      ],
+      "afterClientNavigation": {
+        "path": "/date/1969-07-21",
+        "documentTitle": "Retroactive Horoscope 1969-07-21",
+        "visible404": false,
+        "titleElements": [
+          {
+            "text": "Retroactive Horoscope 1969-07-21",
+            "in": "head"
+          },
+          {
+            "text": "Aries: Fire, Cardinal",
+            "in": "body"
+          },
+          {
+            "text": "Taurus: Earth, Fixed",
+            "in": "body"
+          },
+          {
+            "text": "Gemini: Air, Mutable",
+            "in": "body"
+          },
+          {
+            "text": "Cancer: Water, Cardinal",
+            "in": "body"
+          },
+          {
+            "text": "Leo: Fire, Fixed",
+            "in": "body"
+          },
+          {
+            "text": "Virgo: Earth, Mutable",
+            "in": "body"
+          },
+          {
+            "text": "Libra: Air, Cardinal",
+            "in": "body"
+          },
+          {
+            "text": "Scorpio: Water, Fixed",
+            "in": "body"
+          },
+          {
+            "text": "Sagittarius: Fire, Mutable",
+            "in": "body"
+          },
+          {
+            "text": "Capricorn: Earth, Cardinal",
+            "in": "body"
+          },
+          {
+            "text": "Aquarius: Air, Fixed",
+            "in": "body"
+          },
+          {
+            "text": "Pisces: Water, Mutable",
+            "in": "body"
+          },
+          {
+            "text": "Sun in Cancer 28°32′",
+            "in": "body"
+          },
+          {
+            "text": "Moon in Libra 16°16′",
+            "in": "body"
+          },
+          {
+            "text": "Mercury in Cancer 27°14′",
+            "in": "body"
+          },
+          {
+            "text": "Venus in Gemini 15°45′",
+            "in": "body"
+          },
+          {
+            "text": "Mars in Sagittarius 2°53′",
+            "in": "body"
+          },
+          {
+            "text": "Jupiter in Libra 0°50′",
+            "in": "body"
+          },
+          {
+            "text": "Saturn in Taurus 8°07′",
+            "in": "body"
+          },
+          {
+            "text": "Uranus in Libra 0°42′",
+            "in": "body"
+          },
+          {
+            "text": "Neptune in Scorpio 26°00′, retrograde",
+            "in": "body"
+          },
+          {
+            "text": "Pluto in Virgo 23°01′",
+            "in": "body"
+          }
+        ],
+        "sameDocument": true
+      }
+    },
+    {
+      "requested": "/reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b",
+      "path": "/reading/45450000-4d5e-4f60-8a7b-9c0d1e2f3a4b",
+      "documentTitle": "Retroactive Horoscope 1969-07-20",
+      "visible404": false,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope 1969-07-20",
+          "in": "head"
+        },
+        {
+          "text": "Aries: Fire, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Taurus: Earth, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Gemini: Air, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Cancer: Water, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Leo: Fire, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Virgo: Earth, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Libra: Air, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Scorpio: Water, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Sagittarius: Fire, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Capricorn: Earth, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Aquarius: Air, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Pisces: Water, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Sun in Cancer 27°34′",
+          "in": "body"
+        },
+        {
+          "text": "Moon in Libra 3°29′",
+          "in": "body"
+        },
+        {
+          "text": "Mercury in Cancer 25°06′",
+          "in": "body"
+        },
+        {
+          "text": "Venus in Gemini 14°39′",
+          "in": "body"
+        },
+        {
+          "text": "Mars in Sagittarius 2°43′",
+          "in": "body"
+        },
+        {
+          "text": "Jupiter in Libra 0°41′",
+          "in": "body"
+        },
+        {
+          "text": "Saturn in Taurus 8°04′",
+          "in": "body"
+        },
+        {
+          "text": "Uranus in Libra 0°40′",
+          "in": "body"
+        },
+        {
+          "text": "Neptune in Scorpio 26°01′, retrograde",
+          "in": "body"
+        },
+        {
+          "text": "Pluto in Virgo 22°59′",
+          "in": "body"
+        }
+      ]
+    },
+    {
+      "requested": "/date/2024-02-30",
+      "path": "/date/2024-02-30",
+      "documentTitle": "Retroactive Horoscope",
+      "visible404": true,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope",
+          "in": "head"
+        }
+      ]
+    },
+    {
+      "requested": "/reading/00000000-0000-4000-8000-000000000000",
+      "path": "/reading/00000000-0000-4000-8000-000000000000",
+      "documentTitle": "Retroactive Horoscope",
+      "visible404": true,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope",
+          "in": "head"
+        }
+      ]
+    },
+    {
+      "requested": "/reading/not-a-uuid",
+      "path": "/reading/not-a-uuid",
+      "documentTitle": "Retroactive Horoscope",
+      "visible404": true,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope",
+          "in": "head"
+        }
+      ]
+    },
+    {
+      "requested": "/no-such-page",
+      "path": "/no-such-page",
+      "documentTitle": "Retroactive Horoscope",
+      "visible404": true,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope",
+          "in": "head"
+        }
+      ]
+    },
+    {
+      "requested": "/",
+      "path": "/date/2026-11-25",
+      "documentTitle": "Retroactive Horoscope 2026-11-25",
+      "visible404": false,
+      "titleElements": [
+        {
+          "text": "Retroactive Horoscope 2026-11-25",
+          "in": "head"
+        },
+        {
+          "text": "Aries: Fire, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Taurus: Earth, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Gemini: Air, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Cancer: Water, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Leo: Fire, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Virgo: Earth, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Libra: Air, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Scorpio: Water, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Sagittarius: Fire, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Capricorn: Earth, Cardinal",
+          "in": "body"
+        },
+        {
+          "text": "Aquarius: Air, Fixed",
+          "in": "body"
+        },
+        {
+          "text": "Pisces: Water, Mutable",
+          "in": "body"
+        },
+        {
+          "text": "Sun in Sagittarius 3°13′",
+          "in": "body"
+        },
+        {
+          "text": "Moon in Gemini 15°36′",
+          "in": "body"
+        },
+        {
+          "text": "Mercury in Scorpio 14°26′",
+          "in": "body"
+        },
+        {
+          "text": "Venus in Libra 25°19′",
+          "in": "body"
+        },
+        {
+          "text": "Mars in Leo 29°48′",
+          "in": "body"
+        },
+        {
+          "text": "Jupiter in Leo 26°31′",
+          "in": "body"
+        },
+        {
+          "text": "Saturn in Aries 8°08′, retrograde",
+          "in": "body"
+        },
+        {
+          "text": "Uranus in Gemini 3°41′, retrograde",
+          "in": "body"
+        },
+        {
+          "text": "Neptune in Aries 1°42′, retrograde",
+          "in": "body"
+        },
+        {
+          "text": "Pluto in Aquarius 3°27′",
+          "in": "body"
+        }
+      ]
+    }
+  ]
+}

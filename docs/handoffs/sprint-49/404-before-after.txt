@@ -1,0 +1,5 @@
+404 screenshots at 1280x800 (shot404.mjs), with app/not-found.tsx (after) and without it, i.e. Next's built-in 404 (before), same build otherwise. sha256:
+  404-after-date_2024-02-30-dark.png: after f4fd43e4198b5cbb  before f4fd43e4198b5cbb  identical
+  404-after-date_2024-02-30-light.png: after 0f6d8479618fd026  before 0f6d8479618fd026  identical
+  404-after-no-such-page-dark.png: after f4fd43e4198b5cbb  before f4fd43e4198b5cbb  identical
+  404-after-no-such-page-light.png: after 0f6d8479618fd026  before 0f6d8479618fd026  identical
