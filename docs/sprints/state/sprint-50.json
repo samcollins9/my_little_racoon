@@ -1,7 +1,7 @@
 {
   "id": 50,
   "title": "Notable dates move to the page footer on desktop",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "df3d7427013645176972342735cc8ef36f4173dff9516bba9d51c33b7a644677",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 1,
   "started": "2026-11-25T16:19:38+00:00",
-  "completed": null,
+  "completed": "2026-11-25T19:50:40+00:00",
   "history": [
     {
       "ts": "2026-11-25T16:19:38+00:00",
@@ -44,11 +44,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 1). LiveQA steps 1, 2, 3 and 5 pass on production, and the R2 before/after comparison was done on local builds of the commits either side of the move. Step 4 (Firefox) not run: only Chromium is installed here. No defects.\n\nTested 2026-11-25, about 19:40 to 19:55 UTC, against https://my-little-racoon.vercel.app.\nShipped commit f8787ca. Production serves the pushed tip 3cf15e4: /api/health/db reports status ok, connected true, commit 3cf15e4, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. f8787ca is an ancestor of origin/main, and git diff f8787ca origin/main changes nothing under app/, lib/ or public/.\nTools: headless Chromium (Playwright 1.57); curl; fresh git clones in a scratch directory.\n\nBEFORE/AFTER REFERENCE (step 1's comparison, R2): I hadn't captured production before the release. Instead I built both sides locally, from fresh clones:\n- b389c5c, the app code production served just before this ship;\n- f8787ca, the shipped commit.\nEach had npm ci exit=0 and npm run build exit=0, and ran with next start and the same dummy env, ports 3950 and 3951. I compared the desktop panel on /date/1969-07-20 at 1280 with computed styles, 28 properties per element:\n- Identical before and after: the heading (H2 \"Other notable dates\"), the list, the list items, the links, the current-date marker (SPAN \"20 July 1969\"), and the closed tooltip.\n- The open tooltip on 6 June 1944 is identical: text, size, background, border, font, colour, padding, shadow and radius.\n- Row pitch is identical (19px); the list wraps to the same 3 rows. Content width is the same: before, nav 1054px wide at x 41 inside the card's date strip; after, nav 1134px with 40px side padding, so 1054px of content.\n- The only differences are the panel box's own spacing: margin-top 12px became padding-top 12px; padding-bottom 14px was added; and a 1px solid top rule was added, which R2 allows where the card's section rules put one. Class notableStrip became notablePanel.\n- Screenshots: s50-tip-3950.png (before) and s50-tip-3951.png (after) look the same, apart from position.\nServers stopped, clones deleted.\n\nSTEP 1, production 1280 on /date/1969-07-20: PASS.\n- The strip under the date band: the picker row (date, GO, OR, DISCOVER RANDOM READING at y 364), then the day nav \"\u2190 PREVIOUS DAY 19 July 1969 NEXT DAY \u2192 21 July 1969\" (y 426). No notable dates. The chart tabs follow at 475. Screenshot: s50-prod-top-1280.png.\n- \"Other notable dates\": the nav, labelled by notable-dates-panel-heading, is main's last child, at y 1245-1344, directly after the reading (which ends at 1245). The card ends at 1345.\n- 20 entries, with 20 July 1969 marked aria-current. Screenshot: s50-prod-bottom-1280.png.\n\nSTEP 2, tooltips with the page scrolled to the bottom, at 1280x900: PASS, on hover and on keyboard focus alike.\n- First row: 15 April 1912 and 24 October 1945 open below, inside the card and the viewport.\n- Middle row: 28 August 1963 opens ABOVE.\n- Last row: 11 September 2001 and 11 March 2020 open ABOVE. 11 March 2020: \"The WHO declares COVID-19 a pandemic\" at x 391-669, y 716-772, with the card's bottom at 802 and the viewport at 900.\n- Exactly 1 tooltip shown each time. scrollWidth stayed 1280 and scrollHeight 1443 while open.\n- Screenshot: s50-prod-hover-2020-03-11.png. The tooltip covers part of the row above while open, as QA1 noted.\n\nSTEP 3, scrollWidth at every width: PASS. On /date/1969-07-20, page scrolled to the bottom, I hovered every one of the 20 dates (so every row's last date) at each width. Closed scrollWidth, then max while open:\n- 901: 901, 901\n- 1000: 1000, 1000\n- 1100: 1100, 1100\n- 1200: 1200, 1200\n- 1279: 1279, 1279\n- 1280: 1280, 1280\n- 1440: 1440, 1440\nscrollHeight never grew while a tooltip was open (for example 1580 at 901, 1443 at 1280). At every width, every open tooltip was inside the card and the viewport (0 failures).\nRows' last dates: at 901 and 1000, 1944-06-06, 1961-04-12, 1990-02-11 and 2020-03-11; at 1280, 1945-10-24, 1989-11-09 and 2020-03-11.\n\nSTEP 4, Firefox: NOT RUN. Playwright has only Chromium installed here, and I did not install Firefox. Chromium supports anchor positioning, so the anchor path is what ran above. The fallback path is untested live; Sprint 45's accepted limitation applies there.\n\nSTEP 5, phone 390 on /date/1969-07-20: PASS, unchanged.\n- The desktop panel is not visible.\n- Order: picker 211, day nav 275, chart tabs 320, reading ending 1101, Discover random reading 1120, \"Other notable dates\" heading 1191. It has 20 rows, the first \"15 April 1912 / The Titanic sinks in the North Atlantic\". scrollWidth 390, with JS on and off.\n- Random link to heading is 71px, the same as Sprint 48's run (1168 to 1239). Everything is 48px higher than then because Sprint 51 shortened the matched events section.\n\n0 console or page errors."
+    },
+    {
+      "ts": "2026-11-25T19:50:40+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=/sprint-complete 50 close it now"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-25T19:49:50+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T19:50:40+00:00"
   }
 }
