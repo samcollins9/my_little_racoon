@@ -1,7 +1,7 @@
 {
   "id": 49,
   "title": "Page title shows the date",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "6f5e542b678339a37533063ba1b96f9d847c1a28e3976c5fb4d3de4ea9bf411e",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS, gate 1, audit of ace1897.\n\nSprint file: read fresh. Unchanged since start (12574c0 is the only commit touching it).\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 595 tests.\n\nMy own check: npm run verify at ace1897, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 52 test files and 595 tests passed.\n\n- R1 Met. lib/site-title.ts holds SITE_TITLE and datedTitle, joined with one ASCII space. A grep for the site name in app and lib outside tests finds only that file's constant, plus comments. The only metadata title fields in the app are the layout (SITE_TITLE) and the two generateMetadata functions (datedTitle). A unit test covers 1969-07-20.\n- R2 Met. The date page's generateMetadata uses only parseDatePageParam, isAfterToday and datedTitle. The module imports createAnonClient for the page body, but the metadata function never calls it, and a test asserts neither Supabase nor fetch is called. I read the acceptance criterion as covering the metadata's own dependencies, not the page module's. Invalid, out-of-range and future dates return an empty object, so they keep the default title and never show a future date.\n- R3 Met. The get_reading_by_id lookup moved verbatim into app/reading/[id]/load.ts as loadReadingById, wrapped in React cache(). The classification is unchanged: unavailable is logged once, and 22P02 or empty is notFound. Both the page and generateMetadata call it.\n  The test mocks cache() as a per-test memo, because Vitest loads React's client build, where cache does not memoize. Dev Team showed the test fails with a pass-through cache. The production-build evidence (the stand-in's RPC log) shows exactly 1 get_reading_by_id call per request for found, unknown and malformed ids.\n- R4 Met. Unknown and malformed ids and an outage return an empty object. Redirect routes set no metadata. error.tsx sets none.\n  The new app/not-found.tsx removes Next's built-in \"404: This page could not be found.\" title, which pre-dates this sprint, from route-level 404s. It is a copy of Next 16.3's fallback markup without the title tag. Before-and-after screenshots are byte-identical by sha256 in both colour schemes. The handoff states the 404 status and the noindex tag are unaffected.\n  The constant CSS string through dangerouslySetInnerHTML is static, with no input, so it raises no injection concern.\n- R5 Met. description is unchanged in the layout, and the banner and date band are untouched.\n- R6 Met. Tests cover R1, R2 (valid and refused dates), R3 (found, unknown, 22P02, outage, and one-read sharing), and the 404 page having no title tag.\n- R7 Met.\n\nRouted to Master Controller: the handoff says the user decided, during the build, to add app/not-found.tsx, which the sprint file does not name. I have no record of that decision other than the handoff. Master Controller should record it in the sprint file, or in decisions, so it is durable. That includes the trade-off that this copy keeps Next 16.3's look if a later Next version changes its 404. It is in service of R4 and changes nothing visible, so it is not scope creep and not a finding.\n\nStill UNOWNED, with Master Controller: the 3 lint warnings in the sprint 45 and 46 probe scripts. No decision is on record yet.\n\nFor LiveQA:\n- Step 1's grep also prints the chart's SVG title elements. The page title is the first one, in the head.\n- On step 4, check document.title in the browser, not only curl. The built-in 404 title appeared only in the browser before this sprint."
+    },
+    {
+      "ts": "2026-11-25T16:04:27+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T16:04:10+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T16:04:27+00:00"
   }
 }
