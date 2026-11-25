@@ -35,7 +35,7 @@ The user's decisions, 25 Nov 2026:
    - Neither needs the database, so both render even when the database lookups fail.
 6. **Discover random reading.** On the date page, a link labelled "Discover random reading" sits on the same row as the picker, after **Go**, with the word "or" between them: `ANOTHER DATE: [date] [GO] or [DISCOVER RANDOM READING]`.
    - It's styled like the Go button: the same border, type, case, padding, and hover and focus colours. It's a link (`<a>`) because it navigates.
-   - It wraps onto the next line on narrow screens, with no horizontal scroll at 390px.
+   - **Phones (≤900px), amended 25 Nov 2026 at the user's request, after `/sprint-start`:** the link isn't on the picker row, and neither is its "or". The top of the page on a phone stays: banner → date band → "Another date" picker → Previous day / Next day → chart panel. The link appears **at the bottom instead**, directly after the reading section (the horoscope, or the message that there isn't one for this date) and directly above Sprint 45's "Other notable dates" banner. It keeps the same label, the same Go-button style, the same target and the same rules for when it's hidden. The picker row has no horizontal scroll at 390px. Desktop (>900px) keeps the picker-row layout above. If the same pick is rendered twice (once per layout), both copies use **one** server-side pick, so they never point to different dates.
    - Its target is `/date/<date>`, chosen at random on the server for each request. It's picked from `get_recent_reading_dates`, leaving out the page's own date and any date after today. Use an injectable random source, as `pickTagline(Math.random)` does, so tests are deterministic.
    - If the lookup fails, or nothing is left after filtering, the link and its "or" don't render. Nothing else on the page changes, and there's no notice of its own.
 7. **Retire the adjacent-reading query in the app.** The app stops calling `get_adjacent_reading_dates`. Remove the code, types and tests that only served it. Don't write a migration, so the SQL function stays in the database. The navigation's `aria-label`s describe what each part now holds.
@@ -44,7 +44,7 @@ The user's decisions, 25 Nov 2026:
 10. **Handoff.** Follow CLAUDE.md's committed-handoff standard: `docs/handoffs/sprint-47.md`, with `npm run verify`'s final line including `exit=0`. Include screenshots under `docs/handoffs/sprint-47/`:
     - desktop at ≥1280px, showing the picker row with the random link, and Previous/Next day on an ordinary date;
     - desktop on today's page, showing the disabled "Next day" and its message;
-    - a phone at ~390px, showing the random link wrapped.
+    - a phone at ~390px, showing the bottom of the page: the reading section, then the random link, then "Other notable dates". Also a second phone shot of the top, showing the picker row with no random link.
 
 ### Acceptance Criteria
 
@@ -53,7 +53,7 @@ The user's decisions, 25 Nov 2026:
 - **R3:** a test reads the input's `max` as today.
 - **R4:** the unit tests described in R4 pass.
 - **R5:** the date-arithmetic tests pass. A render test on today's date finds no Next link, an `aria-disabled` element and the message text. A render test on 1700-01-01 finds no Previous link. A test in the "unavailable" case still finds both day links.
-- **R6:** tests with a fixed random source pick the expected date, never pick the current or a future date, and render nothing when the lookup fails or the pool is empty. QA1 confirms the link reuses the Go button's style rules rather than copying them.
+- **R6:** tests with a fixed random source pick the expected date, never pick the current or a future date, and render nothing when the lookup fails or the pool is empty. QA1 confirms the link reuses the Go button's style rules rather than copying them. QA1 also confirms from the code that, at ≤900px, the picker-row copy is hidden, and that the bottom copy sits after the reading section and before the notable-dates section, outside the reading section's sticky container. If there are two copies, a test shows both carry the same `href`.
 - **R7:** grep finds no `get_adjacent_reading_dates`, "Previous reading" or "Next reading" in `app/` or `lib/`. `supabase/migrations/` is unchanged.
 - **R9 and R10:** QA1 reads `docs/handoffs/sprint-47.md` at the audited commit, finds `VERIFY PASS … exit=0`, and opens all three screenshots.
 
@@ -63,7 +63,7 @@ The user's decisions, 25 Nov 2026:
 3. On today's page, "Next day" is greyed out, doesn't respond to a click or Tab, and shows "Reloy predicts only the past."
 4. In the browser's date picker, no date after today can be chosen.
 5. Load a date page five times. "Discover random reading" points to a written reading's date each time, never the current page's date. Across the five loads it isn't always the same date, unless the pool holds only one. Follow one, and it shows a saved horoscope.
-6. At 390px wide, the random link wraps below the picker with no horizontal scroll, and the day links and notable dates still show.
+6. At 390px wide, the picker row has no random link and no horizontal scroll, and Previous day / Next day sit between the picker and the chart panel. Scrolling down, the order is: the reading (or the no-reading message), then "Discover random reading", then "Other notable dates". With a horoscope folded, the sticky reveal bar doesn't cover the random link. At 1280px, the link is still on the picker row after Go, and not at the bottom.
 
 ### Out of Scope
 
@@ -93,3 +93,4 @@ None.
 - **A future-dated reading in the random pool.** — R6 filters out dates after today.
 - **The disabled "Next day" looks like a broken link.** — R5 requires visible message text, not only a greyed style.
 - **Two sources of "today".** — R1 has a single helper built on `utcToday()`.
+- **Two copies of the random link pointing to different dates.** The phone amendment may render it in two places. — R6 requires one server-side pick shared by both copies, with a test.
