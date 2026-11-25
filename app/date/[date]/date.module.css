@@ -95,7 +95,6 @@
   font-size: 19px;
   line-height: 1.55;
   color: var(--om-grey);
-  max-width: 46ch;
   text-wrap: pretty;
 }
 

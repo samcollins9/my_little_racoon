@@ -1,0 +1,42 @@
+{
+  "id": 53,
+  "title": "Reading text uses the full column width",
+  "phase": "dev_agreed_done",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "e8d8824418735cf7bba04024fe5b9ca00ac7520c46512dca18321cea01b466b6",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "8b0d109cf52e87817654b976213f28970c40a79fa59d8e4d364fd4fb991d8ae4",
+  "last_shipped_commit": null,
+  "groundtruth_result": null,
+  "live_loop_audit_trees": [],
+  "pre_block_phase": null,
+  "audit_rounds": 1,
+  "live_test_rounds": 0,
+  "started": "2026-11-25T19:46:51+00:00",
+  "completed": null,
+  "history": [
+    {
+      "ts": "2026-11-25T19:46:51+00:00",
+      "actor": "system",
+      "event": "sprint_started",
+      "detail": ""
+    },
+    {
+      "ts": "2026-11-25T19:52:56+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS, gate 1, audit of c3c054e, on branch devteam2/sprint-53 in Dev Team 2's worktree.\n\nSprint file: read fresh in the worktree. Against main, the only difference is the lifecycle-owned status line (todo on main, in_progress here). Requirements are identical.\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 607 tests.\n\nDiff 88ae25a..c3c054e. My own check: npm run verify at c3c054e in the worktree, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 54 test files and 607 tests passed.\n\n- R1, R2 and R3 Met. The CSS diff is exactly five max-width removals plus one reworded comment, and nothing else in those rules changed. The removals:\n  - accuracyNote 46ch, idleText 46ch and paragraph 62ch in reading.module.css;\n  - the phone paragraph rule's max-width none, which only cancelled the 62ch;\n  - unavailableText 46ch in date.module.css.\n  Font size, line height, colour, text-wrap, margin and padding are untouched. No control, footer or section padding is touched.\n- R4 Met. The handoff table matches the diff line for line. The checked-and-left list (disabledNote, the busy texts, inline spans, headings, controls, idleBlock) has reasons.\n  My own grep of max-width across app CSS at this commit finds only rules outside reading-section prose: the error card's 640px, chartTabs 100%, the picker input 100%, the notable tooltip 32ch, and the banner. reading.module.css now has no max-width declaration at all, only the comment.\n- R5 Met. The right edges match to 0px in every case: written horoscope and Sprint 39's message at 1280 and 390, plus idle and outage. scrollWidth equals innerWidth throughout.\n  The before figures show the 46ch cap was the binding one: the accuracy note ended 80px short at 1280. The 62ch on paragraphs didn't bind at today's column width, and was removed anyway, so R1 holds at any width. The written state used a stand-in database with placeholder text, and the handoff says so; LiveQA step 1 measures a real one.\n  The new reading-text-width.test.ts reads the CSS and asserts no max-width on the five prose selectors, or on eventText, in any of their rules. It also pins the unchanged type values. That is a reasonable guard, since Vitest has no layout.\n- R6 Met. I opened before- and after-unmatched-1950-03-15-1280.png: the message now wraps to the event text's edge, where before it stopped short. I also opened after-written-1969-07-20-1280.png: the paragraphs run to the same edge as the event description.\n\nFor Pipeman at merge: main currently has Dev Team 1's sprint 52 work uncommitted in the primary checkout, touching date.module.css, ReadingView.tsx, accuracy.ts and other date-page files. This branch's one date.module.css change is a single deleted line in .unavailableText. If sprint 52 adds or moves prose in the reading section, the new test will catch any max-width it reintroduces once both are on main.\n\nNo issues found. Still UNOWNED, with Master Controller: the 3 lint warnings in the sprint 45 and 46 probe scripts."
+    },
+    {
+      "ts": "2026-11-25T19:55:08+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
+    }
+  ],
+  "last_claim": {
+    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
+    "claude_agent": "dev-team-2",
+    "ts": "2026-11-25T19:55:08+00:00"
+  }
+}

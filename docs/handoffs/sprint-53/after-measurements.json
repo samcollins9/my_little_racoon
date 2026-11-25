@@ -1,0 +1,212 @@
+{
+  "written-1969-07-20-1280": {
+    "status": "this exact date",
+    "readingStatus": "not revealed yet",
+    "eventTextRight": 1167,
+    "eventTextLines": 3,
+    "widestReadingBlock": {
+      "class": "paragraph",
+      "right": 1167,
+      "width": 494,
+      "maxWidth": "none",
+      "lines": 5,
+      "text": "Placeholder horoscope for a local layout check, no"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "paragraph",
+        "right": 1167,
+        "width": 494,
+        "maxWidth": "none",
+        "lines": 5,
+        "text": "Placeholder horoscope for a local layout check, no"
+      },
+      {
+        "class": "paragraph",
+        "right": 1167,
+        "width": 494,
+        "maxWidth": "none",
+        "lines": 5,
+        "text": "A second placeholder paragraph, long enough to wra"
+      },
+      {
+        "class": "paragraph",
+        "right": 1167,
+        "width": 494,
+        "maxWidth": "none",
+        "lines": 1,
+        "text": "A third, shorter paragraph to close."
+      },
+      {
+        "class": "P",
+        "right": 991,
+        "width": 318,
+        "maxWidth": "none",
+        "lines": 1,
+        "text": "Revealed on request from 10 positions and 17 aspec"
+      }
+    ],
+    "scrollWidth": 1280,
+    "innerWidth": 1280
+  },
+  "written-1969-07-20-390": {
+    "status": "this exact date",
+    "readingStatus": "not revealed yet",
+    "eventTextRight": 358,
+    "eventTextLines": 4,
+    "widestReadingBlock": {
+      "class": "paragraph",
+      "right": 358,
+      "width": 326,
+      "maxWidth": "none",
+      "lines": 7,
+      "text": "Placeholder horoscope for a local layout check, no"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "paragraph",
+        "right": 358,
+        "width": 326,
+        "maxWidth": "none",
+        "lines": 7,
+        "text": "Placeholder horoscope for a local layout check, no"
+      },
+      {
+        "class": "paragraph",
+        "right": 358,
+        "width": 326,
+        "maxWidth": "none",
+        "lines": 7,
+        "text": "A second placeholder paragraph, long enough to wra"
+      },
+      {
+        "class": "paragraph",
+        "right": 358,
+        "width": 326,
+        "maxWidth": "none",
+        "lines": 1,
+        "text": "A third, shorter paragraph to close."
+      }
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390
+  },
+  "unmatched-1950-03-15-1280": {
+    "status": "on this day, other years",
+    "readingStatus": "no exact-date events",
+    "eventTextRight": 1167,
+    "eventTextLines": 2,
+    "widestReadingBlock": {
+      "class": "accuracyNote",
+      "right": 1167,
+      "width": 494,
+      "maxWidth": "none",
+      "lines": 4,
+      "text": "We have no recorded events for this exact date, so"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "accuracyNote",
+        "right": 1167,
+        "width": 494,
+        "maxWidth": "none",
+        "lines": 4,
+        "text": "We have no recorded events for this exact date, so"
+      }
+    ],
+    "scrollWidth": 1280,
+    "innerWidth": 1280
+  },
+  "unmatched-1950-03-15-390": {
+    "status": "on this day, other years",
+    "readingStatus": "no exact-date events",
+    "eventTextRight": 358,
+    "eventTextLines": 3,
+    "widestReadingBlock": {
+      "class": "accuracyNote",
+      "right": 358,
+      "width": 326,
+      "maxWidth": "none",
+      "lines": 6,
+      "text": "We have no recorded events for this exact date, so"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "accuracyNote",
+        "right": 358,
+        "width": 326,
+        "maxWidth": "none",
+        "lines": 6,
+        "text": "We have no recorded events for this exact date, so"
+      }
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390
+  },
+  "idle-1945-05-08-1280": {
+    "status": "this exact date",
+    "readingStatus": "not revealed yet",
+    "eventTextRight": 1167,
+    "eventTextLines": 4,
+    "widestReadingBlock": {
+      "class": "idleText",
+      "right": 1167,
+      "width": 456.73,
+      "maxWidth": "none",
+      "lines": 3,
+      "text": "The chart stands as it is. Nothing has been reveal"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "idleText",
+        "right": 1167,
+        "width": 456.73,
+        "maxWidth": "none",
+        "lines": 3,
+        "text": "The chart stands as it is. Nothing has been reveal"
+      },
+      {
+        "class": "P",
+        "right": 1167,
+        "width": 294.06,
+        "maxWidth": "none",
+        "lines": 2,
+        "text": "Revealed on request from 10 positions and 12 aspec"
+      }
+    ],
+    "scrollWidth": 1280,
+    "innerWidth": 1280
+  },
+  "idle-1945-05-08-390": {
+    "status": "this exact date",
+    "readingStatus": "not revealed yet",
+    "eventTextRight": 358,
+    "eventTextLines": 5,
+    "widestReadingBlock": {
+      "class": "idleText",
+      "right": 358,
+      "width": 294.17,
+      "maxWidth": "none",
+      "lines": 4,
+      "text": "The chart stands as it is. Nothing has been reveal"
+    },
+    "difference": 0,
+    "blocks": [
+      {
+        "class": "idleText",
+        "right": 358,
+        "width": 294.17,
+        "maxWidth": "none",
+        "lines": 4,
+        "text": "The chart stands as it is. Nothing has been reveal"
+      }
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390
+  }
+}
