@@ -1,17 +1,17 @@
 {
   "id": 51,
   "title": "This-exact-date events drop the year column",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "9f1e94f283c8d9db8c594b6857c2aacc8c968917a7e4643268fe476f8f83bbc9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "eb02a94d3ce41f5db9343242090b4214b49250d9f532603f44e45a7e53f56d79",
   "last_shipped_commit": "b389c5ccb5f8ea8d597a585e2667d25c258ae1f3",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-25T16:07:29+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=b389c5c | ci=green: 1 CI run(s) for b389c5ccb5f8ea8d597a585e2667d25c258ae1f3 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T16:31:53+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). LiveQA steps 1 to 3 pass on production at 1280 and 390. No defects.\n\nTested 2026-11-25, about 16:31 to 16:35 UTC, against https://my-little-racoon.vercel.app.\nShipped commit b389c5c (the merge of devteam2/sprint-51). Production serves the pushed tip 6960485: /api/health/db reports status ok, connected true, commit 6960485, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff b389c5c origin/main touches no file under app/ or lib/; only Sprint 49's done-rename, registry.json, and the state files for Sprints 49, 50 and 51.\nTools: headless Chromium (Playwright 1.57) at 1280x900, and 390x900 (isMobile, hasTouch). Element screenshots of each \"What happened\" section: s51-<width>_<page>.png.\n\nSTEP 1, matched /date/1969-07-20: PASS at both widths. Status \"this exact date\", 1 row with classes \"eventRow eventRowSingle\".\n- grid-template-columns: 494px at 1280, 326px at 390.\n- The row has 1 child and no year element in the DOM.\n- The description is full row width (494 of 494, and 326 of 326), starting at offset 0. The text starts \"The Apollo 11 Lunar Module Eagle landed on the Sea...\".\n- The source link is https://en.wikipedia.org/wiki/Apollo_11, and fetching it gave HTTP 200.\n- Row style is unchanged: padding 13px/13px and font 17.5px Cormorant Garamond (1280); 11px/11px and 16.5px (390). Bottom border 1px solid. No \"pictured\" text.\n- Also matched: /date/1912-04-15 (1 row) and /date/2020-03-11 (2 rows, both single-column, no year, full width, each with a source link). Screenshots: s51-1280_date_2020_03_11.png and s51-390_date_1969_07_20.png.\n\nSTEP 2, unmatched /date/2026-11-25 (today; the feed has no 2026 match): PASS at both widths. Status \"on this day, other years\", 5 rows with class \"eventRow\" only.\n- grid-template-columns: 62px 416px at 1280, 52px 262px at 390. Each row has 2 children.\n- Years: 2013, 1984, 1981, 1975, 1970. Each is a link to /date/<year>-11-25.\n- Same padding, border and font as the matched rows.\n- Clicking 2013 lands on /date/2013-11-25 (\"Retroactive Horoscope 2013-11-25\", status \"this exact date\"), at both widths.\n- No unlinkable year appeared in this list, so the plain-text-year case wasn't observed live; Sprint 39's tests cover it, and QA1 confirmed they're unchanged.\n\nSTEP 3, /reading/<id>: PASS.\n- Matched /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d (1969-07-20): single-column at both widths (494px and 326px), no year element, source link present.\n- For comparison, unmatched /reading/9bd536d1-243f-49e7-8c59-af75b6d76067 keeps the two columns. Years 2019, 2013, 2007, 1990 and 1977 link to /date/<year>-07-21.\n\nNote: 2020-03-11's first event reads \"officialy\" (sic). That spelling is in the Wikipedia feed text itself; the app didn't add it.\n0 console or page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-25T16:23:10+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T16:31:53+00:00"
   }
 }
