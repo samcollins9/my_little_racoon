@@ -1,17 +1,17 @@
 {
   "id": 52,
   "title": "Date page order: day links on top, picker below the reading",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "9f4d5a0fee421e89d6bdb85ef3acf2e445f25a5c642f2c03de73817cef8f2cad",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "9b7d29d6d14e306c293d6ea895ebf34eaa9b2364896c6a5483f896f9b6c3f9dd",
   "last_shipped_commit": "2023e53b3bcc16020c51177399b2a1fcdb856b2b",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 2,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-25T19:50:56+00:00",
   "completed": null,
   "history": [
@@ -50,11 +50,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=2023e53 | ci=green: 1 CI run(s) for 2023e53b3bcc16020c51177399b2a1fcdb856b2b all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T20:37:20+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). LiveQA steps 1 to 7 all pass on production, at 1280 and 390. No defects of this sprint's own. The squeezed idle sigil visible in these pages is Sprint 53's defect, already recorded against Sprint 53 (CONDITIONAL); it is not counted here.\n\nTested 2026-11-25, about 20:36 to 20:45 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 2023e53. Production serves the pushed tip 2363cc8: /api/health/db reports status ok, connected true, commit 2363cc8, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff 2023e53 origin/main touches only docs/sprints/state/sprint-52.json and sprint-53.json.\nTools: headless Chromium (Playwright 1.57) at 1280x900, and 390x900 (isMobile, hasTouch).\n\nSTEP 1, 1280 on /date/1969-07-20: PASS. DOM order and vertical order agree: banner (65-220), day nav (234-268, \"\u2190 PREVIOUS DAY 19 July 1969 NEXT DAY \u2192 21 July 1969\"), date band (317-384, \"THE SKY OVER 20 July 1969\"), chart tabs (411), events (411-608) and reading (608-1181), the \"Another date\" panel (1181-1247), then the \"Notable dates\" heading (1260).\n- Nothing renders between the date band and the body: the screenshot shows the band's rule, then the chart tabs directly.\n- The panel is one row: \"ANOTHER DATE\", the input (x 224, 136x37), GO (370, 50x34), \"or\" (same row), and DISCOVER RANDOM READING (455, 215x34). It has padding 14px 40px and a 1px solid top rule.\n- Exactly 1 date input and 1 random link on the page.\n- The footer heading is \"Notable dates\", nav aria-labelledby notable-dates-panel-heading. \"Other notable dates\" appears nowhere in the page text.\n- Screenshots: s52-1280_date_1969_07_20-top.png and -bottom.png.\n\nSTEP 2, 390 on /date/1969-07-20: PASS. Same order: banner 8-111, day nav 121-155, date band 180-239, chart tabs 256, events 600-768, reading 768-1037, panel 1037-1156, \"Notable dates\" heading 1175.\n- Panel: \"ANOTHER DATE\", the input (136x44) and GO (50x44) on one row (y 1048). \"or\" and DISCOVER RANDOM READING (215x44) on the line below (y 1102), inside the same panel. Every control is 44px tall. Padding 10px 24px, with a 1px top rule.\n- scrollWidth is 390.\n- The phone notable section is labelled notable-dates-section-heading, with heading \"Notable dates\".\n- Screenshots: s52-390-top-1969.png and s52-390-panel.png.\n\nSTEP 3, the picker from its new place: PASS. At both widths, filling 1912-04-15 and pressing Go lands on /date/1912-04-15 (\"Retroactive Horoscope 1912-04-15\"). Filling 2026-11-26 and pressing Go doesn't submit: the URL stays, and the browser message is \"Value must be 11/25/2026 or earlier.\" The input has min 1700-01-01, max 2026-11-25, required true, name \"date\"; the form is GET to /date.\n\nSTEP 4, Discover random reading: PASS. Five loads of /date/1969-07-20:\n- 1280: /date/1929-10-24, /date/2023-05-06, /date/1939-09-01, /date/2009-11-23, /date/1969-09-01 (5 distinct).\n- 390: /date/2024-03-26, /date/2021-01-06, /date/1989-11-09, /date/1969-09-01, /date/2023-05-06 (5 distinct).\nNever the current date. Clicking it (1280) and tapping it (390) landed on /date/1969-09-01 and /date/2023-05-06, both saved readings.\n\nSTEP 5, today's page /date/2026-11-25: PASS at both widths. The day nav under the banner reads \"\u2190 PREVIOUS DAY 24 November 2026 NEXT DAY \u2192 Reloy predicts only the past.\", and the aria-disabled \"Next day\" element is inside the day nav. Screenshot: s52-1280_date_2026_11_25-top.png.\n\nSTEP 6, Tab order from the top: PASS at both widths. The zones are reached in this order: BANNER (\"Ask Reloy\") > DAYNAV (Previous day, Next day) > CHART (tabs, chart) > EVENTS (\"source\") > READING (\"REVEAL THE HOROSCOPE\") > PANEL (date input, GO, DISCOVER RANDOM READING) > NOTABLE (15 April 1912 ... 11 March 2020).\nOn /date/1969-07-20 the events come before the reading (Sprint 48's matched order), so EVENTS precedes READING in DOM and Tab order alike.\n\nSTEP 7, unmatched /date/2026-11-25: PASS at both widths. \"The reading\" reads: \"We have no recorded events for this exact date, so we can't write an accurate horoscope for it. Pick a different date, or choose one of the years listed under \"What happened\" to go to that date instead.\" No \"date above\" text in the page.\nThe order is reading (1280: 411-655), then events (655-1353), then the \"Another date\" panel (1353-1419), directly below the events, then \"Notable dates\" (1432). On phone: 600-829, 829-1639, panel 1639-1758, then 1777.\n\n0 console or page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-25T20:29:23+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T20:37:20+00:00"
   }
 }
