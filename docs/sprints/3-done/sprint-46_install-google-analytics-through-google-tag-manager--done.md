@@ -2,7 +2,7 @@
 id: 46
 title: "Install Google Analytics through Google Tag Manager"
 epic: "Analytics"
-status: in_progress
+status: done
 created: 2026-11-24T22:07:51+00:00
 ---
 

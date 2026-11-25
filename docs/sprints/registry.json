@@ -274,8 +274,8 @@
     "46": {
       "title": "Install Google Analytics through Google Tag Manager",
       "epic": "Analytics",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-46_install-google-analytics-through-google-tag-manager.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-46_install-google-analytics-through-google-tag-manager--done.md"
     },
     "47": {
       "title": "Day-by-day navigation, a random reading link, and no future dates",
