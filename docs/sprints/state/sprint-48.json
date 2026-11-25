@@ -1,7 +1,7 @@
 {
   "id": 48,
   "title": "Other-years events move below the reading",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "c27cd3fbe91fc914a29513b51cd8c428e0b6b86f4d3f4fc0f349dd80d69d12e4",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -13,7 +13,7 @@
   "audit_rounds": 2,
   "live_test_rounds": 1,
   "started": "2026-11-25T15:16:00+00:00",
-  "completed": null,
+  "completed": "2026-11-25T15:51:26+00:00",
   "history": [
     {
       "ts": "2026-11-25T15:16:00+00:00",
@@ -50,11 +50,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 1). LiveQA steps 1 to 5 pass on production. Step 6 was not searched for, per the user's standing instruction not to hunt for empty-list dates; R8's tests cover it. No defects.\n\nTested 2026-11-25, about 15:49 to 16:00 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 78fd732. Production serves the pushed tip 6ea5075: /api/health/db reports status ok, connected true, commit 6ea5075, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat 78fd732 origin/main touches only the sprint 49 todo file, registry.json, and docs/sprints/state/sprint-48.json.\nTools: headless Chromium (Playwright 1.57) at 1280x1000, and 390x844 (isMobile, hasTouch).\nPages: matched /date/1969-07-20 and /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d (1969-07-20, \"this exact date\"). Other-years /date/2026-11-25 (today), /date/2026-11-24, and /reading/9bd536d1-243f-49e7-8c59-af75b6d76067 (Sprint 39's unmatched reading), all \"on this day, other years\", 5 rows each.\n\nSTEP 1, desktop 1280, /date/1969-07-20: PASS. In the DOM, the events section comes first, status \"this exact date\", 1 row (\"1969 The Apollo 11 Lunar Module Eagle landed on the Sea of T...\"). Events y 559-782, reading 782-1329: adjacent, 0px gap. Events have a 1px solid bottom border, and the reading has no border, so there's one divider. The reading keeps flex 1 1 0%, as before. Screenshot: s48-1280_date_1969_07_20.png.\n\nSTEP 2, desktop 1280, other-years date 2026-11-25 (today): PASS. The reading comes first in the DOM, with Sprint 39's message: \"The reading NO EXACT-DATE EVENTS We have no recorded events for this exact date, so we can't write an accurate horoscope for it. Pick a different date above, or choose one of the years listed under \"What happened\"...\". Then \"What happened\", \"ON THIS DAY, OTHER YEARS\", with 5 rows (2013, 1984, 1981, 1975, 1970).\n- Reading y 559-803, events 803-1501: 0px gap.\n- The reading computes flex 0 0 auto in this order, so it doesn't stretch. The events end at the column's bottom (1501).\n- One divider: the events' 1px solid top border. The reading has no borders.\n- /date/2026-11-24 gives the same result (reading 559-803, events 803-1423, 5 rows, first 2023).\n- Screenshot: s48-1280_date_2026_11_25.png, which shows the reading, one rule, then What happened, with no large gap.\n- No CSS order: order computes 0 on both sections, and the parent is flex-direction column, not column-reverse.\n\nSTEP 3, phone 390: PASS.\n- /date/1969-07-20: events (664-880) and then the reading (880-1149), then Discover random reading 1168, then Other notable dates 1239. This is Sprint 47's order, unchanged.\n- /date/2026-11-25: the reading (664-893), the other-years events (893-1703, 5 rows), Discover random reading (1722), Other notable dates (1793). R6's order.\n- The events' padding-bottom is 24px in this order, which is QA1's round 2 fix. The screenshot shows one rule between the 1970 row and the random section, with no doubled line.\n- /date/2026-11-24 has the same order.\n- scrollWidth is 390 everywhere.\n- Screenshots: s48-390_date_2026_11_25.png and s48-390_date_1969_07_20.png.\n\nSTEP 4, Tab order on /date/2026-11-25: PASS, with one qualification. At both widths, Tab stops run: banner, picker, (desktop: random link, Previous day, notable list), chart tab, chart, then the events' year and source links (2013, source, 1984, ...). On phone, the order then continues to Discover random reading and the notable list.\nThe reading section has no focusable controls on an other-years page. Sprint 39's message has no form, reveal or link, so there are no reading controls to reach first. The reading still precedes the events in the DOM, so nothing in the events is reached before anything in the reading.\n\nSTEP 5, /reading/<id>: PASS.\n- /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d (matched): events first (desktop 348-571, reading 571-1118; phone 545-761, then 761-1030).\n- /reading/9bd536d1-243f-49e7-8c59-af75b6d76067 (unmatched, stored other-years events, first row \"2019 People returning from anti\u2013extradition bill protests in...\"): reading first (desktop 348-592, events 592-1238; phone 545-774, then 774-1512). 0px gap, with the same border and flex result as step 2.\n\nSTEP 6: NOT SEARCHED. No empty-list or failed-lookup page was looked for on production, per the user's instruction not to hunt for such dates. R8's unit and render tests, and the handoff's local fixture, cover it.\n\nHeading levels, for reference, not a defect: \"The reading\" is an h3 and \"What happened\" an h2. Both were the same at 7b65d17, before this sprint.\n0 console or page errors across all runs."
+    },
+    {
+      "ts": "2026-11-25T15:51:26+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=/sprint-complete 48 please close it"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-25T15:50:24+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T15:51:26+00:00"
   }
 }
