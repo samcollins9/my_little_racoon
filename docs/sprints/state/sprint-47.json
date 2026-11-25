@@ -2,7 +2,7 @@
   "id": 47,
   "title": "Day-by-day navigation, a random reading link, and no future dates",
   "phase": "dev_build",
-  "qa1_audit_result": null,
+  "qa1_audit_result": "FAIL",
   "qa1_audit_file_hash": null,
   "qa1_audit_hash_scheme": null,
   "qa1_audited_tree_hash": null,
@@ -10,7 +10,7 @@
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-25T14:28:14+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-25T14:44:50+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "FAIL: FAIL, gate 1, audit of e444619. One requirement is not met: R6 as amended. That also leaves R10 short.\n\nSprint file: read fresh. R6 was amended in 9dc8580 at 09:42 (-0500), after /sprint-start (5df44d2, 09:28) and before the audited commit. git diff 9dc8580 e444619 -- docs/sprints/ is empty, so the audited commit was built against the amended file. The build implements the PRE-amendment R6.\n\nDEFECT, R6 phone amendment, demonstrated:\n- Required: at 900px and below, the random link and its \"or\" are NOT on the picker row. The link appears after the reading section, directly above Other notable dates, using one server-side pick shared by both copies, with a test showing both hrefs equal.\n- At e444619, app/date/[date]/DatePicker.tsx renders the link and its \"or\" unconditionally inside .pickerControls, with no layout class.\n- grep for mobileOnly or desktopOnly in DatePicker.tsx and page.tsx exits 1.\n- page.tsx passes afterBody only NotableDatesSection, so there is no bottom copy.\n- Dev Team's own handoff measurement confirms it at 390: \"Go and 'or' share a line, and DISCOVER RANDOM READING wraps onto the next\", meaning it is on the picker row on phones.\n- No test covers two copies or a shared href.\n\nR10 is short as a direct consequence. The amended sprint asks for a phone shot of the bottom (reading, random link, notable dates) and a phone shot of the top showing the picker row with no random link. Neither exists. phone-390-random-link-wrapped.png shows the old layout.\n\nRequired to clear this FAIL:\n(1) At 900px and below, hide the picker-row link and its \"or\". Render the link after the reading section and before NotableDatesSection, outside the reading section's sticky container. Use the same randomDate the page already computes once.\n(2) Add a test that both copies carry the same href, and that the bottom copy is placed between the reading section and the notable-dates section.\n(3) Add a Round 2 handoff section with the two phone screenshots. Include a check that the sticky reveal bar does not cover the bottom link when a horoscope is folded (LiveQA step 6 will check this too).\n\nEverything else checks out. I'd expect it to stand on re-audit unless the fix touches it.\n- R1 Met. isAfterToday in lib/date-page/params.ts is the single comparison. Its boundary tests use an injected now.\n- R2 Met. The page test shows a 307 to today with zero RPCs, so the redirect comes before loadDatePage. Invalid and out-of-range dates still 404 on both routes.\n- R3 Met. max is today, computed per request, and a test reads it.\n- R4 Met. Both write paths are covered by tests. Dev Team's question 2: refusing after get_reading_by_id, before the admin client and OpenAI, is the right placement. The stored event_date is needed and nothing is written first.\n- R5 Met. The arithmetic tests include every required case, plus century and minimum-date cases. Previous day is absent on 1700-01-01. Both day links render with lookups paused.\n  Dev Team's question 1: a span with role link, aria-disabled true, no href and no tabindex is acceptable. It's the standard disabled-link pattern: it is not navigable and not focusable, and a screen reader announces it as dimmed. A role-less span would have aria-disabled ignored.\n- R6, except the phone amendment: the pure pick is tested with a fixed random source, and excludes the page's own date and the future. Lookup failure and an empty pool render nothing. The link reuses .pickerButton plus a two-property .pickerLink, not a copy.\n- R7 Met. The grep exits 1, and supabase/migrations is unchanged.\n- R8 and R9 Met as far as read. The README paragraph is accurate for the code, but must be re-checked once the phone layout changes.\n\nMy own check: npm run verify at e444619, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 48 test files and 561 tests passed.\n\nUNOWNED, routed to Master Controller: lint passes with 3 no-unused-expressions warnings, in docs/handoffs/sprint-45/cdp45.mjs, sprint-45/cdp45-overflow.mjs and sprint-46/cdp46.mjs. They are probe scripts from closed sprints. No decision to accept them is on record. I missed them in my own sprint 45 and 46 audits, because I read the exit code and the counts, not the warnings. Master Controller decides whether to clean them up or accept them on record. They don't fail lint, so they are not part of this FAIL."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-25T14:28:14+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-25T14:44:50+00:00"
   }
 }
