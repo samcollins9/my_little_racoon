@@ -9,15 +9,15 @@ created: 2026-11-25T14:25:35+00:00
 # Master Controller Sprint Definition — Sprint 47
 
 **Epic:** Date pages (PRD v3)
-**Sprint Objective:** Previous/Next move one calendar day at a time. A "Discover random reading" link sits beside the date picker. No page, picker or write path accepts a date after today (UTC): Reloy only predicts the past.
+**Sprint Objective:** Previous/Next move one calendar day at a time. A "Discover random reading" link sits beside the date picker. No page, picker or write path accepts a date after today (UTC): Reloy predicts only the past.
 
 ### Context
 
-On 25 Nov 2026 the user set a general rule: future dates are blocked, because "Reloy only predicts the past". Today the site accepts any date up to 2100-12-31 (`parseDatePageParam`, `assertDateInSupportedRange`), and the picker's `max` is that same limit. The user also asked to replace "Previous reading" and "Next reading", which jump between written readings through `get_adjacent_reading_dates`, with "Previous day" and "Next day", one calendar day either side of the page's date. Jumping between written readings moves to a new "Discover random reading" link beside the picker. It picks from the 20 most recently written readings, which `get_recent_reading_dates` returns.
+On 25 Nov 2026 the user set a general rule: future dates are blocked, because "Reloy predicts only the past". Today the site accepts any date up to 2100-12-31 (`parseDatePageParam`, `assertDateInSupportedRange`), and the picker's `max` is that same limit. The user also asked to replace "Previous reading" and "Next reading", which jump between written readings through `get_adjacent_reading_dates`, with "Previous day" and "Next day", one calendar day either side of the page's date. Jumping between written readings moves to a new "Discover random reading" link beside the picker. It picks from the 20 most recently written readings, which `get_recent_reading_dates` returns.
 
 The user's decisions, 25 Nov 2026:
 - A future date's URL **redirects to today**.
-- On today's page, "Next day" is **shown disabled**, with "Reloy only predicts the past."
+- On today's page, "Next day" is **shown disabled**, with "Reloy predicts only the past."
 
 "Today" is the UTC date (`utcToday()`, Sprint 28's decision (d)), and today itself is allowed: `/` still lands there (Sprint 44). Sprint 45 removes the app's call to `get_recent_reading_dates` but keeps the SQL function in the database. This sprint calls it again, for a different purpose.
 
@@ -31,7 +31,7 @@ The user's decisions, 25 Nov 2026:
    - The labels read "← Previous day" and "Next day →", and each still shows its target date in the long format ("19 July 1969").
    - Each link goes to `datePagePath()` of the page's date minus or plus one calendar day. The date arithmetic is UTC, and handles month ends, year ends and 29 February correctly. Unit tests cover 1969-07-20, 2000-02-28 → 29, 2001-02-28 → 03-01, 1999-12-31 → 2000-01-01, and 2000-03-01 → 02-29.
    - On the engine's first supported date, 1700-01-01, "Previous day" isn't shown.
-   - **On today's page**, "Next day" is shown but disabled. It's not a link and not focusable as one, it has `aria-disabled="true"`, and "Reloy only predicts the past." is visible text beside or under it, not only a tooltip, so phones see it too.
+   - **On today's page**, "Next day" is shown but disabled. It's not a link and not focusable as one, it has `aria-disabled="true"`, and "Reloy predicts only the past." (exactly this wording, set by the user on 25 Nov 2026) is visible text beside or under it, not only a tooltip, so phones see it too.
    - Neither needs the database, so both render even when the database lookups fail.
 6. **Discover random reading.** On the date page, a link labelled "Discover random reading" sits on the same row as the picker, after **Go**, with the word "or" between them: `ANOTHER DATE: [date] [GO] or [DISCOVER RANDOM READING]`.
    - It's styled like the Go button: the same border, type, case, padding, and hover and focus colours. It's a link (`<a>`) because it navigates.
@@ -60,7 +60,7 @@ The user's decisions, 25 Nov 2026:
 **LiveQA (the deployed app):**
 1. `curl -sI https://my-little-racoon.vercel.app/date/<tomorrow, UTC>` gives a 307 to `/date/<today, UTC>`. So does `/date?date=<tomorrow>`. `/date/2101-01-01` gives 404. Record the UTC time of the check.
 2. On `/date/1969-07-20`, "Previous day" goes to 19 July 1969 and "Next day" to 21 July 1969.
-3. On today's page, "Next day" is greyed out, doesn't respond to a click or Tab, and shows "Reloy only predicts the past."
+3. On today's page, "Next day" is greyed out, doesn't respond to a click or Tab, and shows "Reloy predicts only the past."
 4. In the browser's date picker, no date after today can be chosen.
 5. Load a date page five times. "Discover random reading" points to a written reading's date each time, never the current page's date. Across the five loads it isn't always the same date, unless the pool holds only one. Follow one, and it shows a saved horoscope.
 6. At 390px wide, the random link wraps below the picker with no horizontal scroll, and the day links and notable dates still show.

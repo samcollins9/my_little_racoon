@@ -92,8 +92,8 @@ page lands (Sprint 41)" above is superseded.
 
 ## 25 Nov 2026: no future dates (Sprint 47)
 
-The user decided that Reloy only predicts the past. Any date after today (UTC) is blocked.
+The user decided that Reloy predicts only the past. Any date after today (UTC) is blocked.
 - A future date's URL redirects (307) to today's date page.
-- On today's page, "Next day" is shown disabled, with "Reloy only predicts the past."
+- On today's page, "Next day" is shown disabled, with "Reloy predicts only the past."
 - Today itself is allowed.
 - Previous/Next move one calendar day. "Discover random reading" picks from the 20 most recently written readings.
