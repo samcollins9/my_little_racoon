@@ -248,6 +248,15 @@
   border-bottom: 1px solid var(--om-rule-faint);
 }
 
+/* Sprint 51, R1: a "this exact date" row has no year element, so the
+   description takes the whole row. Only the columns change; the padding,
+   divider and text styles are .eventRow's and .eventText's, untouched. Two
+   classes, so it also beats the phone breakpoint's single-class
+   .eventRow columns below without a second copy there. */
+.eventRow.eventRowSingle {
+  grid-template-columns: 1fr;
+}
+
 .eventYear {
   font-family: var(--font-mono), monospace;
   font-size: 12px;
