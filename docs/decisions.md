@@ -97,3 +97,7 @@ The user decided that Reloy predicts only the past. Any date after today (UTC) i
 - On today's page, "Next day" is shown disabled, with "Reloy predicts only the past."
 - Today itself is allowed.
 - Previous/Next move one calendar day. "Discover random reading" picks from the 20 most recently written readings.
+
+## 25 Nov 2026: events placement (Sprint 48)
+
+"What happened" moves below "The reading" only when it lists other years' events (unmatched, with at least one event). A matched list, an empty list and a failed lookup all stay above the reading. This applies to desktop and phones, and to both /date and /reading.

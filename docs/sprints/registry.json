@@ -1,5 +1,5 @@
 {
-  "next_id": 48,
+  "next_id": 49,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -282,6 +282,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "in_progress",
       "file": "docs/sprints/2-in-progress/sprint-47_day-by-day-navigation-a-random-reading-link-and-no-future-dates.md"
+    },
+    "48": {
+      "title": "Other-years events move below the reading",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-48_other-years-events-move-below-the-reading.md"
     }
   }
 }
