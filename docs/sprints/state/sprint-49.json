@@ -1,17 +1,17 @@
 {
   "id": 49,
   "title": "Page title shows the date",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "6f5e542b678339a37533063ba1b96f9d847c1a28e3976c5fb4d3de4ea9bf411e",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "ddfcd4cd66ca28d14f892a3c4099947049209e4c80345ab17e08b8f46d5c5209",
   "last_shipped_commit": "ace18974b07127e386ce04e0ac693565ecc44703",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-25T15:51:42+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=ace1897 | ci=green: 1 CI run(s) for ace18974b07127e386ce04e0ac693565ecc44703 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T16:18:49+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). LiveQA steps 1 to 5 pass on production. Step 6: GA4 Realtime was not watched, but the page_view hits sent to GA4 were captured, and their page title (dt) carries the date. No defects.\n\nTested 2026-11-25, about 16:16 to 16:20 UTC, against https://my-little-racoon.vercel.app.\nShipped commit ace1897. Production serves the pushed tip 39e2e2f: /api/health/db reports status ok, connected true, commit 39e2e2f, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff ace1897 origin/main touches only sprint docs, registry.json, and docs/sprints/state/sprint-49.json.\nTools: curl; headless Chromium (Playwright 1.57) at 1280x900, and 390x900 (isMobile, hasTouch).\nNote: the step 6 run sent real GA4 hits to G-NFY3Q9KSXH around 16:18 UTC, from headless Chromium.\n\nSTEP 1, /date/1969-07-20: PASS. curl, grep for the title tag: \"<title>Retroactive Horoscope 1969-07-20</title>\" (the first match, in head). In the browser, document.title is \"Retroactive Horoscope 1969-07-20\" at both widths.\n\nSTEP 2, navigation: PASS. A window marker set on load survived each navigation, and no document navigation request fired, so these were client-side with no reload:\n- Previous day: \"Retroactive Horoscope 1969-07-19\".\n- Next day: \"Retroactive Horoscope 1969-07-20\".\n- Notable link to 1969-07-20: \"Retroactive Horoscope 1969-07-20\".\n- Random link: \"Retroactive Horoscope 1963-11-24\" (desktop) and \"Retroactive Horoscope 1989-11-09\" (phone).\n- Banner home: \"Retroactive Horoscope 2026-11-25\".\n- History back: the previous date's title.\nAt both widths, each title matched the date band (h1) after the navigation.\nThe date picker (filled 1912-04-15, then Go) gives \"Retroactive Horoscope 1912-04-15\". The picker is a GET form, so it's a full document load (2 document requests: /date?date= and its 307), which is the existing behaviour, not a client-side navigation.\n\nSTEP 3, /reading/<id>: PASS.\n- /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d: \"Retroactive Horoscope 1969-07-20\" (curl and browser; date band \"20 July 1969\").\n- /reading/9bd536d1-243f-49e7-8c59-af75b6d76067: \"Retroactive Horoscope 1969-07-21\" (date band \"21 July 1969\").\n\nSTEP 4, plain title on 404s: PASS. curl and document.title both give \"Retroactive Horoscope\" for:\n- /date/2024-02-30 (404);\n- /date/not-a-date (404);\n- /reading/00000000-0000-4000-8000-000000000000 (404);\n- /reading/not-a-uuid (404);\n- /no-such-page (404).\nThe built-in \"404: This page could not be found.\" browser title no longer appears. The 404 page still looks like the built-in one: \"404 This page could not be found.\", h1 24px. Screenshot: s49_date_2024_02_30.png.\n\nSTEP 5, /: PASS. The redirect lands on /date/2026-11-25 (today, UTC), titled \"Retroactive Horoscope 2026-11-25\" (curl -L and browser).\n\nSTEP 6, GA4: Realtime NOT WATCHED. The captured page_view hits to www.google-analytics.com/g/collect carry:\n- dl=/date/1969-07-20, dt \"Retroactive Horoscope 1969-07-20\";\n- dl=/date/1969-07-19, dt \"Retroactive Horoscope 1969-07-19\" (after Previous day, client-side);\n- dl=/date/1969-07-20, dt \"Retroactive Horoscope 1969-07-20\" (after Next day);\n- dl=/date/2024-02-30, dt \"Retroactive Horoscope\".\nSo the title GA4 receives includes the date, and follows client-side navigation.\nSprint 46 regression check on the new 404 page: gtm.js loaded once on the 404 document (2 loads for 2 documents), and its page_view was sent.\n\nR5: the description meta is unchanged (\"Pick a date to see the sky over it and what happened that day, and have a horoscope written for it.\"). Its text in app/layout.tsx is identical at 78fd732 and ace1897. The banner and date band are unchanged.\n0 page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-25T16:10:51+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T16:18:49+00:00"
   }
 }
