@@ -63,8 +63,8 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
 3. The picker works from its new place: choose a past date and press Go, and the page lands there. A future date can't be chosen.
 4. "Discover random reading" works and isn't the current date. Reload a few times and confirm it changes, as Sprint 47 tested.
 5. On today's page, the strip shows the disabled "Next day" with its message.
-7. On a date with no match for its year (today usually works), "The reading" says "Pick a different date, or choose one of the years listed under 'What happened'…" or "Pick a different date.", with no "above". The picker panel sits directly below the reading/events.
 6. Tab from the top: the day links, then the chart and reading controls, then the picker, Go and the random link, then the notable dates.
+7. On a date with no match for its year (today usually works), "The reading" says "Pick a different date, or choose one of the years listed under 'What happened'…" or "Pick a different date.", with no "above". The picker panel sits directly below the reading/events.
 
 ### Out of Scope
 
