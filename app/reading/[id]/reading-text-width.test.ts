@@ -35,6 +35,14 @@ describe("reading-section prose has no width cap (Sprint 53)", () => {
     for (const rule of rulesFor(READING_CSS, ".eventText")) expect(rule).not.toMatch(/max-width/);
   });
 
+  it("round 2: the idle sigil beside the uncapped idle text keeps its own size (never shrinks)", () => {
+    // .idleBlock is a flex row: the sigil and .idleText. With the text
+    // uncapped, a shrinkable sigil was squeezed to a sliver (QA1 live-loop
+    // audit of ec772da, LiveQA round 1).
+    expect(rulesFor(READING_CSS, ".idleBlock")[0]).toMatch(/display: flex;/);
+    expect(rulesFor(READING_CSS, ".idleSigil")[0]).toMatch(/flex: none;/);
+  });
+
   it("R2: the type in those rules is unchanged", () => {
     expect(rulesFor(READING_CSS, ".paragraph")[0]).toMatch(/font-size: 19\.5px;\s*line-height: 1\.62;/);
     expect(rulesFor(READING_CSS, ".paragraph")[1]).toMatch(/font-size: 18px;\s*line-height: 1\.58;/);
