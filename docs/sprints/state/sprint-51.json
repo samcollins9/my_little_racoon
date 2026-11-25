@@ -1,7 +1,7 @@
 {
   "id": 51,
   "title": "This-exact-date events drop the year column",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "9f1e94f283c8d9db8c594b6857c2aacc8c968917a7e4643268fe476f8f83bbc9",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS, gate 1, audit of a6eba5c, on branch devteam2/sprint-51 in Dev Team 2's worktree.\n\nSprint file: read fresh in the worktree. Against main, the only difference is the lifecycle-owned status line from the start. Its requirements are identical. Main's later sprint-52 amendments don't touch this sprint.\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 601 tests.\n\nLast commit: a6eba5c only reflows EventYear's doc comment, as stated (3 lines, comment-only). I audited the whole branch, 5a1df5b..a6eba5c.\n\nMy own check: npm run verify at a6eba5c in the worktree, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 53 test files and 601 tests passed.\n\n- R1 Met. ReadingView computes matched with hasMatchedEvents once. On a matched list each row gets eventRow plus eventRowSingle, and EventYear is not rendered at all (absent, not hidden). It is shared by both routes.\n- R2 Met. Unmatched rows still render EventYear. accuracy-pages.test.ts (Sprint 39's year-link tests) is untouched on this branch and passes.\n  Dev Team's question: removing EventYear's linked prop is fine, keep it. EventYear now renders only on unmatched lists, so the prop was always true, and behaviour is identical: a link when linkableEventDate gives a target, plain text otherwise.\n- R3 Met. The CSS diff is one rule, .eventRow.eventRowSingle with grid-template-columns 1fr. Padding, divider, gap and text styles are untouched. The two-class selector, chosen so it also beats the later phone-breakpoint single-class .eventRow columns, is correct reasoning.\n- R4 Met. The variant is chosen in ReadingView from hasMatchedEvents. No content-guessing selector is used. A test covers a string \"true\" matchedYear keeping the year column.\n- R5 Met. event-rows-pages.test.ts covers matched and unmatched on both routes, through the real page components. It checks the description order, no year element, linked and plain years, and the source and (pictured) behaviour.\n- R6 Met. I opened matched-1969-07-20-1280, matched-1969-07-20-390 and unmatched-1950-03-15-1280. The matched ones show a full-width description with no year; the unmatched one keeps the linked year column.\n\nIndependence: main has not touched ReadingView.tsx or reading.module.css since the branch base (git diff 5a1df5b main on both files is empty). So the files this sprint edits shouldn't conflict when it's merged, though sprint 50 may still touch them later.\n\nNo issues found. Still UNOWNED, with Master Controller: the 3 lint warnings in the sprint 45 and 46 probe scripts."
+    },
+    {
+      "ts": "2026-11-25T16:16:52+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T16:12:12+00:00"
+    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
+    "claude_agent": "dev-team-2",
+    "ts": "2026-11-25T16:16:52+00:00"
   }
 }
