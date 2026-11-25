@@ -1,16 +1,16 @@
 {
   "id": 48,
   "title": "Other-years events move below the reading",
-  "phase": "dev_build",
-  "qa1_audit_result": "CONDITIONAL",
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "c27cd3fbe91fc914a29513b51cd8c428e0b6b86f4d3f4fc0f349dd80d69d12e4",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "d93249281d15f83c2f1c4927383c2102add60ff297aa66a49be355db1621adf2",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 1,
+  "audit_rounds": 2,
   "live_test_rounds": 0,
   "started": "2026-11-25T15:16:00+00:00",
   "completed": null,
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "CONDITIONAL: CONDITIONAL, gate 1, audit of 2c18a47. There is one cosmetic defect against R5 on phones, in the new \"below\" order. Everything else is met.\n\nSprint file: read fresh. Unchanged since start (73ed69b is the only commit touching it).\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 580 tests.\n\nMy own check: npm run verify at 2c18a47, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 49 test files and 580 tests passed.\n\nDEFECT, R5 (spacing and rules in both orders), phones, \"below\" only. A doubled rule at the foot of the events section.\nDemonstrated from the CSS and Dev Team's own measurements:\n- On phones, .eventsSection has padding 18px 24px 0, so zero bottom padding, and no border-bottom (reading.module.css, phone block).\n- Every .eventRow, including the last one, has border-bottom 1px solid var(--om-rule-faint).\n- Neither .body nor .rightColumn adds padding at the foot on phones.\n- Sprint 47's .randomSection, the next element in \"below\", opens with border-top 1px solid var(--om-rule) (date.module.css:293).\n- So the last row's faint inset rule sits directly against the random section's full-width rule, with 0px between them.\n- report.json for other-years at phone-390 shows the events box bottom (1535) equal to the column bottom (1535). The events section is the last thing in the column, with nothing after its last row's border.\n- phone-390-other-years-foot.png shows the two lines stacked at the 1933 row's foot: an inset line, then a full-width one directly under it.\nThis boundary is new in this sprint. Before, and still in \"above\", the reading section (padding-bottom 24px) is what precedes the random link, so no rule meets it.\nR5 says the rules must look right in both orders, and allows phone padding to change only to fix this kind of problem. The acceptance criterion asks that the screenshots show no doubled rule; this one does.\n\nRequired fix: give the events section a bottom on phones when it's below the reading. For example, .eventsSectionBelow inside the phone block takes the reading section's phone bottom padding (24px). Or drop the last row's border in that order. Either is fine. Re-shoot phone-390-other-years-foot.png, and add a Round 2 section to the handoff.\n\nMet:\n- R1: eventsPlacement in app/reading/[id]/display.ts is built on hasMatchedEvents. It's called once, in ReadingView, and nothing else decides the order (grep). There are four unit tests plus a loose-boolean case.\n- R2, R3 and R4: ReadingView builds the events section once and renders it before or after the reading section, in the same right column, in DOM order. The CSS grep for order, column-reverse or row-reverse exits 1. ReadingView serves both pages, and the render tests cover four cases on each page.\n- R5 on desktop: readingSectionFirst sets flex none, so there's no gap (flexGrow 0 in the report). eventsSectionBelow moves the one rule to the top edge. desktop-1280-other-years.png shows one rule and no gap.\n- R6: the render test gives the order reading, events, random, notable. The foot screenshot confirms it, apart from the defect above.\n- R7: no wording change, and Dev Team's reasoning holds. \"A different date above\" refers to the picker, and \"listed under 'What happened'\" refers to the heading.\n- R8 and R9: met. I opened desktop-1280-other-years, phone-390-other-years and phone-390-other-years-foot. The empty-list case is a local fixture through /reading/[id], which R9 allows, and the handoff says so.\n\nPre-existing, raised by Dev Team and routed to Master Controller (UNOWNED, not part of this verdict):\n(a) On /reading/[id], Sprint 39's message says \"Pick a different date above\", but that page has no picker.\n(b) An unmatched, empty payload is labelled \"on this day, other years\" over \"No recorded events for this day.\"\nAlso still unowned from sprint 47: the 3 lint warnings in probe scripts from sprints 45 and 46."
+    },
+    {
+      "ts": "2026-11-25T15:33:20+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS, gate 1 round 2, audit of 78fd732. Round 1's one defect, the doubled rule at the events' foot on phones in \"below\", is fixed.\n\nSprint file: re-read fresh. Unchanged since start (73ed69b).\n\nHandoff: read at the audited commit. A Round 2 section was added; Round 1 is untouched (no deleted lines in the handoff diff). It quotes VERIFY PASS (lint, typecheck, test, build) exit=0.\n\nCode diff 2c18a47..78fd732: one rule only. In the phone block of reading.module.css, .eventsSectionBelow gains padding-bottom 24px, matching .readingSection's phone bottom padding. It applies only in \"below\", so desktop and the \"above\" order are untouched. Nothing else in app or lib changed.\n\nEvidence:\n- round2/report.json shows a 24px gap between the last event row and the random section on the phone other-years page (0 in round 1). It also shows 24px at the card end on the /reading other-years fixture, and the \"above\" and desktop cases unchanged.\n- I opened round2/phone-390-other-years-foot.png. The 1933 row's faint line, a clear gap, then the rule above Discover random reading. No doubled line.\n- No new unit test, which is justified: it's a layout value, and Vitest has no layout. Round 1's hook test still pins the class.\n\nMy own check: npm run verify at 78fd732, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 49 test files and 580 tests passed.\n\nEverything found met in round 1 stands: R1 to R4, R5 on desktop, R6 to R9.\n\nStill UNOWNED, with Master Controller and not part of this verdict:\n- the \"Pick a different date above\" wording on /reading/[id];\n- the status label over an empty unmatched list;\n- the 3 lint warnings in the sprint 45 and 46 probe scripts."
     }
   ],
   "last_claim": {
     "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
     "claude_agent": "qa1",
-    "ts": "2026-11-25T15:30:14+00:00"
+    "ts": "2026-11-25T15:33:20+00:00"
   }
 }
