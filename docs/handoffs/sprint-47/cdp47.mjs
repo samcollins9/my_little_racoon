@@ -122,15 +122,59 @@ await evaluate("document.activeElement?.blur()");
 await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 5, y: 5 });
 await shot("desktop-1280-today-next-day-disabled.png");
 
-// 4. Phone 390: the random link wraps, nothing scrolls sideways.
+// 4. Phone 390 (R6 as amended in round 2): no random link on the picker
+// row; at the bottom, the reading, then the link, then the notable dates;
+// and the folded horoscope's sticky reveal bar never covers the link.
 await viewport(390, 844, true);
 await load("/date/1969-07-20");
 report.phone = await evaluate(STATE);
-report.phone.randomWrappedBelowGo = !!report.phone.random && report.phone.random.rect.top >= report.phone.go.rect.bottom;
-await shot("phone-390-random-link-wrapped.png");
-await load(`/date/${today}`);
-report.phoneToday = await evaluate(STATE);
-await shot("phone-390-today.png");
+report.phone.layout = await evaluate(`(() => {
+  const r = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); return { top: Math.round(b.top + scrollY), bottom: Math.round(b.bottom + scrollY), height: Math.round(b.height), shown: b.height > 0 }; };
+  const copies = [...document.querySelectorAll('a')].filter(a => a.textContent === 'Discover random reading');
+  const shown = copies.filter(a => a.getBoundingClientRect().height > 0);
+  const reading = [...document.querySelectorAll('h3')].find(h => h.textContent === 'The reading')?.closest('section');
+  const reveal = document.querySelector('details[class*=reveal]');
+  const notable = document.querySelector('nav[aria-labelledby="notable-dates-section-heading"]');
+  const picker = document.querySelector('form[action="/date"]');
+  const days = document.querySelector('nav[aria-label="Previous and next day"]');
+  const chart = document.querySelector('[role=tablist]');
+  return {
+    copies: copies.map(a => ({ href: a.getAttribute('href'), shown: a.getBoundingClientRect().height > 0, inPicker: !!a.closest('form') })),
+    pickerShowsRandomOrOr: [...picker.querySelectorAll('a, span')].some(e => /^(or|Discover random reading)$/.test(e.textContent) && e.getBoundingClientRect().height > 0),
+    revealFolded: !!reveal && !reveal.open, revealPosition: reveal && getComputedStyle(reveal).position,
+    order: { picker: r(picker), days: r(days), chart: r(chart), reading: r(reading), random: r(shown[0]), notable: r(notable) },
+    randomInsideReading: !!reading && !!shown[0] && reading.contains(shown[0]),
+  };
+})()`);
+await shot("phone-390-top-no-random-link.png");
+// Hit-test the link's centre with the link at several heights in the
+// viewport, including flush with the bottom edge, where a sticky bar sits.
+report.phone.stickyHits = [];
+for (const fromBottom of [0, 40, 80, 160, 300]) {
+  report.phone.stickyHits.push(await evaluate(`(() => {
+    const a = [...document.querySelectorAll('a')].find(x => x.textContent === 'Discover random reading' && x.getBoundingClientRect().height > 0);
+    const b = a.getBoundingClientRect();
+    window.scrollBy(0, b.bottom - (innerHeight - ${fromBottom}));
+    const c = a.getBoundingClientRect();
+    const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2);
+    const reveal = document.querySelector('details[class*=reveal]')?.getBoundingClientRect();
+    return { linkBottomFromViewportBottom: Math.round(innerHeight - c.bottom), hitIsLink: hit === a, hit: hit?.tagName + '.' + String(hit?.className).slice(0, 40),
+      revealBarTop: reveal ? Math.round(reveal.top) : null, linkTop: Math.round(c.top), overlap: reveal ? Math.max(0, Math.min(c.bottom, reveal.bottom) - Math.max(c.top, reveal.top)) : 0 };
+  })()`));
+}
+await evaluate("window.scrollTo(0, document.documentElement.scrollHeight)");
+await evaluate(`(() => { const s = [...document.querySelectorAll('h3')].find(h => h.textContent === 'The reading')?.closest('section'); s?.scrollIntoView({ block: 'start' }); })()`);
+await sleep(200);
+{
+  const r = await send("Page.captureScreenshot", { format: "png" });
+  writeFileSync(`${outDir}/phone-390-bottom-reading-random-notable.png`, Buffer.from(r.data, "base64"));
+}
+report.phone.sameHrefInBothCopies = new Set(report.phone.layout.copies.map((c) => c.href)).size === 1;
+
+// 5. Desktop 1280 again: the bottom copy isn't shown there.
+await viewport(1280, 900, false);
+await load("/date/1969-07-20");
+report.desktopCopies = await evaluate(`[...document.querySelectorAll('a')].filter(a => a.textContent === 'Discover random reading').map(a => ({ href: a.getAttribute('href'), shown: a.getBoundingClientRect().height > 0, inPicker: !!a.closest('form') }))`);
 
 writeFileSync(`${outDir}/report.json`, JSON.stringify(report, null, 2));
 ws.close();

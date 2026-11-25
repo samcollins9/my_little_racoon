@@ -26,6 +26,7 @@ import { castHoroscope } from "./actions";
 import { DateNavigation } from "./DateNavigation";
 import { DatePicker } from "./DatePicker";
 import { NotableDatesSection } from "./NotableDates";
+import { RandomReadingSection } from "./RandomReading";
 import styles from "./date.module.css";
 
 /**
@@ -103,8 +104,15 @@ export default async function DatePage({
           <DateNavigation navigation={dayNavigation(isoDate, now)} isoDate={isoDate} />
         </>
       }
-      // Sprint 45, R4: the phone copy of "Other notable dates".
-      afterBody={<NotableDatesSection isoDate={isoDate} />}
+      // Phones only, after the reading section: Sprint 47's random link
+      // (R6, the same pick as the picker row's), then Sprint 45's "Other
+      // notable dates" (R4).
+      afterBody={
+        <>
+          <RandomReadingSection date={randomDate} />
+          <NotableDatesSection isoDate={isoDate} />
+        </>
+      }
     >
       {availability.kind !== "writable" ? (
         <HoroscopeUnavailableSection availability={availability} />

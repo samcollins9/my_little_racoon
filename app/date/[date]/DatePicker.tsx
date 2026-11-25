@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { MIN_SUPPORTED_DATE } from "@/lib/ephemeris/adapter";
-import { datePagePath } from "@/lib/date-page/params";
+import readingStyles from "@/app/reading/[id]/reading.module.css";
+import { RandomReadingLink } from "./RandomReading";
 import styles from "./date.module.css";
 
 const dateOnly = (date: Date) => date.toISOString().slice(0, 10);
@@ -15,10 +15,11 @@ const dateOnly = (date: Date) => date.toISOString().slice(0, 10);
  *   browser's own picker offers nothing in the future; `min` is still the
  *   engine's first supported date. A page left open past midnight UTC
  *   keeps yesterday's max; the server's redirect (R2) is the real guard.
- * - R6: "Discover random reading" follows Go, after an "or", as a link
- *   (it navigates). It shares Go's style rules (.pickerButton) rather than
- *   copying them. With no date to offer (lookup failed, or nothing left
- *   after filtering) neither the link nor its "or" renders.
+ * - R6: on desktop, "Discover random reading" follows Go, after an "or"
+ *   (RandomReading.tsx). Both are desktopOnly: on phones (R6's amendment)
+ *   the link is at the bottom of the page instead, and the picker row is
+ *   just the date and Go. With no date to offer (lookup failed, or nothing
+ *   left after filtering) neither the link nor its "or" renders.
  */
 export function DatePicker({
   isoDate,
@@ -51,16 +52,10 @@ export function DatePicker({
           Go
         </button>
         {randomDate ? (
-          <>
+          <span className={`${styles.pickerRandom} ${readingStyles.desktopOnly}`}>
             <span className={styles.pickerOr}>or</span>
-            <Link
-              href={datePagePath(randomDate)}
-              className={`${styles.pickerButton} ${styles.pickerLink}`}
-              prefetch={false}
-            >
-              Discover random reading
-            </Link>
-          </>
+            <RandomReadingLink date={randomDate} />
+          </span>
         ) : null}
       </div>
     </form>

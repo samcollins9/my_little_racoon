@@ -73,7 +73,15 @@
   text-decoration: none;
 }
 
+/* The desktop copy and its "or", one flex item on the picker row. No
+   `display` here: it shares its element with desktopOnly, which owns it
+   (see .dateNav below). */
+.pickerRandom {
+  white-space: nowrap;
+}
+
 .pickerOr {
+  margin-right: 10px;
   font-family: var(--font-mono), monospace;
   font-size: 10.5px;
   letter-spacing: 0.18em;
@@ -275,6 +283,16 @@
     position-area: block-end span-inline-end;
     position-try-fallbacks: flip-inline;
   }
+}
+
+/* ---- Sprint 47, R6: "Discover random reading", phone copy ---- */
+
+/* After the reading section, outside its sticky reveal, directly above
+   "Other notable dates"; ruled off like the page's other sections. No
+   `display`: mobileOnly owns it. */
+.randomSection {
+  padding: 18px 24px;
+  border-top: 1px solid var(--om-rule);
 }
 
 /* ---- Sprint 45, R4: "Other notable dates", phone copy ---- */

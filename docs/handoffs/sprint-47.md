@@ -93,3 +93,68 @@ I built for production with `next build && next start` against a PostgREST stand
 
 1. **R5's disabled element.** I used `role="link"` on the `<span>`, so `aria-disabled` has a role to apply to, and a screen reader announces "Next day, link, dimmed" with no tab stop. R5 says "not a link and not focusable as one". It isn't an `<a>`, has no `href` and isn't focusable. Is a `role="link"` presentation acceptable, or would you rather it had no role at all, in which case `aria-disabled` on a plain `span` is ignored by most screen readers?
 2. **R4 on the reading page.** The refusal comes after `get_reading_by_id`, because that's the only source of the stored `event_date`. It comes before the admin client and OpenAI, as R4 requires. Is that the placement you'd expect?
+
+## Round 2
+
+**Status:** ready for QA1's re-audit. This round makes QA1's three required fixes for R6's phone amendment, re-checks R9 and changes nothing else.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (48 test files, 563 tests).
+
+### What went wrong in Round 1
+
+Master Controller amended R6 in `9dc8580` (09:42 -0500), after my `/sprint-start` (`5df44d2`, 09:28), at the user's request. I'd read the sprint file at start and built from that read, without re-reading it before handing off, so Round 1 implemented the pre-amendment R6. QA1's diagnosis is correct in every detail. From now on I re-read the sprint file at the commit I'm about to hand off, not only at start.
+
+### Fix 1: on phones, the link moves to the bottom (R6 amendment)
+
+- **`app/date/[date]/RandomReading.tsx` (new):**
+  - `RandomReadingLink` is the one link markup: Go's `.pickerButton` plus `.pickerLink`, unchanged from Round 1.
+  - `RandomReadingSection` is the phone copy: a `mobileOnly` `div.randomSection` holding that link. It renders nothing when there's no date.
+- **`DatePicker.tsx`:** the picker-row "or" and link are now one `span.pickerRandom.desktopOnly`, so at ≤900px the picker row is just the date input and Go.
+- **`page.tsx`:** `afterBody` is now `<RandomReadingSection date={randomDate} />` followed by `<NotableDatesSection … />`. `ReadingView` renders `afterBody` after the `.body` div, so the phone copy sits after the reading section and outside it, and therefore outside its sticky reveal, directly above "Other notable dates".
+- **One pick, shared:** `randomDate` is still computed once (`loadRandomReadingDate`, after `connection()`), and the same value goes to both `DatePicker` and `RandomReadingSection`. There's no second pick and no second lookup.
+- **`date.module.css`:**
+  - `.pickerRandom`: `white-space: nowrap`. It has no `display`, because `desktopOnly` owns that, the same convention as `.dateNav`.
+  - `.pickerOr`: gains `margin-right: 10px`. The flex gap no longer reaches between "or" and the link, since both now sit inside one flex item.
+  - `.randomSection` (new): `padding: 18px 24px; border-top`, with no `display`, because `mobileOnly` owns it.
+
+### Fix 2: tests
+
+`app/date/[date]/future-and-days-page.test.ts`, through the real `DatePage` with `Math.random` fixed:
+- **Same `href`:** exactly two "Discover random reading" links render, and both are `/date/2001-09-11`.
+- **The picker-row copy is desktop-only:** it's inside `<span class="pickerRandom desktopOnly">`, together with its "or".
+- **Placement:** the markup contains `</section></div></div><div class="randomSection mobileOnly">…</div><nav class="notableSection mobileOnly" aria-labelledby="notable-dates-section-heading">`. In other words, the reading section, the right column and the body all close, then comes the phone copy, then the notable dates.
+- **No date:** with nothing to offer, neither copy renders (no `randomSection`, no `pickerRandom`), and the notable dates follow the reading section directly. Round 1's existing cases (lookup fails, empty pool, only the page's own date or the future left) still find no link anywhere.
+
+`DateNavigation.test.tsx`'s picker-row test now expects the `desktopOnly` wrapper.
+
+### Fix 3: phone screenshots, and the sticky reveal bar
+
+I used the same rig as Round 1 (production `next build && next start`, [fake47.mjs](sprint-47/fake47.mjs)). [cdp47.mjs](sprint-47/cdp47.mjs) is updated in this round: its phone section is new, and Round 1's version is at `e444619`. Results are in [round2-report.json](sprint-47/round2-report.json). `/date/1969-07-20` has a saved horoscope, folded.
+
+- **Phone 390, top:** [round2-phone-390-top-no-random-link.png](sprint-47/round2-phone-390-top-no-random-link.png) ← R10's top shot.
+  - The picker row is `ANOTHER DATE [date] GO`. No random link or "or" is visible inside the form.
+  - Then Previous day / Next day, then the chart panel. Their page offsets are: picker 211–248, day links 275–309, chart tabs from 320.
+  - The scroll width is 390.
+- **Phone 390, bottom:** [round2-phone-390-bottom-reading-random-notable.png](sprint-47/round2-phone-390-bottom-reading-random-notable.png) ← R10's bottom shot.
+  - The reading section (offset 784–1054), then DISCOVER RANDOM READING (1073–1107), then "Other notable dates" (from 1125).
+  - The visible copy isn't inside the reading section.
+- **Both copies on the phone render share one `href`** (`/date/1961-04-12`). Only the bottom one is shown.
+- **The sticky reveal bar** is `position: sticky`, and the horoscope is folded. I scrolled so the link's bottom edge sat 0, 40, 80, 160 and 300px above the viewport's bottom edge. In all five positions, `elementFromPoint` at the link's centre **was the link**, and the overlap between the link and the reveal bar was **0px**. The bar stops at the end of its own reading section, which ends above the link.
+- **Desktop 1280:** both copies point at the same date, the picker-row copy is shown and the bottom copy isn't. [round2-desktop-1280-picker-row-and-days.png](sprint-47/round2-desktop-1280-picker-row-and-days.png) shows the row as in Round 1, with the "or" spacing kept. The disabled Next day on today's page is unchanged ([round2-desktop-1280-today-next-day-disabled.png](sprint-47/round2-desktop-1280-today-next-day-disabled.png)): Tab never reaches it, and a click doesn't navigate.
+- **Five loads** gave 1912-04-15, 1961-04-12, 1912-04-15, 2001-09-11 and 1961-04-12. None was the page's own date or the future.
+
+Round 1's evidence files are left as they were. Round 2's are the `round2-*` files.
+
+### R9 re-checked
+
+The README paragraph now says where the link sits on phones (the bottom of the page, after the reading and above "Other notable dates"), and that one pick per request serves both places. Nothing else in it changed.
+
+### Acceptance greps, re-run after the last change, unpiped
+
+- `grep -rn "get_adjacent_reading_dates\|Previous reading\|Next reading" app lib` gives `R7 grep exit=1`.
+- `git diff --quiet HEAD -- supabase/migrations` gives `exit=0`.
+
+### Not changed
+
+- R1–R5, R7 and R8 are unchanged, along with QA1's rulings on both of my Round 1 questions.
+- The 3 lint warnings in my Sprint 45/46 probe scripts are still there. They're routed to Master Controller by QA1, and this round leaves them alone.

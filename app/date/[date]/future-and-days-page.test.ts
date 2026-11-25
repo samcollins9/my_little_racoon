@@ -136,6 +136,34 @@ describe("Discover random reading on the page (R6)", () => {
     expect(html).toMatch(/<a [^>]*href="\/date\/2001-09-11"[^>]*>Discover random reading<\/a>/);
   });
 
+  it("phones get it at the bottom: one pick, the same href in both copies (R6 amendment)", async () => {
+    useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: RECENT });
+    vi.spyOn(Math, "random").mockReturnValue(0.75);
+    const html = unhashClasses(await renderDatePage("1969-07-20"));
+
+    const hrefs = [...html.matchAll(/<a [^>]*href="([^"]+)"[^>]*>Discover random reading<\/a>/g)].map((m) => m[1]);
+    expect(hrefs).toEqual(["/date/2001-09-11", "/date/2001-09-11"]);
+
+    // The picker-row copy, with its "or", is desktop-only.
+    expect(html).toContain('<span class="pickerRandom desktopOnly"><span class="pickerOr">or</span><a ');
+    // The phone copy closes the reading section, the right column and the
+    // body, then comes first in the card's foot, outside the reading
+    // section (and its sticky reveal), directly before the notable dates.
+    const bottom = html.match(/<div class="randomSection mobileOnly">[\s\S]*?<\/div>/)?.[0];
+    expect(bottom).toBeDefined();
+    expect(html).toContain(
+      `</section></div></div>${bottom}<nav class="notableSection mobileOnly" aria-labelledby="notable-dates-section-heading">`
+    );
+  });
+
+  it("with no date to offer, neither copy renders", async () => {
+    useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: ok([]) });
+    const html = unhashClasses(await renderDatePage("1969-07-20"));
+    expect(html).not.toContain("randomSection");
+    expect(html).not.toContain("pickerRandom");
+    expect(html).toContain('</section></div></div><nav class="notableSection mobileOnly"');
+  });
+
   it("calls only the two lookups, and the random one takes no argument", async () => {
     const fake = useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: RECENT });
     await renderDatePage("1969-07-20");
