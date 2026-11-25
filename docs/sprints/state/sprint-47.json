@@ -1,17 +1,17 @@
 {
   "id": 47,
   "title": "Day-by-day navigation, a random reading link, and no future dates",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a00ce2dfbc5f52446548cec26ad1fdaefc028ac0d67340dbf31778a4b007422c",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "12eeb0a496a9401711784a6bd1f2b9695e6aeb7f3e3592a3d2b1a9779cac5fea",
   "last_shipped_commit": "7b65d174aef3ab20d712debc2e6977f3c4d037d4",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 2,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-25T14:28:14+00:00",
   "completed": null,
   "history": [
@@ -44,11 +44,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=7b65d17 | ci=green: 1 CI run(s) for 7b65d174aef3ab20d712debc2e6977f3c4d037d4 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T15:21:27+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). LiveQA steps 1 to 6 all pass on production. No defects. One observation for the user on step 3's contrast, below.\n\nTested 2026-11-25, about 15:17 to 15:40 UTC, against https://my-little-racoon.vercel.app. Today (UTC) was 2026-11-25, tomorrow 2026-11-26.\nShipped commit 7b65d17. Production serves the pushed tip 67cf3b1: /api/health/db reports status ok, connected true, commit 67cf3b1, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat 7b65d17 origin/main touches only docs/sprints/state/sprint-47.json.\nTools: curl; headless Chromium (Playwright 1.57) at 1280x1000, and at 390x844 (isMobile, hasTouch) with JS on and off.\n\nSTEP 1, redirects: PASS. curl -sI at 15:17:07-15:17:09 UTC (response date: Wed, 25 Nov 2026 15:17:07 GMT):\n- /date/2026-11-26: HTTP/2 307, location /date/2026-11-25.\n- /date?date=2026-11-26: 307, location /date/2026-11-25.\n- Also /date/2027-01-01, /date?date=2100-12-31 and /date/2026-11-26?x=1: 307 to /date/2026-11-25.\n- /date/2101-01-01: 404. /date/2024-02-30: 404. /date?date=2101-01-01 and /date?date=2024-02-30: 404 (15:20:57 UTC).\n- Controls: /date/2026-11-25 200, /date/1969-07-20 200, /date?date=1969-07-20 307 to /date/1969-07-20, / 307 to /date/2026-11-25.\n- Every response has cache-control \"private, no-cache, no-store, max-age=0, must-revalidate\".\n\nSTEP 2, day links: PASS.\n- /date/1969-07-20: prev \"\u2190 PREVIOUS DAY 19 July 1969\" to /date/1969-07-19; next \"NEXT DAY \u2192 21 July 1969\" to /date/1969-07-21. Clicking each lands there (h1 \"19 July 1969\", \"21 July 1969\"). Nav aria-label \"Previous and next day\".\n- Calendar edges on production: 2000-02-28 next 2000-02-29; 2001-02-28 next 2001-03-01; 1999-12-31 next 2000-01-01; 2000-03-01 prev 2000-02-29.\n- /date/1700-01-01: no Previous day link; Next day to /date/1700-01-02.\n- No \"Previous reading\" or \"Next reading\" anywhere on these pages.\n- Screenshot: s47-1280-1969.png.\n\nSTEP 3, today's page /date/2026-11-25: PASS.\n- Previous day goes to /date/2026-11-24. No rel=next link.\n- Next day is a SPAN with aria-disabled=\"true\", no href, no tabindex, cursor default. Its text: \"NEXT DAY \u2192 Reloy predicts only the past.\"\n- The message \"Reloy predicts only the past.\" is visible text (a SPAN, 15px), not a tooltip.\n- A forced click on the disabled element left the URL at /date/2026-11-25. Tabbing through the page never focused it.\n- Screenshots: s47-1280-today.png, s47-today-disabled-zoom.png.\n- Contrast, measured on the canvas: the \"Next day \u2192\" label is rgb(43,42,53) on rgb(9,9,15), 1.40:1 at 9.5px; the message is rgb(127,127,137) on the same background, 5.01:1 at 15px. The label is barely visible, which reads as disabled, and the message carries the meaning, as QA1 noted. WCAG's text-contrast rule exempts inactive controls, so this is not recorded as a defect. Judged from headless screenshots, not a physical device.\n\nSTEP 4, picker: PASS. On today's page, the date input has min \"1700-01-01\" and max \"2026-11-25\". Setting 2026-11-26 gives validity.rangeOverflow true and form.checkValidity() false; 2026-11-25 is valid. Typing 2026-11-26 and clicking Go does not submit: the URL stays /date/2026-11-25 and the browser message is \"Value must be 11/25/2026 or earlier.\" Max was also 2026-11-25 on every other date page tested. The browser's own calendar popup can't be opened headless; the max attribute and validation are what restrict it.\n\nSTEP 5, Discover random reading: PASS.\n- Five loads of /date/1969-07-20: /date/1971-11-24, /date/2008-09-15, /date/1920-08-19, /date/1918-11-11, /date/2004-12-26 (5 distinct).\n- Five loads of /date/2026-11-25: /date/1939-09-01, /date/1991-11-07, /date/1939-09-01, /date/2023-05-06, /date/1991-11-07 (3 distinct).\n- Never the page's own date and never after today, across these and all the other loads in this test (about 25 more).\n- Each target I opened (1971-11-24, 2008-09-15, 1920-08-19, 2004-12-26, 2023-05-06, 1991-11-07, 2009-11-23, 2021-01-06) has a saved horoscope: \"Revealed on request\" is in the page, status \"this exact date\".\n- Clicking the link on /date/1969-07-20 went to /date/2009-11-23, a saved reading.\n- Both copies in the page carry the same href on every load checked (one is hidden by layout).\n\nSTEP 6, layout: PASS.\n- 390px, on /date/1969-07-20, /date/2026-11-25 and the redirects from /date/2026-12-16 and /date/2031-05-09:\n  - The picker row reads \"ANOTHER DATE GO\", with no visible random link. scrollWidth 390.\n  - The order down the page (y on 1969-07-20) is: picker 211, Previous day / Next day 275, chart tabs 320, reading section 880-1149, Discover random reading 1168, \"Other notable dates\" 1239. The link is outside the reading section. The same order holds with the no-events message.\n  - Tapping the link navigates to its target.\n  - With JS off: scrollWidth 390, one visible link.\n- Folded horoscope, 390px, on /date/1912-04-15 and /date/1969-09-01 (saved readings, showing \"NOT REVEALED YET\" with \"REVEAL THE HOROSCOPE\"):\n  - With the link scrolled to y = 100, 400, 700, 760, 780, 800, 820 and 840 px, elementFromPoint at the link's centre always returned the link.\n  - The sticky reveal bar always ended above the reading section's bottom, which is above the link.\n  - Screenshots s47-390-1912-04-15-off780.png and s47-390-1969-09-01-off700.png / -off800.png show the link fully visible below the reveal bar.\n  - One probe point at the very last pixel row (y 843 of 844) on 1969-09-01, with the link 4px into view, did not hit the link. Centre samples did, and the screenshots show no overlap. Not a defect.\n- 1280px, on the same four pages: the link is on the picker row after Go, reading \"ANOTHER DATE GO OR DISCOVER RANDOM READING\"; it's the only visible copy, and there's none at the bottom. Screenshot: s47-1280-row.png.\n- Go-button style, read with the mouse away from both. Go and the link compute identically at rest, on hover and on focus: border 1px solid, IBM Plex Mono 10.5px weight 400, uppercase, letter-spacing 1.89px, padding 9px 16px, the same text and border colours in each state, and on focus an outline of rgb(16,16,16) auto 1px. Both are 34px tall on the same row.\n\nEverything else, spot-checked: the banner, Sprint 45's notable list (20 entries) and Sprint 39's no-events message render. 0 console or page errors across every run."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-25T14:56:33+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T15:21:27+00:00"
   }
 }
