@@ -1,7 +1,7 @@
 {
   "id": 50,
   "title": "Notable dates move to the page footer on desktop",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "df3d7427013645176972342735cc8ef36f4173dff9516bba9d51c33b7a644677",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,11 +26,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS, gate 1, audit of f8787ca.\n\nSprint file: read fresh. Unchanged since start (791c297 is the only commit touching it).\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 600 tests.\n\nDiff: f8787ca's parent is 6960485, after the sprint 51 merge (b389c5c), so the diff is sprint 50 alone.\n\nMy own check: npm run verify at f8787ca, on a clean tree. Result: verify=0, VERIFY PASS exit=0, 53 test files and 600 tests passed.\n\n- R1 Met. DateNavigation no longer renders the list or takes isoDate. page.tsx's belowDateBand holds only DatePicker and DateNavigation. afterBody now ends with NotableDatesPanel (desktopOnly), so on desktop it comes after the body and is the card's last shown section.\n- R2 Met as far as a static audit can tell. The heading, list, item, link, current-date and tooltip rules are untouched. The only new declarations are on .notablePanel: padding 12px 40px 14px and border-top 1px var(--om-rule). Each is sourced in the handoff and in a CSS comment (flowSlot's gutter and bottom padding, the removed adjacent-plus-strip 12px, and dateNav's rule). The rename from Strip to Panel touches class and id names only; the JSX inside is unchanged.\n  Dev Team's computed-style fingerprints before and after are identical. The pixel difference is explained as sub-pixel text positioning, by an inference Dev Team states plainly. LiveQA's step 1 visual comparison settles it.\n- R3 Met. NotableDatesSection is unchanged. The phone probe matches sprint 48's round 2 report.\n- R4 Met. In the anchor path, position-try-fallbacks adds flip-block and flip-block flip-inline. Closed tooltips are still display none. The containing block follows the rename (main:has(.notablePanel)).\n  The measurement table shows closed and max-open scrollWidth equal to the viewport at all seven widths, scrollHeight unchanged while open, and all 20 tooltips inside the card and the viewport.\n  I opened after-1280-bottom-last-row-tooltip.png: 11 March 2020's tooltip opens upward, inside the card. While open, it covers part of the row above, which is expected for an open tooltip.\n  The fallback path is unchanged: sprint 45's accepted limitation, which R4 allows.\n- R5 Met. A grep for notableStrip, NotableDatesStrip and notable-dates-strip across app and lib finds only the explanatory comment at date.module.css:190. No selector targets the old strip position. The adjacent-plus-strip rule is removed.\n- R6 Met. The panel is last in the DOM, so it is last in Tab order. This is confirmed in the handoff's browser check.\n- R7 Met. NotableDates.test.tsx and notable-dates-page.test.ts are updated and listed in the handoff. The page test asserts the strip holds the picker and day links with no notable dates, the desktop panel is the card's last child after the phone copy, and aria-describedby links each date to its tooltip.\n- R8 Met. I opened both required screenshots. after-1280-top-strip.png shows the strip with the picker, Go, the random link and the day links, and no notable dates.\n\nNo issues found. Still UNOWNED, with Master Controller: the 3 lint warnings in the sprint 45 and 46 probe scripts.\n\nFor LiveQA: step 1's before/after visual comparison is the real R2 check, since the pixel diff is explained only by inference. Step 4 (Firefox) has not been run by anyone."
+    },
+    {
+      "ts": "2026-11-25T19:30:26+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T16:31:54+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T19:30:26+00:00"
   }
 }
