@@ -308,10 +308,11 @@
       "file": "docs/sprints/2-in-progress/sprint-51_this-exact-date-events-drop-the-year-column.md"
     },
     "52": {
-      "title": "Another date panel moves below the reading",
+      "title": "Date page order: day links on top, picker below the reading",
       "epic": "Date pages (PRD v3)",
       "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-52_another-date-panel-moves-below-the-reading.md"
+      "file": "docs/sprints/1-todo/sprint-52_date-page-order-day-links-on-top-picker-below-the-reading.md",
+      "original_title": "Another date panel moves below the reading"
     }
   }
 }

@@ -1,6 +1,7 @@
 ---
 id: 52
-title: "Another date panel moves below the reading"
+title: "Date page order: day links on top, picker below the reading"
+original_title: "Another date panel moves below the reading"
 epic: "Date pages (PRD v3)"
 status: todo
 created: 2026-11-25T15:59:03+00:00
