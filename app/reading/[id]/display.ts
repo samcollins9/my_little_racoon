@@ -26,6 +26,24 @@ export function eventsLabel(events: WikipediaEventsPayload | null): string {
 }
 
 /**
+ * Sprint 48, R1: where "What happened" goes relative to "The reading" --
+ * the one rule for it. Only a real list of other years' events goes
+ * below: the visitor came for this date, so its own events (or the news
+ * that it has none) come first, and other years' events wait until after
+ * the reading. A matched payload, an unmatched payload with no events, and
+ * a null payload (lookup failed, or nothing looked up) all stay above.
+ *
+ * Built on hasMatchedEvents, the rule the status label ("on this day,
+ * other years") and Sprint 39's messages already share, so the three can
+ * never disagree.
+ */
+export type EventsPlacement = "above" | "below";
+
+export function eventsPlacement(events: WikipediaEventsPayload | null): EventsPlacement {
+  return events !== null && !hasMatchedEvents(events) && events.events.length > 0 ? "below" : "above";
+}
+
+/**
  * R9: paragraphs, not raw HTML. Splitting on newlines and letting the
  * caller map each string to a <p> via JSX text content is what keeps this
  * safe -- React escapes text content by default, so nothing here needs to

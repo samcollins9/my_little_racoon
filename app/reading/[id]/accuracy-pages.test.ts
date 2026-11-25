@@ -68,10 +68,15 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** "What happened", up to the reading section. */
-const eventsColumn = (html: string) => html.slice(html.indexOf("What happened"), html.indexOf(">The reading<"));
-/** "The reading" section, to the end of the page. */
-const readingSection = (html: string) => html.slice(html.indexOf(">The reading<"));
+/** From a section's heading to the end of that <section>, whichever order the two are in (Sprint 48). */
+const sectionFrom = (html: string, heading: string) => {
+  const start = html.indexOf(heading);
+  return html.slice(start, html.indexOf("</section>", start));
+};
+/** "What happened", its own section only. */
+const eventsColumn = (html: string) => sectionFrom(html, ">What happened<");
+/** "The reading", its own section only. */
+const readingSection = (html: string) => sectionFrom(html, ">The reading<");
 /** Every <form> on the page except the date picker's plain GET to /date. */
 const writeForms = (html: string) =>
   (html.match(/<form[^>]*>/g) ?? []).filter((tag) => !(/ action="\/date"/.test(tag) && / method="get"/.test(tag)));

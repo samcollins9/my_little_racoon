@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
-import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
+import { eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 
 function events(overrides: Partial<WikipediaEventsPayload> = {}): WikipediaEventsPayload {
   return {
@@ -28,6 +28,29 @@ describe("eventsLabel (R2, R4)", () => {
   // unmatched day with no events has no other-year happenings to show.
   it("an unmatched payload with no events says there are none", () => {
     expect(eventsLabel(events({ matchedYear: false, events: [] }))).toBe("No recorded events for this day.");
+  });
+});
+
+describe("eventsPlacement (Sprint 48, R1)", () => {
+  it("matched (this exact date): above the reading", () => {
+    expect(eventsPlacement(events({ matchedYear: true, events: [{ year: 1977, text: "x" }] }))).toBe("above");
+  });
+
+  it("unmatched with events (on this day, other years): below the reading", () => {
+    expect(eventsPlacement(events({ matchedYear: false }))).toBe("below");
+  });
+
+  it("unmatched and empty (no recorded events for this day): above the reading", () => {
+    expect(eventsPlacement(events({ matchedYear: false, events: [] }))).toBe("above");
+  });
+
+  it("null (lookup failed, or nothing looked up): above the reading", () => {
+    expect(eventsPlacement(null)).toBe("above");
+  });
+
+  it("a stored row whose matchedYear isn't the boolean true counts as unmatched, as hasMatchedEvents says", () => {
+    const loose = events({ matchedYear: "true" as unknown as boolean });
+    expect(eventsPlacement(loose)).toBe("below");
   });
 });
 

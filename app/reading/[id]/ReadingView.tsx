@@ -13,7 +13,7 @@ import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
 import { hasMatchedEvents } from "@/lib/events/matched";
 import { stripPictureNotes } from "@/lib/events/picture-notes";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
-import { eventsLabel, horoscopeParagraphs, isSafeExternalUrl } from "./display";
+import { eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 import { eventsStatusLabel, formatLongDate } from "./format";
 import { AspectsPanel, PlanetsTable, SignsTable } from "./ChartKeyTables";
 import { ChartTabs } from "./ChartTabs";
@@ -86,12 +86,52 @@ export function ReadingView({
   const chart = composeChart(eventDate, positions);
   const longDate = formatLongDate(eventDate);
   const status = eventsStatusLabel(events);
+  // Sprint 48: other years' events follow the reading (eventsPlacement).
+  const eventsBelow = eventsPlacement(events) === "below";
 
   const bodies = computeBodies(chart.positions);
   const threads = computeThreads(chart.aspects, bodies);
   const sectors = computeSectors(bodies);
   const dateBandMoon = computeMoonPhaseGeometry(chart.positions, 15, 15, 12);
   const calculationHour = `${String(CALCULATION_HOUR_UTC).padStart(2, "0")}:00 UT`;
+
+  const eventsSection = (
+    <section
+      className={
+        eventsBelow ? `${styles.eventsSection} ${styles.eventsSectionBelow}` : styles.eventsSection
+      }
+    >
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>What happened</h2>
+        {status ? <span className={styles.eventsStatus}>{status}</span> : null}
+      </div>
+      {events && events.events.length > 0 ? (
+        <div className={styles.eventsList}>
+          {events.events.map((event, i) => (
+            <div key={i} className={styles.eventRow}>
+              <EventYear
+                year={event.year}
+                eventDate={eventDate}
+                linked={!hasMatchedEvents(events)}
+              />
+              <span className={styles.eventText}>
+                {/* Sprint 42: we never show Wikipedia's picture, so its "(pictured)" note goes. */}
+                {stripPictureNotes(event.text)}
+                {isSafeExternalUrl(event.sourceUrl) ? (
+                  <>
+                    {" "}
+                    (<a href={event.sourceUrl}>source</a>)
+                  </>
+                ) : null}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.eventsEmpty}>{eventsLabel(events)}</p>
+      )}
+    </section>
+  );
 
   return (
     <div className={styles.page}>
@@ -197,40 +237,19 @@ export function ReadingView({
             </div>
           </div>
 
+          {/* Sprint 48, R2/R3: the order is the DOM order -- whichever section
+              renders first is first, for the eye, Tab and screen readers
+              alike; no CSS reordering. */}
           <div className={styles.rightColumn}>
-            <section className={styles.eventsSection}>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>What happened</h2>
-                {status ? <span className={styles.eventsStatus}>{status}</span> : null}
-              </div>
-              {events && events.events.length > 0 ? (
-                <div className={styles.eventsList}>
-                  {events.events.map((event, i) => (
-                    <div key={i} className={styles.eventRow}>
-                      <EventYear
-                        year={event.year}
-                        eventDate={eventDate}
-                        linked={!hasMatchedEvents(events)}
-                      />
-                      <span className={styles.eventText}>
-                        {/* Sprint 42: we never show Wikipedia's picture, so its "(pictured)" note goes. */}
-                        {stripPictureNotes(event.text)}
-                        {isSafeExternalUrl(event.sourceUrl) ? (
-                          <>
-                            {" "}
-                            (<a href={event.sourceUrl}>source</a>)
-                          </>
-                        ) : null}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.eventsEmpty}>{eventsLabel(events)}</p>
-              )}
+            {eventsBelow ? null : eventsSection}
+            <section
+              className={
+                eventsBelow ? `${styles.readingSection} ${styles.readingSectionFirst}` : styles.readingSection
+              }
+            >
+              {children}
             </section>
-
-            <section className={styles.readingSection}>{children}</section>
+            {eventsBelow ? eventsSection : null}
           </div>
         </div>
 

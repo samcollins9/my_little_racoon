@@ -320,6 +320,20 @@
   flex: 1;
 }
 
+/* Sprint 48, R5: other years' events follow the reading (ReadingView).
+   The reading section then stops growing, so its flex: 1 can't open a gap
+   above the events or push them to the column's foot; and the events
+   section's rule moves from its bottom edge to its top, so the one
+   divider still sits between the two sections. */
+.readingSectionFirst {
+  flex: none;
+}
+
+.eventsSectionBelow {
+  border-bottom: none;
+  border-top: 1px solid var(--om-rule);
+}
+
 .readingHeader {
   display: flex;
   align-items: baseline;
@@ -646,6 +660,12 @@
   .eventsSection {
     padding: 18px 24px 0;
     border-bottom: none;
+  }
+
+  /* Sprint 48, R5: phones have no rule between the two sections either
+     way. The events keep their own padding. */
+  .eventsSectionBelow {
+    border-top: none;
   }
 
   .sectionTitle {
