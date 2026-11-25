@@ -297,15 +297,16 @@
 }
 
 /* Sprint 39, R3-R5: why no horoscope can be written for this date. The same
-   measure and colour as the date page's outage notice (date.module.css's
-   .unavailableText), with the reason itself in the brighter text colour. */
+   type and colour as the date page's outage notice (date.module.css's
+   .unavailableText), with the reason itself in the brighter text colour.
+   Sprint 53: no max-width here or on any other prose in the reading
+   section, so it wraps at the same right edge as the event text. */
 .accuracyNote {
   margin: 0;
   padding: 10px 0 4px;
   font-size: 19px;
   line-height: 1.55;
   color: var(--om-grey);
-  max-width: 46ch;
   text-wrap: pretty;
 }
 
@@ -393,7 +394,6 @@
   font-size: 19px;
   line-height: 1.55;
   color: var(--om-grey);
-  max-width: 46ch;
   text-wrap: pretty;
 }
 
@@ -486,7 +486,6 @@
   font-size: 19.5px;
   line-height: 1.62;
   color: var(--om-bone);
-  max-width: 62ch;
   text-wrap: pretty;
 }
 
@@ -728,7 +727,6 @@
   .paragraph {
     font-size: 18px;
     line-height: 1.58;
-    max-width: none;
   }
 
   /* R4: touch targets clear 44px at this size -- an accessibility floor,
