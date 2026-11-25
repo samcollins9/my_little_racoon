@@ -68,7 +68,7 @@ On 25 Nov 2026 the user asked for one order on both layouts. On 25 Nov 2026 they
 ### Dependencies
 
 - **Blocks:** nothing.
-- **Blocked by:** Sprint 50 has to close first, because this sprint's order assumes its footer placement. Sprints 49 (in progress), 50 and 51 all touch `app/date/[date]/page.tsx` and `ReadingView`, so run this one after them, one at a time. If the user would rather do 52 before 51, it doesn't depend on 51.
+- **Blocked by:** Sprint 50 has to close first, because this sprint's order assumes its footer placement. Sprint 51, running in parallel on Dev Team 2, also has to close and be merged into main, because both edit around `ReadingView`'s body. Start from a main that contains both.
 - **External:** none.
 
 ### Human Prerequisites

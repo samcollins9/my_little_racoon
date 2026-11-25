@@ -49,7 +49,7 @@ Unmatched lists keep both columns. Their year links are how a visitor reaches an
 ### Dependencies
 
 - **Blocks:** nothing.
-- **Blocked by:** Sprint 47 has to close first, and Sprint 48 too. Sprint 48 restructures the same events section of `ReadingView.tsx`. Don't run it alongside 49 or 50 either, since they all touch the same page files.
+- **Blocked by:** nothing now. Sprints 47 and 48 have closed. *(Amended 25 Nov 2026 to run in parallel.)* Sprint 49's diff (`page.tsx` for dates and readings, `layout.tsx`, `not-found.tsx`, `reading/[id]/load.ts`, `lib/site-title.ts`) doesn't touch `ReadingView.tsx` or `reading.module.css`, which are this sprint's files. Sprint 50 works in `app/date/[date]/` (`page.tsx`, `NotableDates.tsx`, `date.module.css`). So this sprint can run in parallel with 49's live test and with 50, in Dev Team 2's worktree. If Sprint 50 ends up needing `ReadingView.tsx` or `reading.module.css`, whichever team gets there second flags it before editing.
 - **External:** none.
 
 ### Human Prerequisites
@@ -58,8 +58,8 @@ None.
 
 ### Team Assignments
 
-- **Dev Team 1:** all of it, after Sprint 48.
-- **Dev Team 2:** not assigned.
+- **Dev Team 1:** not assigned.
+- **Dev Team 2:** all of it, in its own worktree. Run `/sprint-worktree 51` before building, and stay in it for the whole sprint. Close by handing the branch to Pipeman to merge (CLAUDE.md, "The worktree's life does not end at close").
 
 ### Risks & Mitigations
 
