@@ -292,8 +292,8 @@
     "49": {
       "title": "Page title shows the date",
       "epic": "Date pages (PRD v3)",
-      "status": "todo",
-      "file": "docs/sprints/1-todo/sprint-49_page-title-shows-the-date.md"
+      "status": "in_progress",
+      "file": "docs/sprints/2-in-progress/sprint-49_page-title-shows-the-date.md"
     },
     "50": {
       "title": "Notable dates move to the page footer on desktop",
