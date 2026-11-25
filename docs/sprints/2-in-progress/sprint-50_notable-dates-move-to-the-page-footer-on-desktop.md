@@ -2,7 +2,7 @@
 id: 50
 title: "Notable dates move to the page footer on desktop"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-25T15:46:51+00:00
 ---
 
