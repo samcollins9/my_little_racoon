@@ -109,3 +109,9 @@ The date page's order on both layouts: banner → date band → Previous/Next da
 ## 25 Nov 2026: page order amended, footer renamed (Sprint 52)
 
 This supersedes the order recorded above. Previous/Next day sit directly under the banner, above the date band, so "The sky over <date>" sits directly above the chart. The full order on both layouts: banner → Previous/Next day → date band → chart, events and reading → "Another date" panel → "Notable dates", renamed from "Other notable dates".
+
+## Potential enhancements (not planned)
+
+Ideas the user has deliberately parked. Nothing here gets a sprint until the user asks for it.
+
+- **Raw-data tab** (parked 25 Nov 2026). A chart-panel tab showing the reading's underlying data. Before it could be planned, three questions need answers: what it shows, its format, and whether it appears on phones.
