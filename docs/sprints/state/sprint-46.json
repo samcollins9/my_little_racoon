@@ -1,13 +1,13 @@
 {
   "id": 46,
   "title": "Install Google Analytics through Google Tag Manager",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "36bb112f28487d9787abc55bf831c48262f13d5f9c6c5f43c8770f7675110dde",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "1cdab833f53c33f4417fb4f057dcbb8baca01fd2973c3e88078ac2964f54fc61",
   "last_shipped_commit": "f3b47be50db72b4ad1dff9ab5fb92727034c1cf8",
-  "groundtruth_result": "CONDITIONAL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-11-24T23:08:47+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-11-24T22:10:13+00:00",
   "completed": null,
   "history": [
@@ -69,11 +69,17 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=f3b47be | ci=green: 1 CI run(s) for f3b47be50db72b4ad1dff9ab5fb92727034c1cf8 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T14:15:38+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 2). The round 1 defect is fixed on production, with no regressions. Step 7 (GA4 Realtime) still not checked: nobody was watching Analytics during the test.\n\nTested 2026-11-25, about 14:10 to 14:25 UTC, against https://my-little-racoon.vercel.app.\nReshipped commit f3b47be. Production serves the pushed tip f747a61: /api/health/db reports status ok, connected true, commit f747a61, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff --stat f3b47be origin/main touches only docs/sprints/state/sprint-46.json.\nTools:\n- Headless Chromium (Playwright 1.57) at 1280x1000, with a fresh context per page, and CDP Network.requestWillBeSent for initiators.\n- curl.\n- A fresh git clone at f3b47be in a scratch directory: npm ci exit=0, npm run build exit=0 (no VERCEL_* variables in the shell), then next start.\nNote: these production runs sent real GA4 hits to G-NFY3Q9KSXH, hostname my-little-racoon.vercel.app, around 14:11 to 14:15 UTC, from headless Chromium. No local run executed the tag.\n\nROUND 1 DEFECT, route-level 404s: FIXED. Fresh context per page:\n- /date/not-a-date: 404, title \"404: This page could not be found.\", gtm.js loads=1, dataLayer[0] is [\"js\", <timestamp>], page_view@/date/not-a-date sent.\n- /date/1054-07-04: 404, gtm.js loads=1, dataLayer[0] js, page_view@/date/1054-07-04.\n- /reading/00000000-0000-4000-8000-000000000000: 404, gtm.js loads=1, dataLayer[0] js, page_view@ that path.\n- CDP on /date/not-a-date: exactly one Script request for gtm.js?id=GTM-T9WQSKH3, then g/collect fetches initiated from gtm.js. dataLayer events js, gtm.dom, gtm.load, gtm.scrollDepth. No preload link for the container.\n- Server HTML now has GTM-T9WQSKH3 twice on these pages, the same as normal pages (round 1: once).\n\nNO REGRESSIONS:\n- /date/1969-07-20: 200, gtm.js loads=1, page_view@/date/1969-07-20 (POST www.google-analytics.com/g/collect, tid=G-NFY3Q9KSXH, 204). google_tag_manager key GTM-T9WQSKH3. No gtag/js script.\n- /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d: 200, gtm.js loads=1, page_view sent.\n- /no-such-page: 404, gtm.js loads=1, page_view@/no-such-page.\n- In-app navigation, one visit: load /date/1969-07-20, Next reading to /date/1969-09-01, Previous reading back, the notable link to /date/1912-04-15, the banner home link to /date/2026-11-25. gtm.historyChange-v2 events 1, 2, 3, 4; page_views for /date/1969-07-20, /date/1969-09-01, /date/1969-07-20, /date/1912-04-15 and /date/2026-11-25 (the last on leaving, GA4 batching). Total gtm.js loads for the visit: 1.\n- Each hard load of a new document loads gtm.js once (one per document).\n- Console: only the expected 404 resource errors on 404 pages, plus a CSS-preload-unused warning on /date/not-a-date.\nDesign note, not a defect: the inline snippet now runs as an afterInteractive script in body and inserts the container itself, so the inline script is no longer in head before the container. Ordering still holds at runtime: dataLayer[0] is the js command on every page tested. QA1 ruled this acceptable under R2.\n\nABSENT OUTSIDE PRODUCTION: PASS. Local build of f3b47be, server HTML read with curl, dummy Supabase and OpenAI env:\n- VERCEL_ENV unset (port 3956): /date/1969-07-20, /date/not-a-date, /date/1054-07-04 and /no-such-page each have 0 GTM-T9WQSKH3, 0 googletagmanager and 0 dataLayer.\n- VERCEL_ENV=preview (port 3957): 0 of each on all four.\n- VERCEL_ENV=production (port 3958), positive control: /date/1969-07-20, /date/not-a-date and /date/1054-07-04 each have 2 GTM-T9WQSKH3, 2 googletagmanager and 3 dataLayer. /no-such-page has 0, because the default 404 is prerendered at build time without VERCEL_ENV, the same as round 1; on Vercel it builds with it, and production shows the tag there (above).\nI didn't look for a Vercel preview deployment.\nServers stopped, clone deleted.\n\nSTEP 7, GA4 Realtime: NOT CHECKED. Nobody watched Realtime. The hits above returned 204 from G-NFY3Q9KSXH's collect endpoint."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-24T23:15:34+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T14:15:38+00:00"
   }
 }
