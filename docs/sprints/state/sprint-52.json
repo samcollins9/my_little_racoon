@@ -1,7 +1,7 @@
 {
   "id": 52,
   "title": "Date page order: day links on top, picker below the reading",
-  "phase": "qa1_audit",
+  "phase": "dev_agreed_done",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "9f4d5a0fee421e89d6bdb85ef3acf2e445f25a5c642f2c03de73817cef8f2cad",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -38,11 +38,17 @@
       "actor": "qa1",
       "event": "audit",
       "detail": "PASS: PASS, gate 1 round 2, audit of 2023e53: sprint 52 re-verified on the combined tree after sprint 53's merge.\n\nWhy a re-audit: sprint 53 (ec772da) was merged into main after my round 1 PASS of 680d041. The shippable tree changed, so the round 1 tree hash can't match it.\n\nSprint file: re-read fresh. Unchanged since start.\n\nHandoff: read at the audited commit. A Round 2 section was added; Round 1 is untouched (no deleted lines in the handoff diff). It quotes VERIFY PASS (lint, typecheck, test, build) exit=0, with 611 tests.\n\nWhat changed since 680d041 in app and lib: git diff 680d041 2023e53 is content-identical to sprint 53's own audited diff (88ae25a..c3c054e). Comparing the two diffs differs only in blob index hashes and hunk line offsets. Those changes are reading.module.css (the max-width removals and one comment), one line in date.module.css, and reading-text-width.test.ts. No app or lib change after the merge commit 9a3e4c0. Nothing of sprint 52 was lost or altered.\n\nMy own check: npm run verify at 2023e53, on a clean primary checkout. Result: verify=0, VERIFY PASS exit=0, 55 test files and 611 tests passed.\n\nSprint 52's requirements R1 to R11 stand as found in round 1. I opened round2/desktop-1280-bottom.png: the Another date panel follows the body, then Notable dates.\n\nDEFECT FOUND IN THE COMBINED TREE, owned by sprint 53, not sprint 52. The idle-state sigil, the triangle-in-circle beside \"The chart stands as it is\u2026\", is squeezed by the flex row since sprint 53 removed .idleText's max-width.\n- .idleBlock is display flex, gap 22px. The svg has width and height attributes of 34 and no flex-shrink rule. .idleText can now grow to the full column, so the row shrinks the svg.\n- Compare round 1's desktop-1280-bottom.png (680d041, before sprint 53) with round 2's (2023e53, same date and width). The text's left edge moves from about x 729 (673 + 34 + 22, the full sigil) to about x 710. The sigil is visibly reduced to a small glyph.\n- Sprint 53's own after-idle-1945-05-08-1280.png shows the same small sigil.\nThis is recorded separately as a live-loop FAIL on sprint 53 (ec772da), where the fix belongs. It doesn't block this verdict, because no sprint 52 requirement covers it and the same code is already live from sprint 53's ship. Shipping sprint 52's tree before sprint 53's fix lands changes nothing about that defect's exposure.\n\nStill UNOWNED, with Master Controller: the /reading/[id] \"Pick a different date.\" wording with no picker on that page, and the 3 lint warnings in the sprint 45 and 46 probe scripts."
+    },
+    {
+      "ts": "2026-11-25T20:23:08+00:00",
+      "actor": "dev-team",
+      "event": "dev_agreed_done",
+      "detail": ""
     }
   ],
   "last_claim": {
-    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
-    "claude_agent": "qa1",
-    "ts": "2026-11-25T20:22:44+00:00"
+    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
+    "claude_agent": "dev-team-1",
+    "ts": "2026-11-25T20:23:08+00:00"
   }
 }
