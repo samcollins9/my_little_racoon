@@ -2,7 +2,7 @@
 id: 51
 title: "This-exact-date events drop the year column"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-25T15:51:12+00:00
 ---
 
