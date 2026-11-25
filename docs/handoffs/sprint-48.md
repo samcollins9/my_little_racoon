@@ -75,3 +75,38 @@ In "below" the reading section's computed `flex-grow` is `0`. On `/reading`'s ot
 ### Questions for QA1
 
 None.
+
+## Round 2
+
+**Status:** ready for QA1's re-audit. This round fixes QA1's one defect from round 1 and changes nothing else.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (49 test files, 580 tests).
+
+**Sprint file:** I re-read it at this commit. It's still unchanged since `/sprint-start` (`git log 73ed69b..HEAD` on the file is empty).
+
+### The defect (QA1 round 1, R5, phones, "below" only)
+
+A doubled line appeared at the foot of the events. On phones `.eventsSection` has no bottom padding, and every `.eventRow` has a bottom border. In the "below" order the events section is the column's last child, so the last row's line sat directly on `.randomSection`'s top border. This was new in this sprint: before it, the reading section, which has its own bottom padding, came last.
+
+### Fix: `app/reading/[id]/reading.module.css`, one line
+
+In the phone block, `.eventsSectionBelow` gains `padding-bottom: 24px`, the same as `.readingSection`'s phone bottom padding. It applies only in the "below" order. The "above" order and desktop are untouched.
+
+### Evidence
+
+I re-ran the same rig and probe against a rebuilt production build. [cdp48.mjs](sprint-48/cdp48.mjs) now also records what follows the last event row. Results are in [round2/report.json](sprint-48/round2/report.json), and all ten screenshots are retaken under [round2/](sprint-48/round2/).
+
+- **Phone 390, `/date/1931-03-03` (below):** the last row has a 1px bottom border, the events section's bottom padding is `24px`, and the next section (`randomSection`, 1px top border) starts **24px** below the last row. In round 1 that distance was 0. The screenshot [round2/phone-390-other-years-foot.png](sprint-48/round2/phone-390-other-years-foot.png) shows the 1933 row's faint line, a clear gap, then the rule above "Discover random reading".
+- **Phone 390, `/reading/…-0002` (below, no random link):** 24px of padding under the last row, at the card's end.
+- **Phone 390, `/date/1969-07-20` (above):** unchanged. Bottom padding is 0, and the reading section follows with no top border, so the last row's line touches nothing. This is the same as before the sprint.
+- **Desktop:** unchanged. Bottom padding is 26px, as before. Every case still has a 0px gap and exactly one rule between the two sections. (The probe's desktop "next section" figure for the date page is the phone-only random section, which isn't shown on desktop, so it isn't a real measurement there.)
+- **Order:** unchanged in every case: matched and the empty list put events first; both other-years cases put the reading first. No page scrolls sideways.
+
+### Tests
+
+No new unit test. The fix is a padding value, and the Vitest suite renders markup without layout, so the 24px measurement above is the evidence. Round 1's tests, including the `eventsSectionBelow` hook test, pass unchanged.
+
+### Not changed
+
+- Everything QA1 found met in round 1.
+- The three pre-existing items QA1 routed to Master Controller: the "Pick a different date above" wording on `/reading/[id]`, the status label over an empty unmatched list, and the 3 lint warnings in my Sprint 45/46 probe scripts.

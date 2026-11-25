@@ -663,9 +663,12 @@
   }
 
   /* Sprint 48, R5: phones have no rule between the two sections either
-     way. The events keep their own padding. */
+     way. Below the reading, the events also take the reading section's
+     phone bottom padding (QA1 round 1): with none, the last row's rule sat
+     directly on the rule above the next section, a doubled line. */
   .eventsSectionBelow {
     border-top: none;
+    padding-bottom: 24px;
   }
 
   .sectionTitle {

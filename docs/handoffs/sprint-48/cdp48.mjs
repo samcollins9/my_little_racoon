@@ -69,6 +69,18 @@ const STATE = `(() => {
     events: { box: box(events), rules: rules(events) },
     reading: { box: box(reading), rules: rules(reading) },
     column: box(reading.parentElement),
+    // QA1 round 1: on phones, the space from the last event row's rule to
+    // whatever follows the events section (0 = the two rules touch).
+    afterLastEventRow: (() => {
+      const rows = events.querySelectorAll('[class*=eventRow]');
+      if (!rows.length) return null;
+      const last = rows[rows.length - 1].getBoundingClientRect();
+      const next = events.nextElementSibling ?? events.parentElement.parentElement.nextElementSibling;
+      return { lastRowBorderBottom: getComputedStyle(rows[rows.length - 1]).borderBottomWidth,
+        eventsPaddingBottom: getComputedStyle(events).paddingBottom,
+        gapToNextSection: next ? Math.round(next.getBoundingClientRect().top - last.bottom) : null,
+        nextBorderTop: next ? getComputedStyle(next).borderTopWidth : null };
+    })(),
     cssReordering: [events, reading].map(el => { const cs = getComputedStyle(el); return cs.order; }).concat(getComputedStyle(reading.parentElement).flexDirection),
   };
 })()`;
