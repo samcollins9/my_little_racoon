@@ -1,13 +1,13 @@
 {
   "id": 45,
   "title": "Notable dates replace the recently written list",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "f372c44792ca5d89f53cc222766d7a0b41ec8f5a4363d4030bb019f531694fa7",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "fa9800ade51c85324935146f94333eba8139ccb4d530abaa8441abdf3c0eee61",
   "last_shipped_commit": "8920e1655859d639b7890caf451662ac3af060a0",
-  "groundtruth_result": "CONDITIONAL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-11-24T22:19:56+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 2,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-11-24T15:44:54+00:00",
   "completed": null,
   "history": [
@@ -69,11 +69,17 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=8920e16 | ci=green: 1 CI run(s) for 8920e1655859d639b7890caf451662ac3af060a0 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-25T14:32:39+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 2). The round 1 defect (horizontal page scroll at 901-1278px from hidden tooltips) is fixed on production, with no regressions found. Firefox was not tested: no Firefox is installed here, and I did not install one.\n\nTested 2026-11-25, about 14:28 to 14:45 UTC, against https://my-little-racoon.vercel.app.\nReshipped commit 8920e16. Production serves f747a61: /api/health/db reports status ok, connected true, commit f747a61, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. 8920e16 is an ancestor of origin/main. git diff 8920e16 origin/main changes no app/date file; the only code beyond it is Sprint 46's (app/layout.tsx, lib/analytics/tag-manager*), plus docs and state files.\nTools: headless Chromium (Playwright 1.57) at 901, 950, 1000, 1100, 1150, 1200, 1250, 1279, 1280 and 1440 wide (height 900); 390x844 (isMobile, hasTouch) with JS on and off; CDP Accessibility.getFullAXTree.\n\nROUND 1 DEFECT, closed tooltips: FIXED. On /date/1969-07-20, /date/2026-12-16 and /date/1912-04-15, at every width above: document scrollWidth equals the viewport width (901 at 901, where round 1 measured 969; 1200 at 1200, where round 1 measured 1242). window.scrollTo(500,0) leaves scrollX at 0. All 20 tooltips compute display none when closed. Screenshot: s45r2-901-try-scroll-right.png, with no sideways shift.\n\nOPEN TOOLTIPS: every notable link was hovered, one at a time, at every width and on all three pages (19 or 20 links per page). In each case exactly one tooltip was shown, it belonged to the hovered link, it lay inside the viewport and inside the card (main), and scrollWidth stayed equal to the viewport width while it was open. Max scrollWidth while open equalled the viewport at every width.\n- Anchoring: each tooltip sits flush under its date (0px gap). At 901 on /date/1969-07-20, three tooltips open leftwards (right edge aligned to the date): 6 June 1944, 12 April 1961 and 11 February 1990, the same three that overflowed in round 1. At 1280 only 24 October 1945 flips. All others open rightwards from the date's left edge.\n- 901, hovering 11 February 1990: \"Nelson Mandela is released from prison\" at x 546.5-817.5, card right edge 861, viewport 901, scrollWidth 901. Screenshot: s45r2-901-hover-1990-02-11.png.\n- 1200, hovering 28 January 1986: \"The Space Shuttle Challenger breaks apart\" at x 797.5-1075.5, card right 1128, scrollWidth 1200. Screenshot: s45r2-1200-hover-1986-01-28.png.\n- A false alarm, recorded for completeness: my first run reported no tooltip for 11 November 1918 on /date/1912-04-15. The cause was my selector: that page's Next reading link is also /date/1918-11-11, and the hover hit it. Scoped to the notable list, hovering or focusing 11 November 1918 shows \"The armistice ends fighting in World War I\" at both 901 and 1280.\n\nACCESSIBILITY (display none tooltips): at 1280 and 1000, the AX tree has 19 date links in the notable list (the 20th, 20 July 1969, is the aria-current span), and all 19 have a description, for example \"15 April 1912 => The Titanic sinks in the North Atlantic\". Keyboard: Tab to 15 April 1912 shows its tooltip (display block), the next Tab moves to 28 June 1914 and shows its tooltip, with 0 others visible. Screenshot: s45r2-focus-1280.png.\n\nNO REGRESSIONS:\n- Clicking 15 April 1912, 12 April 1961 and 11 March 2020 from /date/1969-07-20 lands on each date's saved reading, with that date as the aria-current entry. scrollWidth 1280, 0 page errors.\n- Phone 390, JS on and off: scrollWidth 390; the notable list has 20 rows, the first being \"15 April 1912 / The Titanic sinks in the North Atlantic\". Screenshot: s45r2-phone-notable.png.\n- No console or page errors across the runs.\n\nNOT TESTED: Firefox (QA1's item c). Playwright has only Chromium installed here. QA1 notes that where anchor positioning is unsupported, an open tooltip on a row's last date may run past the card while hovered; closed tooltips can't widen the page there either."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-24T22:26:19+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-25T14:32:39+00:00"
   }
 }
