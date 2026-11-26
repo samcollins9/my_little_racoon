@@ -115,3 +115,9 @@ This supersedes the order recorded above. Previous/Next day sit directly under t
 Ideas the user has deliberately parked. Nothing here gets a sprint until the user asks for it.
 
 - **Raw-data tab** (parked 25 Nov 2026). A chart-panel tab showing the reading's underlying data. Before it could be planned, three questions need answers: what it shows, its format, and whether it appears on phones.
+
+## 26 Nov 2026: events heading and picker label (Sprint 54)
+
+- When other years' events are listed (Sprint 48's "below" case), the events heading reads "Other years with D Month events", for example "Other years with 4 July events". With exact-date events, an empty list or a failed lookup, it stays "What happened".
+- The picker panel's label is "Pick a different date".
+- Sprint 39's message breaks onto a new line after its bold first sentence.
