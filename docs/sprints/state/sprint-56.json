@@ -1,16 +1,16 @@
 {
   "id": 56,
   "title": "Reveal and fold become one toggle; Copy link removed",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "d5f5edd91548e3c5ebeaec9e190c2d3273d7ca144ba9adb554557a06d552975b",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "5a4670381160abcfe96e2e4a2c23805ec69027a5c057eb6bf8a43e06fd9aed5d",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-26T16:02:42+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-26T16:22:29+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate-1 audit, Sprint 56. Commit 4f979c6 on devteam2/sprint-56, worktree clean. Verdict: PASS.\n\nSprint file: re-read fresh. Its only difference from main's copy is the lifecycle-owned status: line, so there is no amendment. No criterion claims something arrives between two versions.\n\nHandoff: read via git show 4f979c6:docs/handoffs/sprint-56.md. Round 1 quotes \"VERIFY PASS (lint, typecheck, test, build) exit=0\".\nMy own re-run in the worktree: npm run verify ended with exit=0. Test Files 56 passed, Tests 640 passed, lint 0 errors and 3 warnings.\n\nR1, met. SavedHoroscope's details now holds only its summary, and it is the first child of .readingFooter. The summary wraps one .castButton span, which has two label spans. CSS hides one by the details' own [open] state, with display: none, so only the current label is in the accessible name. .revealFold and .revealFolded are gone from both the TSX and the CSS.\n\nR2, met. It keeps native details/summary: no JS, no request, no URL change. The summary exposes expanded or collapsed natively, plus aria-controls naming the text. The text stays in the server HTML in both states.\nThe folded hiding rule is keyed on :not([open]) inside :has(), so a browser without :has() fails open (shows the text), not closed.\nThe handoff's probe shows open and fold working with script execution disabled. The no-JS screenshot (date-390-open-no-js.png) confirms it.\n\nR3, met. Confirmed from the markup and CSS. The DOM order is: text block, then .readingFooter, which holds details/summary, then .revealControls (display: contents, holding the date link or Try again), then the note.\ngrep for order:, row-reverse, column-reverse and tabindex in reading.module.css and the TSX finds no reordering. So DOM order equals visual order equals focus order. toggle-pages.test.ts asserts the focus order on both routes.\n\nR4, met. The note is in both states. The date link is on /reading/[id] at both widths, now one link with no desktop/mobile duplicate. Try again goes into controls after a failed generation. The header status and IdleBlock :has() rules were updated from the direct-child form to the descendant form, which is correct since the details is no longer a direct child.\nThe reveal-landing and rise tests pass. paragraphRise is unchanged and is still applied to the paragraphs.\n\nR5, met. Sprint 38's details-sticky workaround is removed. With .revealPanel display: contents, the .readingFooter row is a direct flex item of the section or form in both states, so the existing phone rule (position: sticky; bottom: 0) applies.\nThe screenshot reading-390-open-mid-text-sticky.png shows the toggle stuck at the bottom mid-text. The .castButton phone rule (min-height 44px, border-box) applies, and .reveal is flex: 1.\nThe handoff explains the date page at 390, folded at load (13px below the fold), as Sprint 38's existing containing-block behaviour. It measures the same in the unsaved state, so I accept it as not a regression.\n\nR6, met. grep -rniE \"copy link|clipboard\" app lib gives exit=1. CopyLinkButton, DateLinks and the .mobileWrittenFooter CSS are gone, and the only matches for those names are the new tests asserting their absence. useState is still imported, and it's still used by prevPending and justWrote. The date page's open footer holds only the toggle and the note.\n\nR7, met. The unsaved button path and DisabledReadingSection without a horoscope are unchanged. DisabledReadingSection's saved path now passes note.\nThis is the 5-line edit in ReadingView.tsx, Sprint 55's file. The sprint file required flagging it to Master Controller first. The handoff says the user approved it (\"Proceed, edit ReadingView\", 26 Nov 2026), and the edit is in a different function from Sprint 55's. Sprint 55's code is already on this branch's base, bd51b50, so this branch does not conflict with it.\n\nR8, met. The new toggle-pages.test.ts runs through the real page components on both routes. It covers:\n- folded and open labels, with exactly one summary;\n- the fold label appearing once in the HTML;\n- the summary placed after the last paragraph;\n- focus order;\n- the note in both states;\n- the date link;\n- no copy link;\n- CSS guards.\nThe visibleWhen helper models the hiding rules by balanced-tag removal, which is reasonable. The updated Sprint 33 tests are listed in the handoff. Sprint 38 had no sticky test to update, so the CSS guard covers R5.\n\nR9, met. I opened reading-1280-open, date-1280-folded, reading-390-open-mid-text-sticky and date-390-open-no-js, and all four match the handoff.\n\nDev Team's questions:\n1. 182 vs 184px at 1280. Acceptable. Every computed style matches. The 2px is a flex-shrink result, not styling, and R1 asks for the same styling, not the same pixel width.\n2. The screen reader reaches the text before the toggle. Acceptable. R1 and R3 together require the toggle below the text, and aria-controls is present.\n\nFor Master Controller (not blocking, not routed as a prerequisite):\n- Find-in-page no longer reaches folded text, because it is display: none outside the details. Sprint 33 never required it.\n- Open, the text now sits at the section's normal 20px gap below \"The reading\" heading. The old fold control used to sit between them.\n- The 3 lint warnings in the sprint-45 and sprint-46 evidence scripts are STILL unowned. No recorded decision accepts them.\n\nHuman prerequisites: none."
     }
   ],
   "last_claim": {
-    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
-    "claude_agent": "dev-team-2",
-    "ts": "2026-11-26T16:02:42+00:00"
+    "claude_session_id": "c1195957-a242-4a02-903c-627a4d9d7483",
+    "claude_agent": "qa1",
+    "ts": "2026-11-26T16:22:29+00:00"
   }
 }
