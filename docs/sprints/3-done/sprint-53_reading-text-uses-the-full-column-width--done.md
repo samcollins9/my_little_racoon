@@ -2,7 +2,7 @@
 id: 53
 title: "Reading text uses the full column width"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-25T19:30:59+00:00
 ---
 

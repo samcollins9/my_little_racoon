@@ -1,7 +1,7 @@
 {
   "id": 53,
   "title": "Reading text uses the full column width",
-  "phase": "complete_ready",
+  "phase": "complete",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "e8d8824418735cf7bba04024fe5b9ca00ac7520c46512dca18321cea01b466b6",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
@@ -26,7 +26,7 @@
   "audit_rounds": 1,
   "live_test_rounds": 2,
   "started": "2026-11-25T19:46:51+00:00",
-  "completed": null,
+  "completed": "2026-11-26T00:44:33+00:00",
   "history": [
     {
       "ts": "2026-11-25T19:46:51+00:00",
@@ -81,11 +81,17 @@
       "actor": "liveqa",
       "event": "live_test",
       "detail": "PASS: PASS (round 2). Round 1's defect (the idle sigil squeezed to 15x34 at 1280 and 10x34 at 390) is fixed on production. The width requirements still pass at both widths, on both routes, with no regressions.\n\nTested 2026-11-26, about 00:21 to 00:30 UTC, against https://my-little-racoon.vercel.app.\nReshipped commit 79e963b. Production serves the pushed tip a70f3ea: /api/health/db reports status ok, connected true, commit a70f3ea, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. 79e963b is an ancestor of origin/main, and git diff 79e963b origin/main changes nothing under app/, lib/ or public/. The fix adds flex: none to the idle sigil in reading.module.css.\nTools: headless Chromium (Playwright 1.57) at 1280x900, and 390x900 (isMobile, hasTouch). The same script as round 1: box right edge via getBoundingClientRect, glyph extent via Range.getClientRects.\nNo horoscope was written. The reveal was opened only where a saved horoscope already exists: 1969-07-20, reading 0b01c79f, and 1945-05-08.\n\nROUND 1 DEFECT: FIXED. In the folded state on /date/1969-07-20, /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d and /date/1945-05-08:\n- idleSigil measures 34x34 at 1280 and at 390 (round 1: 15x34 and 10x34).\n- idleText now starts at x 729 at 1280, which is 673 + 34 + 22, the pre-Sprint-53 geometry QA1 cited. It starts at x 88 at 390.\n- idleText still ends at the event text's edge: 1167 at 1280 (glyphs to 1161) and 358 at 390 (glyphs to 350). It wraps to 3 lines at 1280.\n- Screenshots: s53-1280_date_1969_07_20-folded.png and s53-390_date_1969_07_20-folded.png show the full triangle sigil beside \"The chart stands as it is...\".\n\nSTEPS 1 and 3, written horoscope: PASS.\n- 1280: every paragraph's box runs 673 to 1167, against the first event text box ending at 1167. Paragraph glyphs end at 1156, 1160 and 1139 (1969-07-20), and at 1161, 1137 and 1167 (1945-05-08). The event glyphs end at 1160 and 1158.\n- 390: paragraphs run 32 to 358 against the event box at 358, glyphs ending between 344 and 358.\n- Font sizes are unchanged: paragraph 19.5px and 18px; idleText 19px.\n- The footerNote layout beside the reveal button is unchanged (872.9 to 1167, 2 lines, at 1280).\n\nSTEPS 2 and 3, unmatched (/date/2026-11-25 and /reading/9bd536d1-243f-49e7-8c59-af75b6d76067): PASS. The accuracyNote runs 673 to 1167 at 1280 (glyphs 1153), and 32 to 358 at 390 (glyphs 354). The event box ends at 1167 and 358.\n\nSTEP 4: PASS. scrollWidth equals the viewport (1280 and 390) on every page and state. Nothing else moved: the sigil is back to its own size, and the text begins where it did before this sprint.\n0 console or page errors.\nNot measured live: the disabled and busy rows. They can't be produced on production without writing a horoscope; Dev Team's round 2 measurements and QA1's live-loop audit cover them."
+    },
+    {
+      "ts": "2026-11-26T00:44:33+00:00",
+      "actor": "dev-team",
+      "event": "sprint_closed",
+      "detail": "user_said=53 please close it"
     }
   ],
   "last_claim": {
-    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
-    "claude_agent": "liveqa",
-    "ts": "2026-11-26T00:22:29+00:00"
+    "claude_session_id": "1f8cfaa9-8a83-58cd-93f4-f0bd513ff889",
+    "claude_agent": "dev-team-2",
+    "ts": "2026-11-26T00:44:33+00:00"
   }
 }
