@@ -15,7 +15,7 @@ import {
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import { datedTitle } from "@/lib/site-title";
-import { eventsHeading, horoscopeParagraphs } from "@/app/reading/[id]/display";
+import { horoscopeParagraphs } from "@/app/reading/[id]/display";
 import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
 import {
   DisabledReadingSection,
@@ -107,7 +107,7 @@ export default async function DatePage({
   // never needs the database. A saved horoscope only reaches here with
   // matched events (lookupSavedHoroscope, R7), so a non-writable result
   // means a fresh lookup that was unmatched or failed.
-  const availability = horoscopeAvailability(page.events, page.eventDate);
+  const availability = horoscopeAvailability(page.events);
 
   return (
     <ReadingView
@@ -133,10 +133,7 @@ export default async function DatePage({
       }
     >
       {availability.kind !== "writable" ? (
-        <HoroscopeUnavailableSection
-          availability={availability}
-          eventsHeading={eventsHeading(page.events, page.eventDate)}
-        />
+        <HoroscopeUnavailableSection availability={availability} />
       ) : page.saved.kind === "unavailable" ? (
         <SavedHoroscopesUnavailable />
       ) : isHoroscopeEnabled() ? (

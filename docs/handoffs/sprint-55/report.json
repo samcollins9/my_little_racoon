@@ -1,0 +1,302 @@
+{
+  "origin": "http://127.0.0.1:3155",
+  "browser": "Chrome/156.0.8078.4",
+  "pages": [
+    {
+      "name": "today-unmatched",
+      "width": 1280,
+      "path": "/date/2026-11-26",
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "heading": "Other years with events on November 26",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 19px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": "Pick a different date",
+      "yearLinks": [
+        {
+          "text": "2011",
+          "href": "/date/2011-11-26",
+          "label": "Go to 26 November 2011"
+        },
+        {
+          "text": "2011",
+          "href": "/date/2011-11-26",
+          "label": "Go to 26 November 2011"
+        },
+        {
+          "text": "2008",
+          "href": "/date/2008-11-26",
+          "label": "Go to 26 November 2008"
+        },
+        {
+          "text": "1983",
+          "href": "/date/1983-11-26",
+          "label": "Go to 26 November 1983"
+        },
+        {
+          "text": "1979",
+          "href": "/date/1979-11-26",
+          "label": "Go to 26 November 1979"
+        }
+      ]
+    },
+    {
+      "name": "today-unmatched",
+      "width": 390,
+      "path": "/date/2026-11-26",
+      "vw": 390,
+      "scrollWidth": 390,
+      "heading": "Other years with events on November 26",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 17px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": "Pick a different date",
+      "yearLinks": [
+        {
+          "text": "2011",
+          "href": "/date/2011-11-26",
+          "label": "Go to 26 November 2011"
+        },
+        {
+          "text": "2011",
+          "href": "/date/2011-11-26",
+          "label": "Go to 26 November 2011"
+        },
+        {
+          "text": "2008",
+          "href": "/date/2008-11-26",
+          "label": "Go to 26 November 2008"
+        },
+        {
+          "text": "1983",
+          "href": "/date/1983-11-26",
+          "label": "Go to 26 November 1983"
+        },
+        {
+          "text": "1979",
+          "href": "/date/1979-11-26",
+          "label": "Go to 26 November 1979"
+        }
+      ]
+    },
+    {
+      "name": "single-digit-day",
+      "width": 1280,
+      "path": "/date/1931-03-03",
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "heading": "Other years with events on March 3",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 19px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": "Pick a different date",
+      "yearLinks": [
+        {
+          "text": "2012",
+          "href": "/date/2012-03-03",
+          "label": "Go to 3 March 2012"
+        },
+        {
+          "text": "1986",
+          "href": "/date/1986-03-03",
+          "label": "Go to 3 March 1986"
+        },
+        {
+          "text": "1972",
+          "href": "/date/1972-03-03",
+          "label": "Go to 3 March 1972"
+        },
+        {
+          "text": "1945",
+          "href": "/date/1945-03-03",
+          "label": "Go to 3 March 1945"
+        },
+        {
+          "text": "1933",
+          "href": "/date/1933-03-03",
+          "label": "Go to 3 March 1933"
+        }
+      ]
+    },
+    {
+      "name": "single-digit-day",
+      "width": 390,
+      "path": "/date/1931-03-03",
+      "vw": 390,
+      "scrollWidth": 390,
+      "heading": "Other years with events on March 3",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 17px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": "Pick a different date",
+      "yearLinks": [
+        {
+          "text": "2012",
+          "href": "/date/2012-03-03",
+          "label": "Go to 3 March 2012"
+        },
+        {
+          "text": "1986",
+          "href": "/date/1986-03-03",
+          "label": "Go to 3 March 1986"
+        },
+        {
+          "text": "1972",
+          "href": "/date/1972-03-03",
+          "label": "Go to 3 March 1972"
+        },
+        {
+          "text": "1945",
+          "href": "/date/1945-03-03",
+          "label": "Go to 3 March 1945"
+        },
+        {
+          "text": "1933",
+          "href": "/date/1933-03-03",
+          "label": "Go to 3 March 1933"
+        }
+      ]
+    },
+    {
+      "name": "matched",
+      "width": 1280,
+      "path": "/date/1969-07-20",
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "heading": "What happened",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "this exact date",
+      "eventsAfterReading": false,
+      "message": null,
+      "pickerLabel": "Pick a different date",
+      "yearLinks": []
+    },
+    {
+      "name": "matched",
+      "width": 390,
+      "path": "/date/1969-07-20",
+      "vw": 390,
+      "scrollWidth": 390,
+      "heading": "What happened",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "this exact date",
+      "eventsAfterReading": false,
+      "message": null,
+      "pickerLabel": "Pick a different date",
+      "yearLinks": []
+    },
+    {
+      "name": "reading-other-years",
+      "width": 1280,
+      "path": "/reading/48480000-0000-4000-8000-000000000002",
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "heading": "Other years with events on March 3",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 19px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": null,
+      "yearLinks": [
+        {
+          "text": "1976",
+          "href": "/date/1976-03-03",
+          "label": "Go to 3 March 1976"
+        }
+      ]
+    },
+    {
+      "name": "reading-other-years",
+      "width": 390,
+      "path": "/reading/48480000-0000-4000-8000-000000000002",
+      "vw": 390,
+      "scrollWidth": 390,
+      "heading": "Other years with events on March 3",
+      "headingLines": null,
+      "headingInsideSection": true,
+      "status": "on this day, other years",
+      "eventsAfterReading": true,
+      "message": {
+        "paragraphsInReading": 1,
+        "lead": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.",
+        "next": "Pick a different date.",
+        "brCount": 1,
+        "nextStartsBelowLead": true,
+        "margin": "0px",
+        "padding": "10px 0px 4px",
+        "leadFont": "400 17px lab(90.7675 0.353754 4.58242)",
+        "accessibleText": "We have no recorded events for this exact date, so we can't write an accurate horoscope for it.⏎Pick a different date."
+      },
+      "pickerLabel": null,
+      "yearLinks": [
+        {
+          "text": "1976",
+          "href": "/date/1976-03-03",
+          "label": "Go to 3 March 1976"
+        }
+      ]
+    }
+  ]
+}

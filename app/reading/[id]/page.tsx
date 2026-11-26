@@ -7,7 +7,7 @@ import { composeChart } from "@/lib/chart/model";
 import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { generateReadingHoroscope } from "./actions";
-import { eventsHeading, horoscopeParagraphs } from "./display";
+import { horoscopeParagraphs } from "./display";
 import { isLandingRevealed } from "./reveal";
 import { ReadingPanel } from "./ReadingPanel";
 import { DisabledReadingSection, HoroscopeUnavailableSection, ReadingView } from "./ReadingView";
@@ -84,7 +84,7 @@ export default async function ReadingPage({
   // date page judges its events. An unmatched or event-less row shows the
   // message in place of its saved horoscope, the generate form and the
   // disabled panel; the row itself is never touched.
-  const availability = horoscopeAvailability(reading.events, reading.event_date);
+  const availability = horoscopeAvailability(reading.events);
 
   return (
     <ReadingView
@@ -95,10 +95,7 @@ export default async function ReadingPage({
       jdNote="sealed · anyone with the link"
     >
       {availability.kind !== "writable" ? (
-        <HoroscopeUnavailableSection
-          availability={availability}
-          eventsHeading={eventsHeading(reading.events, reading.event_date)}
-        />
+        <HoroscopeUnavailableSection availability={availability} />
       ) : isHoroscopeEnabled() ? (
         <form action={generateReadingHoroscope}>
           <input type="hidden" name="readingId" value={id} />

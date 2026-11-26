@@ -95,12 +95,12 @@ describe("/date/[date] (R2-R4)", () => {
     expect(order(html, HEADINGS)).toEqual(["events", "reading"]);
   });
 
-  it("other years' events: The reading, then the events, headed for the page's day (Sprint 54, R1)", async () => {
+  it("other years' events: The reading, then the events, headed for the page's day (Sprint 54/55, R1)", async () => {
     wikipediaAnswers([{ year: 1976, text: "Viking event" }]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: ok([]) });
     const html = await renderDatePage("1931-03-03");
     expect(html).toContain("on this day, other years");
-    expect(html).toContain(">Other years with 3 March events</h2>");
+    expect(html).toContain(">Other years with events on March 3</h2>");
     expect(html).not.toContain(">What happened</h2>");
     expect(order(html, HEADINGS)).toEqual(["reading", "events"]);
   });
@@ -137,7 +137,7 @@ describe("/reading/[id] follows the same rule for its stored events (R4)", () =>
     expect(order(html, HEADINGS)).toEqual(expected);
     // Sprint 54, R1: the stored row's own date names the other-years heading.
     expect(html).toContain(
-      expected[0] === "reading" ? ">Other years with 20 July events</h2>" : ">What happened</h2>"
+      expected[0] === "reading" ? ">Other years with events on July 20</h2>" : ">What happened</h2>"
     );
   });
 });
@@ -159,7 +159,7 @@ describe("the phone column's order, with Sprint 52's picker panel (R6)", () => {
     expect(order(html, PHONE)).toEqual(["reading", "events", "random", "notable"]);
     // The events still sit inside the card's body, before the phone-only
     // sections that follow it.
-    expect(html).toMatch(/>Other years with 6 June events<\/h2>[\s\S]*<\/section><\/div><\/div><form class="picker anotherDate"/);
+    expect(html).toMatch(/>Other years with events on June 6<\/h2>[\s\S]*<\/section><\/div><\/div><form class="picker anotherDate"/);
   });
 
   it("this exact date: events, reading, then the panel and the notable dates", async () => {

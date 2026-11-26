@@ -31,50 +31,32 @@ export function linkableEventDate(year: number, isoDate: string): string | null 
 
 export type HoroscopeAvailability =
   | { kind: "writable" }
-  /** Requirement 3 (`hasLinkableYear`) or Requirement 4 (not). */
-  | { kind: "unmatched"; hasLinkableYear: boolean }
+  /**
+   * Requirements 3 and 4. Sprint 55, R2: one message whether or not a year
+   * in the list links, so this case no longer records which (the year links
+   * themselves are still linkableEventDate, above).
+   */
+  | { kind: "unmatched" }
   /** Requirement 5. */
   | { kind: "lookupFailed" };
 
 export type UnavailableHoroscope = Exclude<HoroscopeAvailability, { kind: "writable" }>;
 
-/**
- * `isoDate` is the date the events belong to: the page's own date, or the
- * stored row's event_date on /reading/[id].
- */
-export function horoscopeAvailability(
-  events: WikipediaEventsPayload | null,
-  isoDate: string
-): HoroscopeAvailability {
+export function horoscopeAvailability(events: WikipediaEventsPayload | null): HoroscopeAvailability {
   if (events == null) return { kind: "lookupFailed" };
   if (hasMatchedEvents(events)) return { kind: "writable" };
-  return {
-    kind: "unmatched",
-    hasLinkableYear: events.events.some((event) => linkableEventDate(event.year, isoDate) !== null),
-  };
+  return { kind: "unmatched" };
 }
 
 /** The message's two parts: the bold lead sentence, then what to do next. */
 export type UnavailableMessage = { lead: string; next: string };
 
-/**
- * `eventsHeading` is the events section's heading as the page shows it
- * (Sprint 54, R2: eventsHeading in app/reading/[id]/display.ts). The
- * linkable-years variant quotes it rather than naming a heading itself, so
- * the message always points at the heading on the page. That variant only
- * occurs with unmatched events, at least one of them listed, which is the
- * case where that heading reads "Other years with D Month events".
- */
-export function unavailableMessage(availability: UnavailableHoroscope, eventsHeading: string): UnavailableMessage {
+export function unavailableMessage(availability: UnavailableHoroscope): UnavailableMessage {
   switch (availability.kind) {
     case "lookupFailed":
       return { lead: EVENTS_LOOKUP_FAILED_REASON, next: "Try again in a few minutes." };
     case "unmatched":
-      return {
-        lead: UNMATCHED_EVENTS_REASON,
-        next: availability.hasLinkableYear
-          ? `Pick a different date, or choose one of the years listed under "${eventsHeading}" to go to that date instead.`
-          : "Pick a different date.",
-      };
+      // Sprint 55, R2: no pointer to the year list; its links stay visible below.
+      return { lead: UNMATCHED_EVENTS_REASON, next: "Pick a different date." };
   }
 }

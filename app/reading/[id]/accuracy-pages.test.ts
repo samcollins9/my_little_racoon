@@ -31,11 +31,9 @@ vi.mock("next/server", async (importOriginal) => ({
 
 const LEAD_UNMATCHED =
   "We have no recorded events for this exact date, so we can&#x27;t write an accurate horoscope for it.";
-// Sprint 54, R2: the message quotes the events heading the page shows,
-// "Other years with <D> <Month> events" for the page's own date.
-const nextR3 = (dayMonth: string) =>
-  `Pick a different date, or choose one of the years listed under &quot;Other years with ${dayMonth} events&quot; to go to that date instead.`;
-const NEXT_R4 = "Pick a different date.";
+// Sprint 55, R2: the unmatched next step, linkable years or not, ending the
+// paragraph straight after Sprint 54's line break.
+const NEXT_UNMATCHED = "</strong><br/>Pick a different date.</p>";
 const LEAD_FAILED =
   "The events for this date couldn&#x27;t be loaded, so the horoscope can&#x27;t be written right now.";
 const NEXT_R5 = "Try again in a few minutes.";
@@ -114,7 +112,7 @@ const unmatchedPayload = (requestedDate: string, selected: Selected) => ({
 });
 
 describe("the date page on an unmatched date", () => {
-  it("R1/R3: linkable years are links to the same month and day, others stay plain, and the R3 message shows", async () => {
+  it("R1/R3: linkable years are links to the same month and day, others stay plain, and the one unmatched message shows", async () => {
     wikipediaAnswers([
       { year: 1976, text: "Viking event" },
       { year: 1502, text: "Columbus event" },
@@ -133,12 +131,14 @@ describe("the date page on an unmatched date", () => {
 
     expect(readingSection(html)).toContain(`<strong class=`);
     expect(readingSection(html)).toContain(LEAD_UNMATCHED);
-    expect(readingSection(html)).toContain(nextR3("9 May"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
+    // Sprint 55, R1: the list is headed month first.
+    expect(html).toContain(">Other years with events on May 9</h2>");
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
 
-  it("R4: every event before 1700, so nothing links and the shorter message shows", async () => {
+  it("R4: every event before 1700, so nothing links, and the same message shows", async () => {
     wikipediaAnswers([
       { year: 1066, text: "A battle" },
       { year: 1415, text: "Another battle" },
@@ -149,19 +149,19 @@ describe("the date page on an unmatched date", () => {
 
     expect(eventsColumn(html)).not.toContain("<a ");
     expect(readingSection(html)).toContain(LEAD_UNMATCHED);
-    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expect(readingSection(html)).not.toContain("What happened");
     expectOnlyTheMessage(html);
   });
 
-  it("R2/R4: no events at all: the empty label, and the shorter message", async () => {
+  it("R2/R4: no events at all: the empty label, and the same message", async () => {
     wikipediaAnswers([]);
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = await renderDatePage("1931-07-11");
 
     expect(eventsColumn(html)).toContain("No recorded events for this day.");
-    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
   });
 
@@ -172,7 +172,7 @@ describe("the date page on an unmatched date", () => {
 
     const html = await renderDatePage("1931-08-12");
 
-    expect(readingSection(html)).toContain(nextR3("12 August"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
   });
 
@@ -182,7 +182,7 @@ describe("the date page on an unmatched date", () => {
 
     const html = await renderDatePage("1931-09-13");
 
-    expect(readingSection(html)).toContain(nextR3("13 September"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
@@ -202,7 +202,7 @@ describe("the date page on an unmatched date", () => {
     // As if nothing was saved: the events are the fresh lookup's, not the row's.
     expect(html).toContain("A fresh event");
     expect(html).not.toContain("The stored event");
-    expect(readingSection(html)).toContain(nextR3("14 October"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
@@ -263,7 +263,7 @@ describe("the date page on a matched date (R1)", () => {
 });
 
 describe("/reading/[id] for a row without exact-year events (R10)", () => {
-  it("unmatched with a linkable year: R3's message, no saved horoscope, no generate form, years linked by the row's date", async () => {
+  it("unmatched with a linkable year: the one unmatched message, no saved horoscope, no generate form, years linked by the row's date", async () => {
     const fake = useAnon({
       get_reading_by_id: ok([
         storedRow(
@@ -280,20 +280,21 @@ describe("/reading/[id] for a row without exact-year events (R10)", () => {
 
     expect(eventsColumn(html)).toMatch(/<a [^>]*href="\/date\/1933-03-04"[^>]*>1933<\/a>/);
     expect(eventsColumn(html)).not.toMatch(/<a [^>]*>1152<\/a>/);
-    expect(readingSection(html)).toContain(nextR3("4 March"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
+    expect(html).toContain(">Other years with events on March 4</h2>");
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it("unmatched, every event before 1700: R4's message", async () => {
+  it("unmatched, every event before 1700: the same message", async () => {
     useAnon({
       get_reading_by_id: ok([storedRow("1985-03-05", unmatchedPayload("1985-03-05", [{ year: 1600, text: "Old" }]))]),
     });
 
     const html = await renderReadingPage(READING_ID);
 
-    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
   });
 
@@ -315,7 +316,7 @@ describe("/reading/[id] for a row without exact-year events (R10)", () => {
 
     const html = await renderReadingPage(READING_ID, { revealed: "1" });
 
-    expect(readingSection(html)).toContain(nextR3("7 March"));
+    expect(readingSection(html)).toContain(NEXT_UNMATCHED);
     expectOnlyTheMessage(html);
   });
 });

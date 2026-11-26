@@ -136,26 +136,26 @@ describe('"What happened" drops Wikipedia\'s picture notes (Sprint 42)', () => {
   });
 });
 
-describe("Sprint 39's message in The reading (Sprint 54, R2/R4)", () => {
+describe("Sprint 39's message in The reading (Sprint 54, R4; Sprint 55, R2)", () => {
   const unhash = (html: string) => html.replace(/\b_([A-Za-z][A-Za-z0-9]*)_[0-9a-f]{6}\b/g, "$1");
   const render = (availability: Parameters<typeof HoroscopeUnavailableSection>[0]["availability"]) =>
     unhash(
       renderToStaticMarkup(
-        <HoroscopeUnavailableSection availability={availability} eventsHeading="Other years with 4 July events" />
+        <HoroscopeUnavailableSection availability={availability} />
       )
     );
   const paragraphs = (html: string) => html.match(/<p[ >][\s\S]*?<\/p>/g) ?? [];
 
-  it("one paragraph: the bold lead, one line break, then the next step quoting the heading it's given", () => {
-    const html = render({ kind: "unmatched", hasLinkableYear: true });
+  it("one paragraph: the bold lead, one line break, then 'Pick a different date.' and nothing more", () => {
+    const html = render({ kind: "unmatched" });
     expect(paragraphs(html)).toEqual([
       '<p class="accuracyNote"><strong class="accuracyLead">We have no recorded events for this exact date, so we can&#x27;t write an accurate horoscope for it.</strong><br/>' +
-        "Pick a different date, or choose one of the years listed under &quot;Other years with 4 July events&quot; to go to that date instead.</p>",
+        "Pick a different date.</p>",
     ]);
   });
 
   it.each([
-    ["unmatched, no linkable year", { kind: "unmatched" as const, hasLinkableYear: false }, "Pick a different date."],
+    ["unmatched", { kind: "unmatched" as const }, "Pick a different date."],
     ["lookup failed", { kind: "lookupFailed" as const }, "Try again in a few minutes."],
   ])("%s: the same structure, one <br/> and no stray characters", (_, availability, next) => {
     const found = paragraphs(render(availability));

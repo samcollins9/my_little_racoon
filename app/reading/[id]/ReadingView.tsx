@@ -110,7 +110,7 @@ export function ReadingView({
       }
     >
       <div className={styles.sectionHeader}>
-        {/* Sprint 54, R1: "Other years with D Month events" when that's what's listed. */}
+        {/* Sprint 54/55, R1: "Other years with events on Month D" when that's what's listed. */}
         <h2 className={styles.sectionTitle}>{eventsHeading(events, eventDate)}</h2>
         {status ? <span className={styles.eventsStatus}>{status}</span> : null}
       </div>
@@ -534,19 +534,11 @@ const UNAVAILABLE_STATUS: Record<UnavailableHoroscope["kind"], string> = {
  * outage notice. No form, no reveal, and nothing here needs the database
  * or JavaScript.
  *
- * Sprint 54: `eventsHeading` is the events section's heading on the same
- * page (eventsHeading(events, eventDate)), which the message quotes (R2).
- * The next step starts on its own line after the bold lead (R4): a line
- * break in the one paragraph, not a second paragraph.
+ * Sprint 54, R4: the next step starts on its own line after the bold lead:
+ * a line break in the one paragraph, not a second paragraph.
  */
-export function HoroscopeUnavailableSection({
-  availability,
-  eventsHeading,
-}: {
-  availability: UnavailableHoroscope;
-  eventsHeading: string;
-}) {
-  const message = unavailableMessage(availability, eventsHeading);
+export function HoroscopeUnavailableSection({ availability }: { availability: UnavailableHoroscope }) {
+  const message = unavailableMessage(availability);
   return (
     <>
       <ReadingHeader status="idle" label={UNAVAILABLE_STATUS[availability.kind]} />

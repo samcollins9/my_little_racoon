@@ -4,13 +4,8 @@ import { horoscopeAvailability, linkableEventDate, unavailableMessage } from "./
 
 // Sprint 39, R11: the linkable-year rule and the message choice.
 
-// Sprint 54, R2: the heading the page shows for 9 May's other-years events
-// (eventsHeading, app/reading/[id]/display.ts), which the message quotes.
-const HEADING_9_MAY = "Other years with 9 May events";
-const R3_TEXT =
-  "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
-  'Pick a different date, or choose one of the years listed under "Other years with 9 May events" to go to that date instead.';
-const R4_TEXT =
+// Sprint 55, R2: one unmatched message, whether or not a listed year links.
+const UNMATCHED_TEXT =
   "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
   "Pick a different date.";
 const R5_TEXT =
@@ -70,51 +65,40 @@ describe("linkableEventDate (R1)", () => {
 describe("horoscopeAvailability and the message for each case (R3-R5)", () => {
   const text = (availability: ReturnType<typeof horoscopeAvailability>) => {
     if (availability.kind === "writable") throw new Error("expected a message");
-    const { lead, next } = unavailableMessage(availability, HEADING_9_MAY);
+    const { lead, next } = unavailableMessage(availability);
     return `${lead} ${next}`;
   };
 
   it("matched events: writable, no message", () => {
-    expect(horoscopeAvailability(events(true, [2031]), "2031-05-09")).toEqual({ kind: "writable" });
+    expect(horoscopeAvailability(events(true, [2031]))).toEqual({ kind: "writable" });
   });
 
-  it("R3: unmatched with at least one linkable year", () => {
-    const availability = horoscopeAvailability(events(false, [1500, 1976]), "2031-05-09");
-    expect(availability).toEqual({ kind: "unmatched", hasLinkableYear: true });
-    expect(text(availability)).toBe(R3_TEXT);
+  // Sprint 55, R2: the year list's links no longer change the message.
+  it.each([
+    ["at least one linkable year", [1500, 1976]],
+    ["zero events", []],
+    ["every event before 1700", [1066, 1415, 1699]],
+  ])("unmatched, %s: 'Pick a different date.'", (_, years) => {
+    const availability = horoscopeAvailability(events(false, years));
+    expect(availability).toEqual({ kind: "unmatched" });
+    expect(text(availability)).toBe(UNMATCHED_TEXT);
   });
 
-  it("R4: unmatched with zero events", () => {
-    const availability = horoscopeAvailability(events(false, []), "2031-05-09");
-    expect(availability).toEqual({ kind: "unmatched", hasLinkableYear: false });
-    expect(text(availability)).toBe(R4_TEXT);
-  });
-
-  it("R4: unmatched, every event before 1700", () => {
-    const availability = horoscopeAvailability(events(false, [1066, 1415, 1699]), "2031-05-09");
-    expect(availability).toEqual({ kind: "unmatched", hasLinkableYear: false });
-    expect(text(availability)).toBe(R4_TEXT);
-  });
-
-  it("R4: unmatched on 29 February where no event year is a leap year in range", () => {
-    const availability = horoscopeAvailability(events(false, [1900, 1901, 1600]), "2024-02-29");
-    expect(availability).toEqual({ kind: "unmatched", hasLinkableYear: false });
-  });
-
-  it("Sprint 54, R2: only the linkable-years variant quotes the heading it's given", () => {
-    const linkable = horoscopeAvailability(events(false, [1976]), "2031-07-04");
-    if (linkable.kind === "writable") throw new Error("expected a message");
-    expect(unavailableMessage(linkable, "Other years with 4 July events").next).toBe(
-      'Pick a different date, or choose one of the years listed under "Other years with 4 July events" to go to that date instead.'
-    );
-    const none = horoscopeAvailability(events(false, []), "2031-07-04");
-    if (none.kind === "writable") throw new Error("expected a message");
-    expect(unavailableMessage(none, "anything").next).toBe("Pick a different date.");
+  it("Sprint 55, R2: the next step is exactly 'Pick a different date.' with and without linkable years", () => {
+    const linkable = events(false, [1976]);
+    const none = events(false, [1066]);
+    // The premise: one payload has a linkable year for 4 July, the other doesn't.
+    expect(linkable.events.some((event) => linkableEventDate(event.year, "2031-07-04") !== null)).toBe(true);
+    expect(none.events.some((event) => linkableEventDate(event.year, "2031-07-04") !== null)).toBe(false);
+    for (const payload of [linkable, none]) {
+      const availability = horoscopeAvailability(payload);
+      if (availability.kind === "writable") throw new Error("expected a message");
+      expect(unavailableMessage(availability).next).toBe("Pick a different date.");
+    }
   });
 
   it("R5: a failed lookup (null)", () => {
-    const availability = horoscopeAvailability(null, "2031-05-09");
-    expect(availability).toEqual({ kind: "lookupFailed" });
-    expect(text(availability)).toBe(R5_TEXT);
+    expect(horoscopeAvailability(null)).toEqual({ kind: "lookupFailed" });
+    expect(text(horoscopeAvailability(null))).toBe(R5_TEXT);
   });
 });

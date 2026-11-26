@@ -48,18 +48,18 @@ export function eventsPlacement(events: WikipediaEventsPayload | null): EventsPl
 export const EVENTS_HEADING = "What happened";
 
 /**
- * Sprint 54, R1: the events section's heading -- the one rule for it, and
- * the heading Sprint 39's message quotes (R2). In exactly eventsPlacement's
- * "below" case (other years' events listed, none from this exact date) it
- * names what is listed: "Other years with 4 July events", the page's own
- * day and month, from formatLongDate. Every other case -- this exact date,
+ * Sprint 54, R1: the events section's heading -- the one rule for it. In
+ * exactly eventsPlacement's "below" case (other years' events listed, none
+ * from this exact date) it names what is listed. Sprint 55, R1: month first,
+ * "Other years with events on July 4", the page's own month and day (no
+ * leading zero) from formatLongDate. Every other case -- this exact date,
  * an empty list, a failed lookup -- keeps "What happened" (the user's
  * decision, 26 Nov 2026).
  */
 export function eventsHeading(events: WikipediaEventsPayload | null, eventDate: string): string {
   if (eventsPlacement(events) !== "below") return EVENTS_HEADING;
   const { day, month } = formatLongDate(eventDate);
-  return `Other years with ${day} ${month} events`;
+  return `Other years with events on ${month} ${day}`;
 }
 
 /**

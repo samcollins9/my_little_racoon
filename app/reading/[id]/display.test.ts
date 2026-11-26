@@ -54,11 +54,15 @@ describe("eventsPlacement (Sprint 48, R1)", () => {
   });
 });
 
-describe("eventsHeading (Sprint 54, R1)", () => {
-  it("other years' events listed: 'Other years with D Month events', from the page's date", () => {
-    expect(eventsHeading(events({ matchedYear: false }), "2026-07-04")).toBe("Other years with 4 July events");
-    expect(eventsHeading(events({ matchedYear: false }), "2026-11-25")).toBe("Other years with 25 November events");
-    expect(eventsHeading(events({ matchedYear: false }), "1931-03-03")).toBe("Other years with 3 March events");
+describe("eventsHeading (Sprint 54, R1; Sprint 55, R1)", () => {
+  it("other years' events listed: 'Other years with events on Month D', from the page's date", () => {
+    expect(eventsHeading(events({ matchedYear: false }), "2026-07-04")).toBe("Other years with events on July 4");
+    expect(eventsHeading(events({ matchedYear: false }), "2026-11-25")).toBe("Other years with events on November 25");
+  });
+
+  it("a single-digit day has no leading zero", () => {
+    expect(eventsHeading(events({ matchedYear: false }), "1931-03-03")).toBe("Other years with events on March 3");
+    expect(eventsHeading(events({ matchedYear: false }), "2026-01-09")).toBe("Other years with events on January 9");
   });
 
   it("matched (this exact date): What happened", () => {
