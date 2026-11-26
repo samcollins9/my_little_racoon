@@ -7,11 +7,11 @@
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "5a4670381160abcfe96e2e4a2c23805ec69027a5c057eb6bf8a43e06fd9aed5d",
   "last_shipped_commit": "2398f13a8c7e79bf44b98674e2d8ed3659a88004",
-  "groundtruth_result": null,
+  "groundtruth_result": "FAIL",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-26T16:02:42+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,23 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=2398f13 | ci=green: 1 CI run(s) for 2398f13a8c7e79bf44b98674e2d8ed3659a88004 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-26T16:46:18+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "FAIL: LiveQA live test, Sprint 56, round 1. Verdict: FAIL, on step 7 (R10). Steps 1 to 6 pass.\nEnvironment: production https://my-little-racoon.vercel.app, 2026-11-26 ~16:35-17:00Z. Headless Chromium (Playwright 1.59.1 with the cached chromium_headless_shell-1248), with JavaScript both on and off. Read-only: no horoscope generated, no form submitted.\n\nDEPLOYED BUILD: /api/health/db reports 4c1cb63 (isLocal false). The shipped commit is 2398f13. git diff --stat 2398f13 4c1cb63 touches only docs/sprints (the Sprint 55 done file, registry.json, and the sprint-55 and sprint-56 state files), so the live app code is exactly 2398f13.\nSPRINT FILE: R10 and LiveQA step 7 were amended in after the ship (f567e08). The shipped code predates them. The user asked, in this session, that this verdict include step 7, and it does. Saved reading used: /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d (20 July 1969).\n\nSTEP 1, /date/1969-07-20 at 1280: PASS.\n- Folded: one summary, label \"REVEAL THE HOROSCOPE\", 0 paragraphs visible, toggle at the bottom of the reading. Its castButton has border 1px solid, padding 11px 18px, 10.5px IBM Plex Mono, uppercase, letter-spacing 1.89px, 182x52.\n- After a click: open, label \"FOLD THE HOROSCOPE AWAY\", 3 paragraphs visible. The toggle top (doc 1101.7) is below the last paragraph bottom (doc 1078.7). The computed style is identical except the width (195x52).\n- The only visible fold control is that summary, so the old small one is gone.\n- A second click: folded, \"REVEAL THE HOROSCOPE\", 0 paragraphs.\n- The URL is unchanged, with 0 document or fetch requests across both toggles. No console errors.\n\nSTEP 2, keyboard: PASS.\n- On /date/1969-07-20 it took 7 Tabs to reach the SUMMARY. Enter opens it (\"FOLD THE HOROSCOPE AWAY\", 3 paragraphs). The next Tab goes to the date-picker INPUT, since the date page has no footer link by design (R6). Shift+Tab returns to the SUMMARY, and Space folds it (\"REVEAL THE HOROSCOPE\", 0 paragraphs).\n- On /reading/0b01c79f it took 5 Tabs. Enter opens it, and the next Tab goes to A href=/date/1969-07-20 \"GO TO THIS DATE\". Space folds it.\n- Expanded state, from the Chromium accessibility tree (CDP): role DisclosureTriangle, name \"REVEAL THE HOROSCOPE\", expanded false; then name \"FOLD THE HOROSCOPE AWAY\", expanded true.\n\nSTEP 3, 390: PASS.\n- \"copy link\" does not appear in the body text on any page tested, at either width, with or without JS.\n- Folded, with \"The reading\" heading 120px above the fold: the footer is position sticky, and the toggle sits at top 788, bottom 832 with vh 844. It's hit-testable, with a 44px touch target. This holds on both routes, with and without JS.\n- Open, scrolled so the text runs below the screen (last paragraph bottom at 1024, vh 844): the toggle \"FOLD THE HOROSCOPE AWAY\" stays at bottom 832 and is hit-testable. Clicking it from mid-text folds it.\n- scrollWidth is 390.\n\nSTEP 4, /reading/0b01c79f at 1280 and 390: PASS. Toggle behaviour matches step 1, and the open footer holds toggle, \"GO TO THIS DATE\" (/date/1969-07-20), and the note, at both widths.\n\nSTEP 5, JavaScript disabled: PASS. Steps 1 and 3 repeated with javaScriptEnabled false gave the same labels, paragraph counts, sticky positions and hit tests as with JS.\n\nSTEP 6, no saved horoscope, markup only: PASS.\n- /date/1983-11-26 and /date/1979-11-26: 0 summary elements. \"The reading\" holds a POST form with button type=submit \"REVEAL THE HOROSCOPE\", class castButton, badge \"NOT REVEALED YET\", and the IdleBlock text. Not clicked.\n- (/date/2008-11-26 already has a saved horoscope, with 1 summary, so it doesn't apply.)\n\nSTEP 7 / R10, gap from header row to first text: FAIL.\nI measured from the header row's bottom (sectionHeader / readingHeader) to the top of the first text line box (Range rect), plus the element box gap in brackets.\n- \"What happened\" to its first eventText: 21px [19] at 1280, 18px [17] at 390, on both routes.\n- \"The reading\" OPEN, to the first paragraph: 3px [0] at 1280, 3px [0] at 390, on both routes. That is 18 and 15px short, against a 2px tolerance. The screenshot shows the first line sitting directly under the heading line.\n- \"The reading\" FOLDED, to IdleBlock idleText: 13px [10] at 1280 and 390, on both routes. That is 8 and 5px short of What happened, so R10's second bullet also applies to the folded IdleBlock.\n- Not measured: the Sprint 39 accuracy note, since no unmatched date has a saved horoscope to open.\n\nSECOND ISSUE, for Dev Team or Master Controller to judge against R1's \"styled exactly like\" and step 1's \"in the same style\": the open label wraps where the folded one never does.\n- /date/1969-07-20 at 1280: \"FOLD THE HOROSCOPE AWAY\" sits on 2 lines (195px wide); \"REVEAL THE HOROSCOPE\" is 1 line.\n- /reading/0b01c79f at 1280: 3 lines (\"FOLD THE / HOROSCOPE / AWAY\"), button 141x66, beside \"GO TO THIS DATE\" and the note, while the folded toggle is 182x52.\n- /reading/0b01c79f at 390: 3 lines, 140x72, while the folded toggle is 326x44 and \"GO TO THIS DATE\" takes the wider share of the row.\nThe computed styles match, so this is width or flex sizing, not styling. It still looks like a different, cramped button in hand. Screenshots: rd-1280-open.png, rd-390-open.png, date-1280-js-open.png.\n\nOBSERVATION, not a defect: opening the toggle on /reading/ fired 2 GET fetches, /date/1969-07-20?_rsc=..., when the newly visible \"GO TO THIS DATE\" link appeared. That's Next.js link prefetch, not the toggle. The date page fired 0 requests, folding fired 0, and toggling works with JS off, so R2's guarantee holds.\n\nScreenshots (session scratchpad, s56/): date-1280-js-folded/open, date-1280-nojs-folded/open, date-390-*-folded-sticky, sticky-folded-*, open-midtext-*, rd-1280-folded/open, rd-390-folded/open, step6-2008-11-26.png.\n\nProvenance: this is a deployed web app, so verify-release-content.sh does not apply. The deploy was verified through the health endpoint's commit and the bookkeeping-only diff.\n\nTo fix: R10 spacing, open and folded, on both routes and at both widths. Then decide on the wrapping open label."
+    },
+    {
+      "ts": "2026-11-26T16:46:18+00:00",
+      "actor": "liveqa",
+      "event": "sprint_file_drift_since_audit",
+      "detail": "NOTE: sprint 56's file has changed since QA1's PASS (audited hash d5f5edd91548..., current f512b9ba9843...). Recorded, not refused \u2014 see this function's own comment for why. If this sprint's own acceptance criteria changed for a real reason, that's worth a fresh /sprint-qa1 look once the live-test loop settles; if it was a cosmetic edit, this note is the whole record of it."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-26T16:30:10+00:00"
+    "claude_session_id": "891b6d8a-cd60-4eb6-9209-bf5e62356912",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-26T16:46:18+00:00"
   }
 }
