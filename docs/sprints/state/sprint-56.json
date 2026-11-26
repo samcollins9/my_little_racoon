@@ -1,13 +1,13 @@
 {
   "id": 56,
   "title": "Reveal and fold become one toggle; Copy link removed",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "d5f5edd91548e3c5ebeaec9e190c2d3273d7ca144ba9adb554557a06d552975b",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "5a4670381160abcfe96e2e4a2c23805ec69027a5c057eb6bf8a43e06fd9aed5d",
   "last_shipped_commit": "06f093f680102972eb371651e3c9c962478cae30",
-  "groundtruth_result": "FAIL",
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [
     {
       "ts": "2026-11-26T17:02:15+00:00",
@@ -18,7 +18,7 @@
   ],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 1,
+  "live_test_rounds": 2,
   "started": "2026-11-26T16:02:42+00:00",
   "completed": null,
   "history": [
@@ -75,11 +75,23 @@
       "actor": "pipeman",
       "event": "reshipped",
       "detail": "commit=06f093f | ci=green: 1 CI run(s) for 06f093f680102972eb371651e3c9c962478cae30 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-26T18:03:27+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: LiveQA live test, Sprint 56, round 2. Verdict: PASS. All 7 LiveQA steps pass, including step 7 / R10, which failed in round 1.\nEnvironment: production https://my-little-racoon.vercel.app, 2026-11-26 ~17:10-17:25Z. Headless Chromium (Playwright 1.59.1 with the cached chromium_headless_shell-1248), JS on and off. Read-only: nothing generated or submitted.\n\nDEPLOYED BUILD: /api/health/db reports b0f8de7 (isLocal false). The reshipped commit is 06f093f. git diff --stat 06f093f b0f8de7 touches only docs/sprints/state/sprint-56.json, so the live app code is exactly 06f093f. The app-code change since round 1 (ef38b50..06f093f) is app/reading/[id]/reading.module.css and a test file only.\nMethod: I re-ran round 1's exact scripts unchanged, plus one added gap probe. Saved reading: /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d.\n\nSTEP 7 / R10: PASS. Measured from the header row bottom to the first text line box top (Range rect). The target is the \"What happened\" / events heading row to its first eventText.\n- OPEN, first paragraph, /date/1969-07-20 and /reading/0b01c79f: 23 at 1280 (target 21, +2); 17 at 390 (target 18, -1). Round 1 was 3 and 3.\n- FOLDED, IdleBlock idleText, both routes: 23 at 1280 (+2); 17 at 390 (-1). Round 1 was 13 and 13.\n- UNSAVED IdleBlock, /date/1983-11-26 (inside the form): 23 at 1280 (target 21, +2); 17 at 390 (target 18, -1).\n- Sprint 39 accuracy note (no form): /date/1950-03-15 and /date/2026-11-26 give 23 at 1280 (target 21 under \"Other years with events on ...\", +2) and 16 at 390 (target 18, -2).\nEvery state is within 2px. Two cases sit exactly at the tolerance: +2 at 1280, and -2 for the accuracy note at 390. These match the handoff's own round 2 table exactly.\nScreenshot rd-1280-open.png shows clear space between \"The reading\" and the first paragraph.\n\nSTEPS 1-6: PASS, re-verified with identical results to round 1.\n- Step 1, /date/1969-07-20 at 1280: folded \"REVEAL THE HOROSCOPE\", 182x52, 0 paragraphs. Click: \"FOLD THE HOROSCOPE AWAY\", 195x52, 3 paragraphs, toggle below the text. Click again folds it. URL unchanged, 0 requests, no console errors.\n- Step 2: the date page takes 7 Tabs to the SUMMARY; Enter opens it; Tab goes to the picker INPUT (no footer link there by design); Space folds it. /reading takes 5 Tabs; Enter opens it; Tab goes to A /date/1969-07-20 \"GO TO THIS DATE\"; Space folds it. The AX tree shows DisclosureTriangle, expanded false, then true.\n- Step 3, 390: no \"copy link\" text anywhere. Folded with the heading 120px above the fold: footer position sticky, toggle bottom 832 of vh 844, hit-testable, 44px tall. Open with text running below the screen (last paragraph bottom 1024): toggle bottom 832, hit-testable. Clicking it mid-text folds it. scrollWidth is 390.\n- Step 4, /reading at 1280 and 390: same toggle behaviour; the open footer holds the toggle, \"GO TO THIS DATE\" and the note.\n- Step 5, JS off: steps 1 and 3 give identical results.\n- Step 6: /date/1983-11-26 and /date/1979-11-26 show 0 summary elements and a POST form with submit \"REVEAL THE HOROSCOPE\" (castButton), badge \"NOT REVEALED YET\". Not clicked.\n\nCARRIED OVER FROM ROUND 1, NOW DECIDED: the open label still wraps. It's 2 lines on the date page at 1280 (195x52), and 3 lines on /reading at 1280 (141x66) and 390 (140x72). The round 2 handoff records Dev Team's measured decision to keep it as is: giving the toggle its natural width pushes \"Go to this date\" to 3 lines instead. QA1's live-loop audit passed that. I recorded it as a judgement call in round 1, not a criterion failure, so it does not block this verdict.\nOBSERVATION, unchanged: opening on /reading triggers 2 Next.js prefetches of /date/1969-07-20?_rsc=... for the newly visible link. The toggle makes no requests of its own and works with JS off.\n\nProvenance: this is a deployed web app, so verify-release-content.sh does not apply. The deploy was verified through the health endpoint's commit and the bookkeeping-only diff.\nScreenshots: session scratchpad s56r2/."
+    },
+    {
+      "ts": "2026-11-26T18:03:27+00:00",
+      "actor": "liveqa",
+      "event": "sprint_file_drift_since_audit",
+      "detail": "NOTE: sprint 56's file has changed since QA1's PASS (audited hash d5f5edd91548..., current f512b9ba9843...). Recorded, not refused \u2014 see this function's own comment for why. If this sprint's own acceptance criteria changed for a real reason, that's worth a fresh /sprint-qa1 look once the live-test loop settles; if it was a cosmetic edit, this note is the whole record of it."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-26T17:08:01+00:00"
+    "claude_session_id": "891b6d8a-cd60-4eb6-9209-bf5e62356912",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-26T18:03:27+00:00"
   }
 }
