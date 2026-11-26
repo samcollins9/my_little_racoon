@@ -1,0 +1,128 @@
+{
+  "date open 1280": {
+    "whatHappened": {
+      "text": 21,
+      "box": 6
+    },
+    "reading": {
+      "kind": "paragraph",
+      "text": 3,
+      "box": 0
+    }
+  },
+  "date folded 1280": {
+    "whatHappened": {
+      "text": 21,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "reading open 1280": {
+    "whatHappened": {
+      "text": 21,
+      "box": 6
+    },
+    "reading": {
+      "kind": "paragraph",
+      "text": 3,
+      "box": 0
+    }
+  },
+  "reading folded 1280": {
+    "whatHappened": {
+      "text": 21,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "unsaved idle 1280": {
+    "whatHappened": {
+      "text": 21,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "accuracy note 1280": {
+    "whatHappened": null,
+    "reading": {
+      "kind": "accuracyNote",
+      "text": 33,
+      "box": 20
+    }
+  },
+  "date open 390": {
+    "whatHappened": {
+      "text": 18,
+      "box": 6
+    },
+    "reading": {
+      "kind": "paragraph",
+      "text": 3,
+      "box": 0
+    }
+  },
+  "date folded 390": {
+    "whatHappened": {
+      "text": 18,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "reading open 390": {
+    "whatHappened": {
+      "text": 18,
+      "box": 6
+    },
+    "reading": {
+      "kind": "paragraph",
+      "text": 3,
+      "box": 0
+    }
+  },
+  "reading folded 390": {
+    "whatHappened": {
+      "text": 18,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "unsaved idle 390": {
+    "whatHappened": {
+      "text": 18,
+      "box": 6
+    },
+    "reading": {
+      "kind": "idleText",
+      "text": 13,
+      "box": 10
+    }
+  },
+  "accuracy note 390": {
+    "whatHappened": null,
+    "reading": {
+      "kind": "accuracyNote",
+      "text": 26,
+      "box": 14
+    }
+  }
+}

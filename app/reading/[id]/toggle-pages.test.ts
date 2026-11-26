@@ -184,6 +184,19 @@ describe("Sprint 56: the toggle's CSS", () => {
     expect(css).toMatch(/\.reveal \{\s*flex: 1;\s*min-width: 0;/);
   });
 
+  it("R10: the form gets the section's own gap after the header, so open text and the idle block sit where they do outside a form", () => {
+    expect(css).toMatch(/\.readingSection \{[^}]*--reading-gap: 20px;[^}]*gap: var\(--reading-gap\);/);
+    expect(phone).toMatch(/\.readingSection \{[^}]*--reading-gap: 14px;/);
+    expect(css).toMatch(
+      /\.readingSection form \.idleBlock,\s*\.readingSection form \.revealText \{\s*margin-top: var\(--reading-gap\);\s*\}/
+    );
+  });
+
+  it("R10: the idle block and the accuracy note no longer add top padding on top of that gap", () => {
+    expect(css).toMatch(/\.idleBlock \{[^}]*padding: 0 0 4px;/);
+    expect(css).toMatch(/\.accuracyNote \{[^}]*padding: 0 0 4px;/);
+  });
+
   it("R6: the copy-link button's CSS is gone", () => {
     expect(css).not.toContain("mobileWrittenFooter");
     expect(css).not.toMatch(/revealFold\b|revealFolded/);

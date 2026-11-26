@@ -303,7 +303,8 @@
    section, so it wraps at the same right edge as the event text. */
 .accuracyNote {
   margin: 0;
-  padding: 10px 0 4px;
+  /* Sprint 56, R10: no top padding, for the same reason as .idleBlock. */
+  padding: 0 0 4px;
   font-size: 19px;
   line-height: 1.55;
   color: var(--om-grey);
@@ -325,11 +326,24 @@
 /* ---- The reading ---- */
 
 .readingSection {
+  /* Sprint 56, R10: the section's gap, named so the form below can reuse it. */
+  --reading-gap: 20px;
   padding: 30px 40px 34px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--reading-gap);
   flex: 1;
+}
+
+/* Sprint 56, R10: when generation is on, the panel sits inside a <form>,
+   which is a plain block, so the section's gap never reaches inside it: the
+   open text sat flush under "The reading" header row (LiveQA round 1). The
+   first block after the header gets the same gap as a top margin, so the
+   header-to-text distance is the same with or without the form, and within
+   2px of "What happened"'s. */
+.readingSection form .idleBlock,
+.readingSection form .revealText {
+  margin-top: var(--reading-gap);
 }
 
 /* Sprint 48, R5: other years' events follow the reading (ReadingView).
@@ -378,11 +392,13 @@
 
 /* idle */
 
+/* Sprint 56, R10: no top padding. It used to stack on the section's gap
+   (33px from the header row to the text, against "What happened"'s 21). */
 .idleBlock {
   display: flex;
   align-items: center;
   gap: 22px;
-  padding: 10px 0 4px;
+  padding: 0 0 4px;
 }
 
 /* Sprint 53, round 2: flex: none keeps the sigil at its own 34 x 34.
@@ -716,8 +732,8 @@
   }
 
   .readingSection {
+    --reading-gap: 14px;
     padding: 20px 24px 24px;
-    gap: 14px;
   }
 
   .busySigil {

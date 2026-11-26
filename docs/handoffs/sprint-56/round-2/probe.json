@@ -1,0 +1,551 @@
+{
+  "date-1280": {
+    "folded": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 801,
+        "w": 182,
+        "h": 52
+      },
+      "footerTop": 778,
+      "footerBottom": 853,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyLet the heavens confirm your su",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "tabsToToggle": 7,
+    "afterEnter": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 1348,
+        "w": 195,
+        "h": 52
+      },
+      "footerTop": 1325,
+      "footerBottom": 1400,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": true,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "nextFocusAfterToggle": "input: (after reading section)",
+    "backOnToggle": true,
+    "afterSpace": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 256,
+        "w": 182,
+        "h": 52
+      },
+      "footerTop": 233,
+      "footerBottom": 308,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "afterClick": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 1080,
+        "w": 195,
+        "h": 52
+      },
+      "footerTop": 1057,
+      "footerBottom": 1132,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": true,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    }
+  },
+  "date-390": {
+    "folded": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 801,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 788,
+      "footerBottom": 857,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyHe who understands the arrival ",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "tabsToToggle": 7,
+    "afterEnter": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 800,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 787,
+      "footerBottom": 856,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "nextFocusAfterToggle": "input: (after reading section)",
+    "backOnToggle": true,
+    "afterSpace": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": -508,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": -521,
+      "footerBottom": -452,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "afterClick": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 788,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 775,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "midText": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 788,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 775,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "foldedScrolled": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 233,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 220,
+      "footerBottom": 289,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyRevealing the inevitable, one o",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    }
+  },
+  "reading-1280": {
+    "folded": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 738,
+        "w": 182,
+        "h": 52
+      },
+      "footerTop": 715,
+      "footerBottom": 790,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyFor every yesterday, a prophecy",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "tabsToToggle": 5,
+    "afterEnter": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away",
+        "a:Go to this date"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 1348,
+        "w": 142,
+        "h": 66
+      },
+      "footerTop": 1325,
+      "footerBottom": 1414,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": true,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "nextFocusAfterToggle": "a:Go to this date (in reading section)",
+    "backOnToggle": true,
+    "afterSpace": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 421,
+        "w": 182,
+        "h": 52
+      },
+      "footerTop": 398,
+      "footerBottom": 473,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    },
+    "afterClick": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away",
+        "a:Go to this date"
+      ],
+      "toggle": {
+        "x": 673,
+        "y": 1080,
+        "w": 142,
+        "h": 66
+      },
+      "footerTop": 1057,
+      "footerBottom": 1146,
+      "viewportH": 900,
+      "footerPosition": "static",
+      "toggleAfterText": true,
+      "toggleBelowText": true,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 1280,
+      "innerWidth": 1280
+    }
+  },
+  "reading-390": {
+    "folded": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 788,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 775,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyOnly through the backward illum",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "tabsToToggle": 5,
+    "afterEnter": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away",
+        "a:Go to this date"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 760,
+        "w": 140,
+        "h": 72
+      },
+      "footerTop": 747,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "nextFocusAfterToggle": "a:Go to this date (in reading section)",
+    "backOnToggle": true,
+    "afterSpace": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 788,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 775,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "afterClick": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away",
+        "a:Go to this date"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 760,
+        "w": 140,
+        "h": 72
+      },
+      "footerTop": 747,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "midText": {
+      "open": true,
+      "summaries": 1,
+      "label": "Fold the horoscope away",
+      "textShown": true,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away",
+        "a:Go to this date"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 760,
+        "w": 140,
+        "h": 72
+      },
+      "footerTop": 747,
+      "footerBottom": 844,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": false,
+      "copyLink": false,
+      "active": "summary:Reveal the horoscopeFold the horoscope a",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    },
+    "foldedScrolled": {
+      "open": false,
+      "summaries": 1,
+      "label": "Reveal the horoscope",
+      "textShown": false,
+      "footerControls": [
+        "summary:Reveal the horoscopeFold the horoscope away"
+      ],
+      "toggle": {
+        "x": 32,
+        "y": 756,
+        "w": 326,
+        "h": 44
+      },
+      "footerTop": 743,
+      "footerBottom": 812,
+      "viewportH": 844,
+      "footerPosition": "sticky",
+      "toggleAfterText": true,
+      "toggleBelowText": null,
+      "copyLink": false,
+      "active": "body:Ask ReloyFor every yesterday, a prophecy",
+      "scrollWidth": 390,
+      "innerWidth": 390
+    }
+  },
+  "date-1280-nojs": {
+    "scriptsRun": true,
+    "openBefore": false,
+    "openAfterFirstClick": true,
+    "openAfterSecondClick": false
+  },
+  "date-390-nojs": {
+    "scriptsRun": true,
+    "openBefore": false,
+    "openAfterFirstClick": true,
+    "openAfterSecondClick": false
+  },
+  "reading-1280-nojs": {
+    "scriptsRun": true,
+    "openBefore": false,
+    "openAfterFirstClick": true,
+    "openAfterSecondClick": false
+  },
+  "reading-390-nojs": {
+    "scriptsRun": true,
+    "openBefore": false,
+    "openAfterFirstClick": true,
+    "openAfterSecondClick": false
+  }
+}

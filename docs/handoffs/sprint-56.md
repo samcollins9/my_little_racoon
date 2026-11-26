@@ -156,3 +156,98 @@ In `reading-390-open-mid-text-sticky.png`, "Go to this date" shows its hover bor
 
 - Is the 182 vs 184 width at 1280 acceptable under R1's "styled exactly like"? All styles match. Only the flex-shrink result differs, by 2px, and today's production differs from the unsaved state too, in its note wrap.
 - Is the screen-reader order, text before toggle, an acceptable consequence of R1 and R3? `aria-controls` points to the text.
+
+## Round 2
+
+**Status:** ready for QA1's live-loop audit.
+
+**Verify:** `VERIFY PASS (lint, typecheck, test, build) exit=0` (56 test files, 642 tests).
+
+**The sprint file changed after the round 1 audit.** Master Controller added R10 and LiveQA step 7 in `f567e08`, after the ship, from the user's own review. QA1's round 1 PASS recorded the file's earlier hash (LiveQA's verdict notes the drift). So this round needs QA1 to read the amended file, not just the diff.
+
+This branch was fast-forwarded to main's `ef38b50` (LiveQA's verdict, on top of the amendment and the shipped `2398f13`) before the fix. The commit QA1 audits sits directly on what's live.
+
+### R10: what was wrong
+
+With generation on, both routes render the panel inside a `<form>`. A form is a plain block, so the reading section's 20px flex gap (14px on phones) never reaches the blocks inside it:
+- The open text sat flush under the header row, 0px box gap.
+- The folded and unsaved IdleBlock text was spaced only by `.idleBlock`'s own 10px top padding.
+
+Before round 1, the "fold away" control above the text supplied that space.
+
+Outside a form, the reverse happened. With generation disabled, and for Sprint 39's accuracy note, those same 10px paddings stacked on top of the section's gap.
+
+### R10: the CSS changed (all in `app/reading/[id]/reading.module.css`, spacing only)
+
+| Selector | Before | After |
+|---|---|---|
+| `.readingSection` | `gap: 20px` | `--reading-gap: 20px; gap: var(--reading-gap)` (same value, now named) |
+| `.readingSection` (phones) | `gap: 14px` | `--reading-gap: 14px` (same value, through the variable) |
+| `.readingSection form .idleBlock, .readingSection form .revealText` (new) | — | `margin-top: var(--reading-gap)`: inside the form, the first block after the header gets the section's own gap |
+| `.idleBlock` | `padding: 10px 0 4px` | `padding: 0 0 4px` |
+| `.accuracyNote` | `padding: 10px 0 4px` | `padding: 0 0 4px` |
+
+Nothing else changed: no toggle, text, header, font, colour or width rule. The busy state's header-to-block spacing is untouched, because R10 doesn't name it and `.busyBlock` isn't in the new selector. Neither is the outage notice (`date.module.css` `.unavailableText`, also `padding: 10px 0 4px`), for the same reason. Not checked: whether either is "off" by R10's measure.
+
+### R10: distances, before and after
+
+What was measured: from the bottom of the header row to the top of the first line of text (a `Range` client rect), the same measurement LiveQA made. It ran on a local build in headless Chromium against the read-only Supabase stand-in (placeholder horoscope text). "What happened" is the target. The disabled state used `HOROSCOPE_ENABLED=false` on the same build. Raw data: `docs/handoffs/sprint-56/round-2/r10-gaps-{before,after}-{enabled,disabled}.json`.
+
+| State | Width | "What happened" | Before | After | After vs target |
+|---|---|---|---|---|---|
+| Open, `/date/1969-07-20` and `/reading/<id>` (in the form) | 1280 | 21 | **3** | **23** | +2 |
+| | 390 | 18 | **3** | **17** | −1 |
+| Folded IdleBlock, both routes, and the unsaved IdleBlock (in the form) | 1280 | 21 | 13 | 23 | +2 |
+| | 390 | 18 | 13 | 17 | −1 |
+| Generation disabled: open, folded, and unsaved idle (no form) | 1280 | 21 | 23 open; 33 idle | 23 | +2 |
+| | 390 | 18 | 17 open; 27 idle | 17 | −1 |
+| Sprint 39's accuracy note, `/date/1950-03-15` (no form) | 1280 | 21 | 33 | 23 | +2 |
+| | 390 | 18 | 26 | 16 | −2 |
+
+**Every state is now within 2px, and every state measures the same with or without the form.**
+- **Before**, LiveQA's production numbers match these exactly: 3 open, 13 folded.
+- **Two cases sit exactly at the tolerance:** +2 at 1280 everywhere, and −2 for the accuracy note at 390. They come from the section's own gap (20 or 14) plus each text's line-box offset, against "What happened"'s 6px header margin plus 13px (11px on phones) row padding.
+- **Getting closer would mean** a separate header-to-text distance that's different from the section's gap everywhere else. That's more CSS, and every state would stop sharing one spacing rule. I kept the single gap; say if you want it tighter.
+
+### The wrapping open label (LiveQA's second issue): decided, kept as is
+
+Measured on the fixed build (local, 1280 and 390), with alternatives tried by injecting CSS:
+
+| | Toggle | "Go to this date" | Note |
+|---|---|---|---|
+| `/reading` open 1280, as built | 142 × 66, 3 lines | 115 × 52, 2 lines | 206 wide |
+| …toggle at its natural width on desktop | 219 × 38, 1 line | **93 × 66, 3 lines** | 149 wide |
+| `/date` open 1280, as built | 195 × 52, 2 lines | — | 283 wide |
+| folded 1280 (both routes) | 182 × 52, **2 lines** | — | 296 wide |
+| `/reading` open 390, as built | 140 × 72, 3 lines | 170 × 44, 1 line | hidden |
+| …phones stack the open row | 326 × 44, 1 line | 326 × 44, 1 line | footer row **129px** tall, sticky |
+
+**Decision: no change in this round.** The reasons:
+- **The folded label wraps too.** At 1280 it's two lines (182 × 52), exactly like the unsaved state's `<button>` since Sprint 33. LiveQA's note that the folded label is one line doesn't match its own 182 × 52 measurement. On desktop, wrapping is a property of the narrow footer row, which holds a button, sometimes a link, and the note.
+- **Giving the toggle its natural width only moves the cramp.** "Go to this date" goes to three lines instead.
+- **Stacking on phones does look cleaner,** but it changes the footer's layout, to a 129px sticky bar. That isn't styling.
+- **R10, as amended, scopes this round to spacing:** "Nothing else about the toggle, the text or the header changes." QA1's round 1 ruling on R1 was the same styling, not the same width, and every computed style still matches.
+
+If the user wants it, stacking the open footer's controls on phones (the measured row above) is a small, separate follow-up for Master Controller to file.
+
+### Tests
+
+`app/reading/[id]/toggle-pages.test.ts` adds 2 CSS guards:
+- the `--reading-gap` variable at both widths, and the form's first-block margin rule;
+- `.idleBlock` and `.accuracyNote` with no top padding.
+
+Every round 1 test passes unchanged.
+
+### Re-checked on the fixed build (`docs/handoffs/sprint-56/round-2/probe.json` and screenshots)
+
+The round 1 toggle checks all still hold, on both routes and at 1280 and 390:
+- one summary;
+- the labels;
+- Enter opens and Space folds;
+- Tab order: toggle, then "Go to this date" on `/reading`;
+- no JS: click opens and click folds;
+- sticky at 390 mid-text (footer 775–844 or 747–844 of 844);
+- no copy-link text;
+- no sideways scroll.
+
+`round-2/date-1280-open.png` shows the restored space under "The reading". The other screenshots are the same set as round 1, retaken on this build.
