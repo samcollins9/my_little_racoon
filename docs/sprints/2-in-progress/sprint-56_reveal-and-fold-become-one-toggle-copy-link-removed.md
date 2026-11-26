@@ -55,6 +55,11 @@ On 26 Nov 2026 the user asked for the open state to work like a toggle:
 
    Update Sprint 33's and Sprint 38's tests that asserted the old fold position, and list them in the handoff.
 9. **Handoff.** Follow CLAUDE.md's committed-handoff standard: `docs/handoffs/sprint-56.md`, with `npm run verify`'s final line including `exit=0`. Include screenshots under `docs/handoffs/sprint-56/`, at 1280px and 390px, of a saved horoscope folded and open, on `/date/1969-07-20` and on `/reading/<id>`. Include a 390px shot scrolled mid-horoscope that shows the sticky toggle.
+10. **Space between "The reading" heading and the open text** (amended 26 Nov 2026, after `/sprint-ship`, from the user's own review of the deployed sprint). When the horoscope is open, its first paragraph sits directly under the heading line. The "fold away" control that used to sit there is gone, and it appears to have been what provided the space, though that's not yet confirmed.
+    - The vertical distance from the bottom of the "The reading" header row to the top of the first paragraph's text matches the distance in "What happened": from the bottom of its header row to the top of its first event's text. It matches within 2px, at 1280px and at 390px.
+    - The same holds for the folded IdleBlock text, and for Sprint 39's accuracy note, if either is off now. Otherwise they stay as they are.
+    - Only spacing changes. Nothing else about the toggle, the text or the header changes.
+    - Record both distances, before and after, in the round's handoff section, along with the CSS changed.
 
 ### Acceptance Criteria
 
@@ -62,6 +67,7 @@ On 26 Nov 2026 the user asked for the open state to work like a toggle:
 - **R2:** QA1 confirms the mechanism works without JavaScript and exposes the expanded state.
 - **R3:** QA1 confirms from the markup and CSS that DOM or focus order matches the visual order in the open state.
 - **R4 and R7:** the existing reveal-landing, rise and disabled-state tests pass.
+- **R10:** QA1 confirms the fix is spacing-only. The handoff's before/after distances match within 2px at both widths.
 - **R9:** QA1 reads `docs/handoffs/sprint-56.md` at the audited commit, finds `VERIFY PASS … exit=0`, and opens the screenshots.
 
 **LiveQA (the deployed app):**
@@ -71,6 +77,7 @@ On 26 Nov 2026 the user asked for the open state to work like a toggle:
 4. `/reading/<id>` at both widths: the toggle works the same way, and the date-page link is still in the open footer.
 5. With JavaScript disabled, steps 1 and 3 still work.
 6. A date with no saved horoscope still shows the generate button, unchanged. Don't generate one. Check the markup only.
+7. With a horoscope open, at 1280px and 390px, measure the gap from "The reading" header row to the first paragraph's text, and the gap from "What happened" header row to its first event's text. They match within 2px (R10).
 
 ### Out of Scope
 
