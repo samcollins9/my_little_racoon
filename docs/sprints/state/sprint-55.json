@@ -1,17 +1,17 @@
 {
   "id": 55,
   "title": "Other-years heading reads month first; message shortened",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "a4e0f4bd9d2d2880c82b53dcbb80e32fc490abca5b6ca218f425983c5fafaaf0",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "05f72d4d02ea823cc356b99bfcd67a33312895223fff98a48488976a4f8a1ef1",
   "last_shipped_commit": "4d317e13966dd6bf67c4b4afe7540f5e1e4f431b",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-26T15:34:28+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=4d317e1 | ci=green: 1 CI run(s) for 4d317e13966dd6bf67c4b4afe7540f5e1e4f431b all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-26T16:24:41+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: LiveQA live test, Sprint 55, round 1. Verdict: PASS.\nEnvironment: production https://my-little-racoon.vercel.app, 2026-11-26 ~16:00-16:20Z. Headless Chromium (Playwright 1.59.1 driving the cached chromium_headless_shell-1248) plus curl. Read-only: nothing written to production, no horoscope generated.\n\nDEPLOYED BUILD: /api/health/db reports commit 5f02f16 (isLocal false). The shipped commit is 4d317e1. git diff --stat 4d317e1 5f02f16 shows only docs/sprints/state/sprint-55.json (bookkeeping), so the live app code is exactly 4d317e1. GitHub deployments list 4d317e1 then 5f02f16 as Production, both success.\n\nSTEP 1, unmatched date with other years: PASS. Date used: today, /date/2026-11-26.\n- Heading (h2), verbatim: \"Other years with events on November 26\".\n- The reading paragraph outerHTML, verbatim, both 1280 and 390: <p class=\"...accuracyNote\"><strong class=\"...accuracyLead\">We have no recorded events for this exact date, so we can't write an accurate horoscope for it.</strong><br>Pick a different date.</p>\n  So: bold lead, line break, \"Pick a different date.\", nothing after it. The string \"choose one of the years listed\" is absent from the page body.\n- Badge reads \"NO EXACT-DATE EVENTS\". Five years listed: 2011, 2011, 2008, 1983, 1979.\n- Extra single-digit-day checks (R1 no leading zero), each with the same message: /date/2026-07-04 \"Other years with events on July 4\"; /date/2026-03-03 \"Other years with events on March 3\"; /date/2026-01-09 \"Other years with events on January 9\"; /date/2025-11-05 \"Other years with events on November 5\"; /date/1977-03-31 \"Other years with events on March 31\".\n\nSTEP 2, year links: PASS. On /date/2026-11-26 at both 1280 and 390, all 5 year links were clicked for real (10 clicks):\n2011 -> /date/2011-11-26, h1 \"26 November 2011\" (both 2011 rows); 2008 -> /date/2008-11-26, h1 \"26 November 2008\"; 1983 -> /date/1983-11-26, h1 \"26 November 1983\"; 1979 -> /date/1979-11-26, h1 \"26 November 1979\".\nThe link text is green in the screenshot. Note: my first click attempt read the URL before client-side navigation finished and looked like a no-op. That was my own script's timing, and with an explicit wait for the URL every click landed.\n\nSTEP 3, /date/1969-07-20: PASS. Heading \"What happened\", badge \"THIS EXACT DATE\", the Apollo 11 event text is shown. Saved readings /reading/0b01c79f..., 58d6c515..., 5bf3a1f5..., a958d6d8... (all 20 July 1969) also read \"What happened\".\n\nSTEP 4, 390px: PASS. At 390 the heading \"Other years with events on November 26\" renders 21px, box 217px wide, 50px tall, so 2 lines: \"Other years with events\" / \"on November 26\". It sits beside the \"ON THIS DAY, OTHER YEARS\" label with no overlap. h2 scrollWidth equals clientWidth (217), and documentElement scrollWidth is 390, equal to clientWidth, so there is no horizontal scroll. At 1280 the heading also wraps to 2 lines (56px tall at 23px), cleanly; the page scrollWidth is 1280.\n\nConsole/page errors: none on any page loaded.\n\nOBSERVATION, not a defect against this sprint, for Master Controller: /reading/f8d046f7-6432-4961-b996-d65c9f623a8e (31 March 1977, a saved reading from the sprint 14 era) shows heading \"What happened\", events label \"No events looked up for this reading.\", and the lookup-failed message \"The events for this date couldn't be loaded, so the horoscope can't be written right now. Try again in a few minutes.\" This was stable across 3 fetches. Meanwhile /date/1977-03-31 shows the unmatched state with year links. The label suggests this is an old row with no stored event lookup, not a live failure, so \"Try again in a few minutes\" will never come true for it. I could not establish a pre-Sprint-55 baseline: the immutable deployment URLs for Sprint 54 (k0spplsne) and this sprint (e9yqk5c0u) both 302 to Vercel login, and no earlier LiveQA record covers this reading in this state. Sprint 55 left the lookup-failed message unchanged by design (R2), and none of this sprint's criteria cover it.\n\nNot covered: no saved /reading/[id] in the unmatched state was available without writing one, so the new heading and message on /reading/[id] were not seen live. QA1's render tests cover that route. The LiveQA criteria name only the deployed date pages, and all four were verified.\n\nProvenance: this is a deployed web app, not a published package, so verify-release-content.sh does not apply. The deploy was verified through the health endpoint's commit plus the content-only diff above.\n\nScreenshots (session scratchpad): today-1280-view.png, today-390-view.png, today-390-full.png, apollo-1280.png, after-click-1280.png, after-click-390.png."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-26T15:48:29+00:00"
+    "claude_session_id": "891b6d8a-cd60-4eb6-9209-bf5e62356912",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-26T16:24:41+00:00"
   }
 }
