@@ -1,17 +1,17 @@
 {
   "id": 54,
   "title": "Other-years heading, Pick a different date label, message line break",
-  "phase": "liveqa_live",
+  "phase": "complete_ready",
   "qa1_audit_result": "PASS",
   "qa1_audit_file_hash": "267d90b5de125e73d45ab7f93ba4495021d3672ea554e681cd6407b04fae2eae",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "ed12245058bdfa257d2c96a8dd63aa3912fd637232fe304fff3d5610d3ebe6fb",
   "last_shipped_commit": "71563a7e1c2118e54b4a40ba72440a60014f7674",
-  "groundtruth_result": null,
+  "groundtruth_result": "PASS",
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
   "audit_rounds": 1,
-  "live_test_rounds": 0,
+  "live_test_rounds": 1,
   "started": "2026-11-26T01:59:24+00:00",
   "completed": null,
   "history": [
@@ -38,11 +38,17 @@
       "actor": "pipeman",
       "event": "shipped",
       "detail": "commit=71563a7 | ci=green: 1 CI run(s) for 71563a7e1c2118e54b4a40ba72440a60014f7674 all completed successfully with real steps executed."
+    },
+    {
+      "ts": "2026-11-26T11:52:34+00:00",
+      "actor": "liveqa",
+      "event": "live_test",
+      "detail": "PASS: PASS (round 1). LiveQA steps 1 to 5 all pass on production. No defects. One layout observation for the user, below.\n\nTested 2026-11-26, about 11:51 to 12:00 UTC, against https://my-little-racoon.vercel.app.\nShipped commit 71563a7. Production serves the pushed tip 970bc99: /api/health/db reports status ok, connected true, commit 970bc99, with migrationVersion unchanged at 20261122152710_navigation_exact_date_readings. git diff 71563a7 origin/main touches only docs/sprints/state/sprint-54.json.\nTools: headless Chromium (Playwright 1.57) at 1280x900, and 390x900 (isMobile, hasTouch).\n\nSTEP 1, unmatched date with other years listed: PASS. I used today, /date/2026-11-26, plus /date/2026-11-25, /date/2023-07-04 and /date/2026-07-09, at both widths.\n- Headings:\n  - /date/2026-11-26: \"Other years with 26 November events\", status \"on this day, other years\", 5 rows.\n  - /date/2026-11-25: \"Other years with 25 November events\".\n  - /date/2023-07-04: \"Other years with 4 July events\".\n  - /date/2026-07-09: \"Other years with 9 July events\", a single-digit day with no leading zero.\n- The reading's message is one <p> containing <strong>lead</strong><br>next step, with exactly 1 br:\n  - Lead: \"We have no recorded events for this exact date, so we can't write an accurate horoscope for it.\"\n  - Next step: \"Pick a different date, or choose one of the years listed under \"Other years with 26 November events\" to go to that date instead.\"\n  - The quoted heading matches each page's own heading, for 25 November, 4 July and 9 July likewise.\n- The line break is real. At 1280 the lead's glyphs end at y 554 and the next step's begin at 561. At 390, 718 and then 724. That's the next line, with no extra gap.\n- The p has margin-bottom 0px and max-width none; font 19px/29.45px at 1280 and 17px/26.35px at 390.\n- No other h2 on these pages reads \"What happened\".\n- Screenshots: s54-1280_date_2026_11_26.png and s54-390_date_2026_11_26.png.\n\nSTEP 2, /date/1969-07-20: PASS. The heading is \"What happened\", status \"this exact date\", at both widths. The matched reading /reading/0b01c79f-73d5-4fbc-afeb-d65da32ae38d also reads \"What happened\".\n\nSTEP 3, the picker panel: PASS at both widths.\n- The label reads \"Pick a different date\", with htmlFor \"date-page-picker\", the date input.\n- Panel text: \"PICK A DIFFERENT DATE GO OR DISCOVER RANDOM READING\". \"Another date\" appears nowhere in the page text.\n- Located by its label (getByLabel \"Pick a different date\"), the input filled with 1912-04-15 plus Go lands on /date/1912-04-15. Screenshots: s54-1280-panel.png and s54-390-panel.png.\n\nSTEP 4, an unmatched reading: FOUND. /reading/9bd536d1-243f-49e7-8c59-af75b6d76067 shows \"Other years with 21 July events\", status \"on this day, other years\", 5 rows. Its message quotes \"Other years with 21 July events\", with the same strong-br structure, at both widths.\n\nSTEP 5, at 390: PASS. scrollWidth is 390 on every page. The heading wraps cleanly to 2 lines, \"Other years with 26 / November events\" (heading box x 32-243, status 243-358, no overlap). Screenshot: s54-390_date_2026_11_26.png.\n\nOBSERVATION, not a defect, for the user to judge. At 1280 the longer heading also wraps:\n- \"Other years with 26 November / events\", with \"events\" alone on the second line (heading box x 673-1003);\n- the status beside it wraps to 2 lines, \"ON THIS DAY, OTHER / YEARS\" (box 1003-1167). Before this sprint it was one line.\nNothing overlaps or scrolls, and no requirement asks for a single line. Shorter dates (4 July: heading 673-957) still wrap the status. Screenshot: s54-1280_date_2026_11_26.png.\n0 console or page errors."
     }
   ],
   "last_claim": {
-    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
-    "claude_agent": "pipeman",
-    "ts": "2026-11-26T02:33:40+00:00"
+    "claude_session_id": "bdd46eda-7001-5198-8038-140d3a5b41ed",
+    "claude_agent": "liveqa",
+    "ts": "2026-11-26T11:52:34+00:00"
   }
 }
