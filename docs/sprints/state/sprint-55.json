@@ -1,16 +1,16 @@
 {
   "id": 55,
   "title": "Other-years heading reads month first; message shortened",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "a4e0f4bd9d2d2880c82b53dcbb80e32fc490abca5b6ca218f425983c5fafaaf0",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "05f72d4d02ea823cc356b99bfcd67a33312895223fff98a48488976a4f8a1ef1",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-26T15:34:28+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-26T15:42:26+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: QA1 gate-1 audit, Sprint 55, commit 4d317e1 (HEAD, clean tree). Verdict: PASS.\n\nSprint file: re-read fresh. Unchanged since /sprint-start (git diff c29cd6c..4d317e1 -- docs/sprints is empty). The version-diff rule does not apply: no criterion claims something arrives between two versions.\n\nHandoff: read via git show 4d317e1:docs/handoffs/sprint-55.md. Round 1 is present and quotes \"VERIFY PASS (lint, typecheck, test, build) exit=0\".\nMy own re-run: npm run verify ended with exit=0. Test Files 55 passed, Tests 622 passed, lint 0 errors and 3 warnings.\n\nR1 (heading), met. display.ts eventsHeading's \"below\" case returns `Other years with events on ${month} ${day}`, using formatLongDate. formatLongDate's day is String(Number(day)), so there is no leading zero. The single function and the eventsPlacement guard are unchanged, and every other case returns EVENTS_HEADING. Tests cover July 4, November 25, March 3 and January 9.\nStrict grep for the old form (grep -rnE \"Other years with ([0-9]|\\$\\{day\\} )\" app lib) gives exit=1, no matches. The handoff's looser pattern also matches the new strings because they contain \"with events\"; that's harmless, and the strict pattern is the real check.\n\nR2 (message), met. In accuracy.ts the unmatched case always returns next \"Pick a different date.\". The lookup-failed case (\"Try again in a few minutes.\") and the bold lead are unchanged, and Sprint 54's br is untouched in HoroscopeUnavailableSection. grep \"choose one of the years listed\" app lib gives exit=1.\nThe accuracy tests cover the linkable, zero-event and pre-1700 cases. A dedicated test proves its own premise (one payload links for 4 July, the other doesn't), then asserts the exact next step for both.\n\nR3 (removals), met and confirmed truly unused:\n- hasLinkableYear: the only reader was unavailableMessage.\n- unavailableMessage's eventsHeading parameter, and the HoroscopeUnavailableSection eventsHeading prop.\n- horoscopeAvailability's isoDate parameter. Its only use was computing hasLinkableYear.\nGrep shows the only callers are app/date/[date]/page.tsx:110,136 and app/reading/[id]/page.tsx:87,98, all updated, and typecheck passes. Removing isoDate goes slightly past R3's literal list, but it is within R3's \"remove what's now unused\", and I accept it.\nThe year links (linkableEventDate, EventYear) remain. The page tests still assert href=\"/date/1933-03-04\" on /reading/[id] and the date-page links. The 29 February coverage still exists in the linkableEventDate test at accuracy.test.ts:43. The removed availability case only asserted the deleted field.\n\nR4 (tests), met. Unit, accuracy and render tests on both routes are updated. Each render test asserts the paragraph ends \"</strong><br/>Pick a different date.</p>\", so nothing can trail it.\n\nR5 (screenshots), met. I opened today-unmatched-1280 and today-unmatched-390. The heading reads \"Other years with events on November 26\", and at 390 it wraps to 2 lines with no overflow. The reading shows the bold lead, then \"Pick a different date.\" on its own line, and nothing more. The year links show in green.\n\nSecurity and error handling: no new input paths, only string and plumbing changes.\n\nOpen items, all pre-existing with Master Controller:\n- On /reading/[id] the message says \"Pick a different date\", but that page has no picker. This sprint makes it the only next step there, so the mismatch is more visible. It is out of scope.\n- The 3 lint warnings in earlier sprints' evidence scripts (sprint-45, sprint-46) are still not owned by any recorded decision.\nNone of these blocks this sprint."
     }
   ],
   "last_claim": {
-    "claude_session_id": "144626fb-c9b4-4be2-a21d-e91f69cd8803",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-26T15:34:28+00:00"
+    "claude_session_id": "c1195957-a242-4a02-903c-627a4d9d7483",
+    "claude_agent": "qa1",
+    "ts": "2026-11-26T15:42:26+00:00"
   }
 }
