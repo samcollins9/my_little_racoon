@@ -2,7 +2,7 @@
 id: 55
 title: "Other-years heading reads month first; message shortened"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-26T15:33:38+00:00
 ---
 

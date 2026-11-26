@@ -329,8 +329,8 @@
     "55": {
       "title": "Other-years heading reads month first; message shortened",
       "epic": "Date pages (PRD v3)",
-      "status": "in_progress",
-      "file": "docs/sprints/2-in-progress/sprint-55_other-years-heading-reads-month-first-message-shortened.md"
+      "status": "done",
+      "file": "docs/sprints/3-done/sprint-55_other-years-heading-reads-month-first-message-shortened--done.md"
     },
     "56": {
       "title": "Reveal and fold become one toggle; Copy link removed",
