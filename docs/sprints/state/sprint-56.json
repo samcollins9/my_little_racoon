@@ -6,7 +6,7 @@
   "qa1_audit_file_hash": "d5f5edd91548e3c5ebeaec9e190c2d3273d7ca144ba9adb554557a06d552975b",
   "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
   "qa1_audited_tree_hash": "5a4670381160abcfe96e2e4a2c23805ec69027a5c057eb6bf8a43e06fd9aed5d",
-  "last_shipped_commit": "2398f13a8c7e79bf44b98674e2d8ed3659a88004",
+  "last_shipped_commit": "06f093f680102972eb371651e3c9c962478cae30",
   "groundtruth_result": "FAIL",
   "live_loop_audit_trees": [
     {
@@ -69,11 +69,17 @@
       "actor": "qa1",
       "event": "correction",
       "detail": "target_index=1 | target_event=audit | target_ts=2026-11-26T16:22:29+00:00 | QA1 correction to event [1] (my gate-1 audit of 4f979c6). Under \"For Master Controller\", I wrote that the open text \"now sits at the section's normal 20px gap below The reading heading\". That is factually wrong.\n\nWith generation enabled, the panel renders inside a form, which is a plain block. The section's flex gap therefore never applied there. The real box gap was 0px, about 3px to the text, as LiveQA measured in event [4].\n\nThe PASS verdict on R1 to R9 is unaffected. The spacing became R10, and it was fixed in 06f093f. My live-loop audit of that commit is in event [6]."
+    },
+    {
+      "ts": "2026-11-26T17:08:01+00:00",
+      "actor": "pipeman",
+      "event": "reshipped",
+      "detail": "commit=06f093f | ci=green: 1 CI run(s) for 06f093f680102972eb371651e3c9c962478cae30 all completed successfully with real steps executed."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c1195957-a242-4a02-903c-627a4d9d7483",
-    "claude_agent": "qa1",
-    "ts": "2026-11-26T17:02:25+00:00"
+    "claude_session_id": "17f3d81e-952e-5133-b126-0dcf174ed116",
+    "claude_agent": "pipeman",
+    "ts": "2026-11-26T17:08:01+00:00"
   }
 }
