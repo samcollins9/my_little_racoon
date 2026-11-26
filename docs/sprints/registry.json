@@ -1,5 +1,5 @@
 {
-  "next_id": 56,
+  "next_id": 57,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -331,6 +331,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "in_progress",
       "file": "docs/sprints/2-in-progress/sprint-55_other-years-heading-reads-month-first-message-shortened.md"
+    },
+    "56": {
+      "title": "Reveal and fold become one toggle; Copy link removed",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-56_reveal-and-fold-become-one-toggle-copy-link-removed.md"
     }
   }
 }
