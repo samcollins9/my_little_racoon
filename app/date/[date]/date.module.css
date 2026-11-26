@@ -87,6 +87,9 @@
 .anotherDate {
   padding: 14px 40px;
   border-top: 1px solid var(--om-rule);
+  /* Centred on every layout (quick fix, 25 Nov 2026): one row on desktop;
+     on phones, where .pickerControls steps aside, each wrapped line. */
+  justify-content: center;
 }
 
 .pickerOr {
