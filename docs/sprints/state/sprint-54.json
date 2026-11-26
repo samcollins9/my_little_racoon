@@ -1,16 +1,16 @@
 {
   "id": 54,
   "title": "Other-years heading, Pick a different date label, message line break",
-  "phase": "dev_build",
-  "qa1_audit_result": null,
-  "qa1_audit_file_hash": null,
-  "qa1_audit_hash_scheme": null,
-  "qa1_audited_tree_hash": null,
+  "phase": "qa1_audit",
+  "qa1_audit_result": "PASS",
+  "qa1_audit_file_hash": "267d90b5de125e73d45ab7f93ba4495021d3672ea554e681cd6407b04fae2eae",
+  "qa1_audit_hash_scheme": "excludes-lifecycle-lines",
+  "qa1_audited_tree_hash": "ed12245058bdfa257d2c96a8dd63aa3912fd637232fe304fff3d5610d3ebe6fb",
   "last_shipped_commit": null,
   "groundtruth_result": null,
   "live_loop_audit_trees": [],
   "pre_block_phase": null,
-  "audit_rounds": 0,
+  "audit_rounds": 1,
   "live_test_rounds": 0,
   "started": "2026-11-26T01:59:24+00:00",
   "completed": null,
@@ -20,11 +20,17 @@
       "actor": "system",
       "event": "sprint_started",
       "detail": ""
+    },
+    {
+      "ts": "2026-11-26T02:26:16+00:00",
+      "actor": "qa1",
+      "event": "audit",
+      "detail": "PASS: PASS, gate 1, audit of 71563a7.\n\nSprint file: read fresh. Unchanged since start (31606bc). The centring quick fix it depends on (f3cccc4) is in the base.\n\nHandoff: read at the audited commit. It has a Round 1 section quoting VERIFY PASS (lint, typecheck, test, build) exit=0, with 622 tests.\n\nMy own check: npm run verify at 71563a7, on a clean primary checkout. Result: verify=0, VERIFY PASS exit=0, 55 test files and 622 tests passed.\n\n- R1 Met. eventsHeading(events, eventDate) in app/reading/[id]/display.ts returns \"Other years with D Month events\" exactly when eventsPlacement is \"below\", using formatLongDate. formatLongDate gives the day via String(Number(day)), so there is no leading zero, and the month as its full name. Otherwise it returns EVENTS_HEADING, \"What happened\". ReadingView's h2 renders it on both routes and both layouts.\n  A grep outside tests finds \"What happened\" only in EVENTS_HEADING plus two comments. The status label is unchanged.\n- R2 Met. unavailableMessage takes the heading as a parameter and quotes it in the linkable-years variant. Both page.tsx files pass eventsHeading with the same events and date they give ReadingView (page.events and page.eventDate; reading.events and reading.event_date), so the quoted heading and the shown heading come from one function with the same inputs.\n  The no-linkable variant is unchanged. lib still doesn't import from app.\n- R3 Met. The label reads \"Pick a different date\" and stays htmlFor the input. A grep for \"Another date\" in app and lib exits 1.\n  The one CSS change is phone-only: the picker label gets max-width 100px, so it wraps to three lines and label, input and Go keep one row at 390 (Sprint 52's R3). The handoff records this as the user's decision during the build, after a two-line wrap measured too wide. It is in service of R3 and Sprint 52's R3, and changes the label's wrapping only, not its font, spacing or colour.\n- R4 Met. It is still one p with the accuracyNote class: strong lead, one br, then the next step. No CSS was changed for it. The ReadingView test pins one paragraph and one br in both variants.\n- R5 Met. Unit tests cover the four cases, including 4 July, 25 November and the single-digit 3 March. The R2 string tests use fixed headings, including the exact 4 July string. Render tests cover both routes, the label and the structure. Sprint 39 and 52 tests are updated and listed.\n- R6 Met. I opened other-years-1280-events-reading.png: \"Other years with 3 March events\" beside \"on this day, other years\". The message's bold lead ends its line and the next step quotes the same heading. The centred picker panel reads PICK A DIFFERENT DATE.\n  I also opened matched-390-events-reading.png (\"What happened\", this exact date) and picker-panel-390.png (the three-line label beside the input and GO on one row, then OR DISCOVER RANDOM READING below).\n\nRouted to Master Controller:\n- Record the user's phone-label decision (the three-line wrap via max-width 100px) in the sprint file or decisions. It also means Go wraps below the input on phones narrower than about 390px (375 and 360 were measured by Dev Team). Sprint 52's R3 only set the 390px bar, so this isn't a failure, but it is a known limit someone may hit.\n- Still UNOWNED: /reading/[id]'s \"Pick a different date\" with no picker on that page, and the 3 lint warnings in the sprint 45 and 46 probe scripts.\n\nNo issues found."
     }
   ],
   "last_claim": {
-    "claude_session_id": "c59480d0-4b3c-46d2-a7a4-cae3cb777de8",
-    "claude_agent": "dev-team-1",
-    "ts": "2026-11-26T01:59:24+00:00"
+    "claude_session_id": "5039df42-f1da-57ff-87da-e2377380a107",
+    "claude_agent": "qa1",
+    "ts": "2026-11-26T02:26:16+00:00"
   }
 }
