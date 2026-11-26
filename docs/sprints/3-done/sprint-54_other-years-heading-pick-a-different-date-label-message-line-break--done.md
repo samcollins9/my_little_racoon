@@ -2,7 +2,7 @@
 id: 54
 title: "Other-years heading, Pick a different date label, message line break"
 epic: "Date pages (PRD v3)"
-status: in_progress
+status: done
 created: 2026-11-26T01:56:56+00:00
 ---
 
