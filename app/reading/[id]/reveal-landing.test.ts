@@ -10,6 +10,7 @@ import {
   useAnon,
 } from "./page-test-support";
 import { REVEALED_PARAM, withRevealed } from "./reveal";
+import { visibleWhen } from "./reveal-test-support";
 
 // Sprint 33, R4/R8: the landing-revealed URL's server render, through the
 // real page components on both routes. The pages run against a recording
@@ -168,12 +169,15 @@ describe("/reading/[id] on the landing-revealed URL (R4/R6/R8)", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it("the plain link with a saved horoscope opens folded, with the text inside the disclosure", async () => {
+  it("the plain link with a saved horoscope opens folded, with the text in the HTML but hidden", async () => {
     useAnon({ get_reading_by_id: ok([storedRow(SAVED_TEXT)]) });
 
     const html = await renderReadingPage({});
 
     expect(detailsTag(html)).not.toMatch(/\sopen/);
-    expect(html.slice(html.indexOf("<details"))).toContain(SAVED_TEXT);
+    // Sprint 56: the text sits before the toggle rather than inside the
+    // disclosure, and CSS hides it while folded (reveal-test-support.ts).
+    expect(html).toContain(SAVED_TEXT);
+    expect(visibleWhen(html, "folded")).not.toContain(SAVED_TEXT);
   });
 });

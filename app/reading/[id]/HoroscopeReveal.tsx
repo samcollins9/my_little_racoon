@@ -13,7 +13,7 @@ import styles from "./reading.module.css";
 export const REVEAL_LABEL = "Reveal the horoscope";
 /** R1: the pending label on the generate button. */
 export const REVEALING_LABEL = "Revealing…";
-/** Folding back (the user chose to allow it, 23 Nov 2026): the summary's label once open. */
+/** Folding back (the user chose to allow it, 23 Nov 2026): the toggle's label once open (Sprint 56). */
 export const FOLD_LABEL = "Fold the horoscope away";
 
 export type ReadingStatus = "idle" | "busy";
@@ -70,39 +70,56 @@ type SavedHoroscopeProps = {
   /** The rise animation (Sprint 20, R8), only right after a generation in this tab. */
   rise?: boolean;
   /**
-   * Beside the reveal control while folded, where the unsaved state shows its
-   * footer note. It is hidden from screen readers here because it sits inside
-   * the summary and would otherwise become part of the control's name. The
-   * revealed footer carries the same note, readable.
+   * The footer row's note, in both states: the aspects note, the error after
+   * a failed generation, or the disabled note. It sits beside the toggle,
+   * outside the <summary>, so it's never part of the toggle's name.
    */
-  foldedNote: { text: string; className: string };
-  /** The footer once unfolded: the date links, "Try again", or the disabled note. */
-  footer: ReactNode;
+  note: { text: string; className: string };
+  /**
+   * Footer controls after the toggle, shown only while open: the date-page
+   * link on /reading/[id], or "Try again" after a failed generation.
+   */
+  controls?: ReactNode;
 };
 
 const PARAGRAPH_RISE_STAGGER_S = 0.45;
 
+/** Sprint 56, R2: the paragraphs' id, which the toggle names in aria-controls. One saved horoscope per page. */
+export const SAVED_TEXT_ID = "saved-horoscope-text";
+
 /**
- * R2/R3: a saved horoscope, folded until the visitor reveals it.
+ * R2/R3 (Sprint 33), reworked as one toggle by Sprint 56: a saved
+ * horoscope, folded until the visitor reveals it.
  *
- * - Native <details>/<summary>: unfolding needs no request, no reload, no
- *   URL change and no JavaScript. The summary is keyboard-operable (Enter or
- *   Space) and exposes its expanded or collapsed state to assistive tech
- *   without any ARIA from us.
- * - The saved text is inside the <details>, never outside it. It is in the
- *   HTML, folded: revealing is a presentation step, not access control (the
- *   sprint's Out of Scope).
+ * - One toggle, in one place (Sprint 56, R1). It's the first control in the
+ *   reading's footer row in both states, styled as .castButton, and reads
+ *   REVEAL_LABEL folded and FOLD_LABEL open. Only the label for the current
+ *   state is rendered (the other is display: none), so the control's name
+ *   always matches what's on screen.
+ * - Still native <details>/<summary> (Sprint 56, R2): opening and closing
+ *   needs no request, no reload, no URL change and no JavaScript. The
+ *   summary is keyboard-operable (Enter or Space) and exposes its expanded
+ *   or collapsed state to assistive tech without any ARIA from us.
+ * - The <details> holds only the toggle. <summary> has to be its first
+ *   child, so a disclosure that also held the text would put the toggle
+ *   above it. Instead the paragraphs come first, as a sibling, and the
+ *   footer row follows. DOM order, focus order and what's on screen then all
+ *   agree when open: paragraphs, toggle, then any other footer control
+ *   (Sprint 56, R3). The summary names the paragraphs in aria-controls.
+ * - The saved text is in the HTML in both states. Folded, CSS hides it,
+ *   keyed on the details' state: `.revealPanel:has(.reveal:not([open]))` in
+ *   reading.module.css. Revealing is a presentation step, not access control
+ *   (Sprint 33's Out of Scope). A browser without :has() shows the text
+ *   always, rather than never.
  * - Folded, the panel shows the same header, IdleBlock, button classes,
  *   label and note as the unsaved state, so a visitor can't tell whether a
  *   horoscope exists. The control is a <summary> here and a submit <button>
  *   there. That difference is unavoidable, since one unfolds and the other
  *   submits. The classes and copy are the same.
- * - Open, the summary becomes the small "fold away" control above the text.
- *   The header status and the IdleBlock follow the open state through
- *   `.revealPanel:has(> details[open])` in reading.module.css. In a browser
- *   without :has() they stay as folded, and the text still unfolds.
+ * - The header status and the IdleBlock follow the open state through the
+ *   same :has() rules.
  */
-export function SavedHoroscope({ paragraphs, revealed, rise = false, foldedNote, footer }: SavedHoroscopeProps) {
+export function SavedHoroscope({ paragraphs, revealed, rise = false, note, controls }: SavedHoroscopeProps) {
   return (
     <div className={styles.revealPanel}>
       <div className={styles.readingHeader}>
@@ -117,29 +134,29 @@ export function SavedHoroscope({ paragraphs, revealed, rise = false, foldedNote,
       <div className={styles.whenFolded}>
         <IdleBlock />
       </div>
-      <details className={styles.reveal} open={revealed}>
-        <summary className={styles.revealSummary}>
-          <span className={`${styles.readingFooter} ${styles.revealFolded}`}>
-            <span className={styles.castButton}>{REVEAL_LABEL}</span>
-            <span className={foldedNote.className} aria-hidden="true">
-              {foldedNote.text}
+      <div id={SAVED_TEXT_ID} className={`${styles.writtenBlock} ${styles.revealText}`}>
+        {paragraphs.map((paragraph, i) => (
+          <p
+            key={i}
+            className={rise ? `${styles.paragraph} ${styles.paragraphRise}` : styles.paragraph}
+            style={rise ? { animationDelay: `${i * PARAGRAPH_RISE_STAGGER_S}s` } : undefined}
+          >
+            {paragraph}
+          </p>
+        ))}
+      </div>
+      <div className={styles.readingFooter}>
+        <details className={styles.reveal} open={revealed}>
+          <summary className={styles.revealSummary} aria-controls={SAVED_TEXT_ID}>
+            <span className={styles.castButton}>
+              <span className={styles.labelFolded}>{REVEAL_LABEL}</span>
+              <span className={styles.labelOpen}>{FOLD_LABEL}</span>
             </span>
-          </span>
-          <span className={styles.revealFold}>{FOLD_LABEL}</span>
-        </summary>
-        <div className={styles.writtenBlock}>
-          {paragraphs.map((paragraph, i) => (
-            <p
-              key={i}
-              className={rise ? `${styles.paragraph} ${styles.paragraphRise}` : styles.paragraph}
-              style={rise ? { animationDelay: `${i * PARAGRAPH_RISE_STAGGER_S}s` } : undefined}
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
-        {footer}
-      </details>
+          </summary>
+        </details>
+        {controls ? <div className={styles.revealControls}>{controls}</div> : null}
+        <p className={note.className}>{note.text}</p>
+      </div>
     </div>
   );
 }

@@ -111,32 +111,29 @@ export function ReadingPanel({
   const note = errorMessage
     ? { text: errorMessage, className: styles.errorNote }
     : { text: aspectsNoteText(aspectCount), className: `${styles.footerNote} ${styles.desktopOnly}` };
-  const noteElement = <p className={note.className}>{note.text}</p>;
 
   // Sprint 33, R2/R3: a saved horoscope is folded on every page load, behind
   // a native disclosure (SavedHoroscope), and unfolds in place. `revealed`
   // (R4) is the landing after a successful generation; it only ever opens a
   // horoscope that is already saved. Sprint 22's rule carries over to the
   // unfolded footer: no regenerate control, a plain link instead, except that
-  // a failed generation (R5) still offers "Try again".
+  // a failed generation (R5) still offers "Try again". Sprint 56: those
+  // controls follow the toggle in the footer row, shown only while open.
   if (!pending && hasHoroscope) {
     return (
       <SavedHoroscope
         paragraphs={paragraphs}
         revealed={revealed}
         rise={justWrote}
-        foldedNote={note}
-        footer={
-          <div className={styles.readingFooter}>
-            {errorMessage ? (
-              <button type="submit" className={styles.castButton}>
-                {TRY_AGAIN_LABEL}
-              </button>
-            ) : (
-              <DateLinks {...dateLink} />
-            )}
-            {noteElement}
-          </div>
+        note={note}
+        controls={
+          errorMessage ? (
+            <button type="submit" className={styles.castButton}>
+              {TRY_AGAIN_LABEL}
+            </button>
+          ) : (
+            <DateLink {...dateLink} />
+          )
         }
       />
     );
@@ -154,70 +151,28 @@ export function ReadingPanel({
         <button type="submit" disabled={pending} className={styles.castButton}>
           {pending ? REVEALING_LABEL : errorMessage ? TRY_AGAIN_LABEL : REVEAL_LABEL}
         </button>
-        {noteElement}
+        <p className={note.className}>{note.text}</p>
       </div>
     </>
   );
 }
 
 /**
- * The unfolded footer's links (Sprint 31, R3). The date page passes
- * `offerNewChart={false}` and gets only the mobile copy-link control;
- * /reading/[id] gets the link to its own date page as well.
+ * The unfolded footer's link (Sprint 31, R3), after the toggle. The date
+ * page passes `offerNewChart={false}` and gets none: it is already the date
+ * page. /reading/[id] gets the link to its own date page, at both widths.
+ *
+ * Sprint 56, R6: mobile frame 4's copy-link button (Sprint 20) is gone, and
+ * with it the separate mobile copy of this link. The address bar is the copy
+ * path, as it always was on desktop. The label names the destination and
+ * says nothing about steps or casting.
  */
-function DateLinks(dateLink: DateLinkProps) {
-  if (dateLink.offerNewChart === false) {
-    return (
-      <div className={styles.mobileOnly}>
-        <CopyLinkButton />
-      </div>
-    );
-  }
+function DateLink(dateLink: DateLinkProps) {
+  if (dateLink.offerNewChart === false) return null;
   return (
-    <>
-      {/* Desktop: the single link that replaced "Cast it again"
-          (Sprint 22). Mobile frame 4 carries a second control beside
-          it (Sprint 20, R3) -- its own region rather than this one
-          restyled. Sprint 31, R3: both go to this reading's own date
-          page (where its chart, events and navigation live) instead
-          of /chart. The label names that destination and says nothing
-          about steps or casting. */}
-      <Link href={dateLink.datePageHref} className={`${styles.castButton} ${styles.desktopOnly}`}>
-        {DATE_PAGE_LINK_LABEL}
-      </Link>
-      <div className={`${styles.mobileWrittenFooter} ${styles.mobileOnly}`}>
-        <Link href={dateLink.datePageHref} className={styles.castButton}>
-          {DATE_PAGE_LINK_LABEL}
-        </Link>
-        <CopyLinkButton />
-      </div>
-    </>
-  );
-}
-
-/**
- * Mobile frame 4 only (Sprint 20, R3/R6) -- desktop has no copy-link
- * affordance, matching the prototype (the address bar is the only copy
- * path there). Own small piece of local state (copied), unrelated to and
- * not compounding ReadingPanel's own state discussion above -- a
- * separate component with a narrowly-scoped, purely cosmetic concern.
- */
-function CopyLinkButton() {
-  const [copied, setCopied] = useState(false);
-
-  return (
-    <button
-      type="button"
-      className={styles.castButton}
-      onClick={() => {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
-        });
-      }}
-    >
-      {copied ? "Copied" : "Copy link"}
-    </button>
+    <Link href={dateLink.datePageHref} className={styles.castButton}>
+      {DATE_PAGE_LINK_LABEL}
+    </Link>
   );
 }
 

@@ -578,12 +578,13 @@ export function DisabledReadingSection({
   );
 
   if (horoscope) {
+    // Sprint 56: SavedHoroscope builds its own footer row (the toggle, then
+    // the note), so it takes the note itself rather than this footer.
     return (
       <SavedHoroscope
         paragraphs={horoscopeParagraphs(horoscope)}
         revealed={revealed}
-        foldedNote={{ text: DISABLED_NOTE, className: styles.disabledNote }}
-        footer={disabledNote}
+        note={{ text: DISABLED_NOTE, className: styles.disabledNote }}
       />
     );
   }

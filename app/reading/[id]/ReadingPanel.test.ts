@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { IdleBlock } from "./HoroscopeReveal";
+import { IdleBlock, SAVED_TEXT_ID } from "./HoroscopeReveal";
 import { ReadingPanel } from "./ReadingPanel";
 import { DisabledReadingSection } from "./ReadingView";
+import { summaries, visibleWhen } from "./reveal-test-support";
 
 // Sprint 31, R3: the written state's link. Rendered on the server, the same
 // way the page first reaches a visitor, with no form submission pending.
@@ -31,10 +32,12 @@ function hrefs(html: string): string[] {
 const RETIRED_COPY = [/cast a new chart/i, /cast the chart/i, /save this reading/i, /see the full reading/i, /\bstep\b/i];
 
 describe("ReadingPanel's written-state link (R3)", () => {
-  it("/reading/[id]: links to the reading's own date page, on desktop and mobile", () => {
+  it("/reading/[id]: links to the reading's own date page, one link for desktop and mobile (Sprint 56, R6)", () => {
     const html = render({ ...BASE, hasHoroscope: true, datePageHref: "/date/1969-07-20" });
 
-    expect(hrefs(html)).toEqual(["/date/1969-07-20", "/date/1969-07-20"]);
+    // Sprint 56 removed the mobile-only copy of this link, along with the
+    // copy-link button it sat beside: one link now serves both widths.
+    expect(hrefs(html)).toEqual(["/date/1969-07-20"]);
     expect(html).toContain("Go to this date");
   });
 
@@ -90,8 +93,14 @@ const RETIRED_WRITE_COPY = [/write the horoscope/i, /nothing has been written/i,
 const IDLE_SENTENCE = "Nothing has been revealed about it yet";
 const IDLE_HTML = renderToStaticMarkup(createElement(IdleBlock));
 
-/** The control's markup: any element whose class includes castButton, labelled "Reveal the horoscope". */
-const REVEAL_CONTROL = /<(button|span) [^>]*class="[^"]*castButton[^"]*"[^>]*>Reveal the horoscope<\/\1>/;
+/**
+ * The control's markup: any element whose class includes castButton, labelled
+ * "Reveal the horoscope". Sprint 56: on a saved horoscope the label sits in
+ * its own span inside the button-styled span (one per state), so that inner
+ * span is optional here.
+ */
+const REVEAL_CONTROL =
+  /<(button|span) [^>]*class="[^"]*castButton[^"]*"[^>]*>(?:<span [^>]*>)?Reveal the horoscope(?:<\/span>)?<\/\1>/;
 
 /** The <details> element's opening tag, and everything inside it. */
 function disclosure(html: string): { openTag: string; inner: string } | null {
@@ -99,9 +108,14 @@ function disclosure(html: string): { openTag: string; inner: string } | null {
   return match ? { openTag: match[1], inner: match[2] } : null;
 }
 
-/** What a sighted visitor sees before revealing: everything outside the details, plus its summary. */
-function visibleWhileFolded(html: string): string {
-  return html.replace(/(<details[^>]*>[\s\S]*?<\/summary>)[\s\S]*<\/details>/, "$1");
+/** Sprint 56: what a sighted visitor sees before revealing (reveal-test-support.ts). */
+const visibleWhileFolded = (html: string) => visibleWhen(html, "folded");
+
+/** The saved paragraphs' block, by the id the toggle names in aria-controls. */
+function savedTextBlock(html: string): string {
+  const match = html.match(new RegExp(`<div id="${SAVED_TEXT_ID}"[^>]*>([\\s\\S]*?)</div>`));
+  if (!match) throw new Error("saved text block not found");
+  return match[1];
 }
 
 describe("Sprint 33: a saved horoscope opens folded (R2/R3)", () => {
@@ -113,12 +127,15 @@ describe("Sprint 33: a saved horoscope opens folded (R2/R3)", () => {
     expect(d!.inner).toMatch(/<summary[^>]*>[\s\S]*Reveal the horoscope[\s\S]*<\/summary>/);
   });
 
-  it("keeps every saved paragraph inside the disclosure, after the summary, never outside it", () => {
+  it("keeps every saved paragraph in the HTML, before the toggle, hidden while folded (Sprint 56 moved it out of the details)", () => {
     const html = render(SAVED);
-    const d = disclosure(html)!;
-    const afterSummary = d.inner.slice(d.inner.indexOf("</summary>"));
+    const text = savedTextBlock(html);
 
-    for (const paragraph of SAVED.paragraphs) expect(afterSummary).toContain(paragraph);
+    for (const paragraph of SAVED.paragraphs) expect(text).toContain(paragraph);
+    // Before the toggle in the markup, and so in reading and focus order.
+    expect(html.indexOf(SAVED_TEXT)).toBeLessThan(html.indexOf("<details"));
+    // The details holds only its summary.
+    expect(disclosure(html)!.inner).toMatch(/^<summary[\s\S]*<\/summary>$/);
     expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
   });
 
@@ -138,23 +155,33 @@ describe("Sprint 33: a saved horoscope opens folded (R2/R3)", () => {
     expect(hrefs(html)).toEqual([]);
   });
 
-  it("the summary's folded-state note is hidden from screen readers, so it isn't part of the control's name", () => {
-    const summary = render(SAVED).match(/<summary[\s\S]*?<\/summary>/)![0];
+  it("the note sits beside the toggle, outside the summary, so it isn't part of the control's name (Sprint 56)", () => {
+    const html = render(SAVED);
+    const [summary] = summaries(html);
 
-    expect(summary).toMatch(/aria-hidden="true"[^>]*>Revealed on request from 10 positions and 7 aspects\.</);
+    expect(summary).not.toContain("Revealed on request");
+    expect(html.slice(html.indexOf("</details>"))).toContain(
+      ">Revealed on request from 10 positions and 7 aspects.</p>"
+    );
+    // One note element, readable: no aria-hidden duplicate any more.
+    expect(html.match(/Revealed on request/g)).toHaveLength(1);
+    expect(html).not.toContain("aria-hidden");
   });
 
-  it("offers a fold-back control once open", () => {
-    expect(render(SAVED)).toContain("Fold the horoscope away");
+  it("the same toggle carries the fold-back label, shown once open, and names the text it controls", () => {
+    const [summary] = summaries(render(SAVED));
+
+    expect(summary).toContain(">Fold the horoscope away<");
+    expect(summary).toContain(`aria-controls="${SAVED_TEXT_ID}"`);
   });
 });
 
 describe("Sprint 33: the landing after a successful generation (R4)", () => {
-  it("revealed: the same disclosure, already open, with the text inside it", () => {
-    const d = disclosure(render({ ...SAVED, revealed: true }));
+  it("revealed: the same disclosure, already open, with the text shown", () => {
+    const html = render({ ...SAVED, revealed: true });
 
-    expect(d!.openTag).toMatch(/\sopen=""/);
-    expect(d!.inner).toContain(SAVED_TEXT);
+    expect(disclosure(html)!.openTag).toMatch(/\sopen=""/);
+    expect(visibleWhen(html, "open")).toContain(SAVED_TEXT);
   });
 
   it("revealed on a reading with no horoscope: just the folded generate state, nothing to open", () => {
@@ -203,13 +230,18 @@ describe("Sprint 33: a failed generation (R4)", () => {
     expect(html).not.toContain("<details");
   });
 
-  it("with a saved horoscope: the text stays folded, and \"Try again\" sits in its unfolded footer", () => {
+  it("with a saved horoscope: the text stays folded, and \"Try again\" sits in its unfolded footer, after the toggle", () => {
     const html = render({ ...SAVED, errorMessage: "Horoscope generation failed, try again." });
-    const d = disclosure(html)!;
+    const tryAgain = /<button type="submit"[^>]*>Try again<\/button>/;
 
-    expect(d.openTag).not.toMatch(/\sopen/);
-    expect(d.inner).toMatch(/<button type="submit"[^>]*>Try again<\/button>/);
+    expect(disclosure(html)!.openTag).not.toMatch(/\sopen/);
+    expect(visibleWhileFolded(html)).not.toMatch(tryAgain);
     expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
+
+    const open = visibleWhen(html, "open");
+    expect(open).toMatch(tryAgain);
+    expect(open.search(tryAgain)).toBeGreaterThan(open.indexOf("</details>"));
+    expect(open).toContain("Horoscope generation failed, try again.");
   });
 });
 
@@ -234,9 +266,11 @@ describe("Sprint 33: generation disabled (R5)", () => {
     const d = disclosure(html)!;
 
     expect(d.openTag).not.toMatch(/\sopen/);
-    expect(html).toMatch(REVEAL_CONTROL);
-    expect(d.inner.slice(d.inner.indexOf("</summary>"))).toContain(SAVED_TEXT);
+    expect(visibleWhileFolded(html)).toMatch(REVEAL_CONTROL);
+    expect(savedTextBlock(html)).toContain(SAVED_TEXT);
     expect(visibleWhileFolded(html)).not.toContain(SAVED_TEXT);
+    // Sprint 56: the disabled note is the footer row's note, beside the toggle, in both states.
+    expect(html.slice(html.indexOf("</details>"))).toContain("Horoscope generation is currently disabled.");
     expect(html).toContain("Horoscope generation is currently disabled.");
     expect(html).not.toContain("<button");
     expect(html).not.toContain("<form");

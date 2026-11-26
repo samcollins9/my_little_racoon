@@ -582,8 +582,8 @@
    Mobile: 390px, frames 3-4 (docs/design/HANDOFF_reading_responsive.md
    screen 2b; Sprint 20). One breakpoint, 900px -- desktop rules above
    are otherwise untouched (R8). No regenerate control at either
-   viewport (Sprint 22); mobile's written footer additionally carries
-   Copy link (R3), which desktop does not.
+   viewport (Sprint 22). Mobile's written footer used to carry a
+   copy-link button as well (Sprint 20, R3); Sprint 56 removed it.
    ============================================================ */
 
 .desktopOnly {
@@ -768,23 +768,23 @@
     text-align: center;
   }
 
-  .mobileWrittenFooter {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
 }
 
 /* ============================================================
-   Sprint 33: a saved horoscope, folded behind a native <details>
-   (HoroscopeReveal.tsx). Folded, it must look exactly like the
-   unsaved state's idle block and footer (R2).
+   Sprint 33, reworked by Sprint 56: a saved horoscope behind one
+   native toggle (HoroscopeReveal.tsx). The <details> holds only
+   its <summary>, the first item of the footer row. The paragraphs
+   before the row, and any open-only controls in it, follow the
+   toggle's state through :has(). Folded, the panel must look
+   exactly like the unsaved state's idle block and footer
+   (Sprint 33, R2).
    ============================================================ */
 
-/* The panel's own wrapper adds no box: header, idle block and
-   <details> stay direct flex items of .readingSection, spaced by its
-   gap, exactly as the unsaved state's children are. It exists only
-   so :has() below can follow the open state. */
+/* The panel's own wrapper adds no box: header, idle block, text and
+   footer row stay direct flex items of .readingSection (or its form),
+   spaced by its gap, exactly as the unsaved state's children are. So
+   the footer row's margin-top: auto and, on phones, Sprint 38's sticky
+   rule apply to it in both states, as they do to the unsaved footer. */
 .revealPanel {
   display: contents;
 }
@@ -793,50 +793,60 @@
   display: none;
 }
 
-.revealPanel:has(> details[open]) .whenFolded {
+.revealPanel:has(.reveal[open]) .whenFolded {
   display: none;
 }
 
-.revealPanel:has(> details[open]) .whenRevealed {
+.revealPanel:has(.reveal[open]) .whenRevealed {
   display: inline;
 }
 
-/* flex: 1 plus the summary's margin-top: auto puts the folded control
-   at the bottom of the section, where .readingFooter's own margin-top:
-   auto puts the unsaved state's footer. Open, the footer inside does
-   the same. */
-.reveal {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* Folded: the text and the open-only footer controls are hidden; the
+   text stays in the HTML. Keyed on the closed state, so a browser
+   without :has() shows them always rather than never. */
+.revealPanel:has(.reveal:not([open])) .revealText,
+.revealPanel:has(.reveal:not([open])) .revealControls {
+  display: none;
 }
 
+/* Open: the controls are footer-row items in their own right. */
+.revealControls {
+  display: contents;
+}
+
+/* display: flex makes the button-styled span a flex item, sized the way
+   the unsaved state's <button> is beside the note. As an inline span in a
+   block summary it wrapped to the narrowest it could at desktop widths
+   (measured at 1280: 98 x 58, against the button's 184 x 52). As a flex
+   item it measures 182 x 52 there, with the same two-line wrap; the 2px is
+   the <details> counting the span's padding and border as its own content
+   when the row shrinks. */
 .revealSummary {
-  display: block;
+  display: flex;
   list-style: none;
   cursor: pointer;
-  margin-top: auto;
 }
 
 .revealSummary::-webkit-details-marker {
   display: none;
 }
 
-/* LiveQA round 1 (R2): the unsaved state's control is a <button>, which
-   the UA stylesheet centres; this one is a <span>, which inherits start
-   alignment. On desktop, where the label wraps to two lines, that showed.
-   Centre it explicitly so the two folded states match. */
+/* LiveQA round 1 (Sprint 33, R2): the unsaved state's control is a
+   <button>, which the UA stylesheet centres; this one is a <span>, which
+   inherits start alignment. Centre it explicitly so the two match. */
 .revealSummary .castButton {
   text-align: center;
 }
 
-.reveal[open] > .revealSummary {
-  margin-top: 0;
+/* Sprint 56, R1: one label at a time. The hidden one is display: none, so
+   it's also left out of the toggle's accessible name. */
+.reveal[open] .labelFolded,
+.reveal:not([open]) .labelOpen {
+  display: none;
 }
 
 /* The summary is the focusable control, so its focus ring goes on the
-   button-styled span inside it, not round the whole footer row. */
+   button-styled span inside it, not round the summary's own box. */
 .revealSummary:focus-visible {
   outline: none;
 }
@@ -852,72 +862,15 @@
   color: var(--om-verdigris-light);
 }
 
-.revealFold {
-  display: none;
-}
-
-.reveal[open] .revealFolded {
-  display: none;
-}
-
-.reveal[open] .revealFold {
-  display: inline-block;
-  font-family: var(--font-mono), monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--om-grey-dim);
-  padding: 6px 0;
-}
-
-.revealSummary:hover .revealFold,
-.revealSummary:focus-visible .revealFold {
-  color: var(--om-verdigris-light);
-}
-
-.revealSummary:focus-visible .revealFold {
-  outline: 2px solid var(--om-verdigris);
-  outline-offset: 2px;
-}
-
 @media (max-width: 900px) {
+  /* The toggle takes its share of the footer row, like the unsaved
+     state's button (.castButton is flex: 1 below 900px): the whole row
+     folded, or half beside /reading/[id]'s date link when open. The
+     button-styled span, a flex item of the summary, fills it through that
+     same flex: 1, keeping .castButton's 44px minimum height (Sprint 20,
+     R4). */
   .reveal {
-    gap: 14px;
-  }
-
-  /* .readingFooter is sticky on phones, but inside the summary its
-     containing block is the summary itself, so it would never stick.
-
-     Sprint 38, LiveQA round 1: the summary can't be the sticky element
-     either. Its containing block is the folded <details>, which is only as
-     tall as the summary, so sticky had no room to move it. The folded
-     <details> sticks instead. Its parent spans the whole reading section,
-     header and idle text included: the <form> on a page that can generate,
-     .readingSection itself on one that can't. That's the same box the
-     unsaved state's sticky .readingFooter moves within. Open, the <details>
-     is ordinary flow again, and its own .readingFooter sticks as before.
-     The summary keeps the footer background, which covers what scrolls
-     beneath it. No gap while folded: the closed <details> still lays out
-     its hidden content slot, and the gap before it would leave an
-     uncovered strip under the bar at the screen's edge. */
-  .reveal:not([open]) {
-    position: sticky;
-    bottom: 0;
-    gap: 0;
-  }
-
-  .reveal:not([open]) > .revealSummary {
-    background: var(--om-ink-footer);
-  }
-
-  .revealFolded {
-    position: static;
-  }
-
-  /* R4 (Sprint 20): touch targets clear 44px at this size. */
-  .reveal[open] .revealFold {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
+    flex: 1;
+    min-width: 0;
   }
 }
