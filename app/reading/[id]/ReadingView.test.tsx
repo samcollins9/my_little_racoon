@@ -5,7 +5,7 @@ import { ZODIAC_SIGNS } from "../../../lib/ephemeris/zodiac";
 import { planetTooltip, sectorTooltip } from "./constellation";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
 import { TAGLINES } from "../../../lib/banner/taglines";
-import { ReadingView } from "./ReadingView";
+import { HoroscopeUnavailableSection, ReadingView } from "./ReadingView";
 
 // Sprint 34, R1/R2/R4: the desktop chart's native tooltips, read from the
 // rendered markup the way a browser receives it. 1969-07-20 has real
@@ -133,5 +133,35 @@ describe('"What happened" drops Wikipedia\'s picture notes (Sprint 42)', () => {
 
   it('leaves text without a note alone, "(depicted)" included', () => {
     expect(html).toContain("A painting (depicted) is shown.");
+  });
+});
+
+describe("Sprint 39's message in The reading (Sprint 54, R2/R4)", () => {
+  const unhash = (html: string) => html.replace(/\b_([A-Za-z][A-Za-z0-9]*)_[0-9a-f]{6}\b/g, "$1");
+  const render = (availability: Parameters<typeof HoroscopeUnavailableSection>[0]["availability"]) =>
+    unhash(
+      renderToStaticMarkup(
+        <HoroscopeUnavailableSection availability={availability} eventsHeading="Other years with 4 July events" />
+      )
+    );
+  const paragraphs = (html: string) => html.match(/<p[ >][\s\S]*?<\/p>/g) ?? [];
+
+  it("one paragraph: the bold lead, one line break, then the next step quoting the heading it's given", () => {
+    const html = render({ kind: "unmatched", hasLinkableYear: true });
+    expect(paragraphs(html)).toEqual([
+      '<p class="accuracyNote"><strong class="accuracyLead">We have no recorded events for this exact date, so we can&#x27;t write an accurate horoscope for it.</strong><br/>' +
+        "Pick a different date, or choose one of the years listed under &quot;Other years with 4 July events&quot; to go to that date instead.</p>",
+    ]);
+  });
+
+  it.each([
+    ["unmatched, no linkable year", { kind: "unmatched" as const, hasLinkableYear: false }, "Pick a different date."],
+    ["lookup failed", { kind: "lookupFailed" as const }, "Try again in a few minutes."],
+  ])("%s: the same structure, one <br/> and no stray characters", (_, availability, next) => {
+    const found = paragraphs(render(availability));
+    expect(found).toHaveLength(1);
+    const p = found[0] ?? "";
+    expect(p).toMatch(new RegExp(`^<p class="accuracyNote"><strong class="accuracyLead">[^<]+</strong><br/>${next.replace(/\./g, "\\.")}</p>$`));
+    expect(p.match(/<br\/>/g)).toHaveLength(1);
   });
 });

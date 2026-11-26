@@ -15,7 +15,7 @@ import {
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { createAnonClient } from "@/lib/supabase/anon-client";
 import { datedTitle } from "@/lib/site-title";
-import { horoscopeParagraphs } from "@/app/reading/[id]/display";
+import { eventsHeading, horoscopeParagraphs } from "@/app/reading/[id]/display";
 import { ReadingPanel } from "@/app/reading/[id]/ReadingPanel";
 import {
   DisabledReadingSection,
@@ -119,7 +119,7 @@ export default async function DatePage({
       // Sprint 52, R1/R5: Previous day / Next day under the banner, above the
       // date band. The order is the DOM order, on every layout.
       aboveDateBand={<DateNavigation navigation={dayNavigation(isoDate, now)} />}
-      // After the page body (Sprint 52, R2/R5): the one "Another date" panel
+      // After the page body (Sprint 52, R2/R5): the one picker panel ("Pick a different date", Sprint 54)
       // (picker, Go, "or Discover random reading", one random pick per
       // request), on every layout; then "Notable dates", whose phone copy
       // (Sprint 45, R4) and desktop panel (Sprint 50) each show at one
@@ -133,7 +133,10 @@ export default async function DatePage({
       }
     >
       {availability.kind !== "writable" ? (
-        <HoroscopeUnavailableSection availability={availability} />
+        <HoroscopeUnavailableSection
+          availability={availability}
+          eventsHeading={eventsHeading(page.events, page.eventDate)}
+        />
       ) : page.saved.kind === "unavailable" ? (
         <SavedHoroscopesUnavailable />
       ) : isHoroscopeEnabled() ? (

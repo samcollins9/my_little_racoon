@@ -4,9 +4,12 @@ import { horoscopeAvailability, linkableEventDate, unavailableMessage } from "./
 
 // Sprint 39, R11: the linkable-year rule and the message choice.
 
+// Sprint 54, R2: the heading the page shows for 9 May's other-years events
+// (eventsHeading, app/reading/[id]/display.ts), which the message quotes.
+const HEADING_9_MAY = "Other years with 9 May events";
 const R3_TEXT =
   "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
-  'Pick a different date, or choose one of the years listed under "What happened" to go to that date instead.';
+  'Pick a different date, or choose one of the years listed under "Other years with 9 May events" to go to that date instead.';
 const R4_TEXT =
   "We have no recorded events for this exact date, so we can't write an accurate horoscope for it. " +
   "Pick a different date.";
@@ -67,7 +70,7 @@ describe("linkableEventDate (R1)", () => {
 describe("horoscopeAvailability and the message for each case (R3-R5)", () => {
   const text = (availability: ReturnType<typeof horoscopeAvailability>) => {
     if (availability.kind === "writable") throw new Error("expected a message");
-    const { lead, next } = unavailableMessage(availability);
+    const { lead, next } = unavailableMessage(availability, HEADING_9_MAY);
     return `${lead} ${next}`;
   };
 
@@ -96,6 +99,17 @@ describe("horoscopeAvailability and the message for each case (R3-R5)", () => {
   it("R4: unmatched on 29 February where no event year is a leap year in range", () => {
     const availability = horoscopeAvailability(events(false, [1900, 1901, 1600]), "2024-02-29");
     expect(availability).toEqual({ kind: "unmatched", hasLinkableYear: false });
+  });
+
+  it("Sprint 54, R2: only the linkable-years variant quotes the heading it's given", () => {
+    const linkable = horoscopeAvailability(events(false, [1976]), "2031-07-04");
+    if (linkable.kind === "writable") throw new Error("expected a message");
+    expect(unavailableMessage(linkable, "Other years with 4 July events").next).toBe(
+      'Pick a different date, or choose one of the years listed under "Other years with 4 July events" to go to that date instead.'
+    );
+    const none = horoscopeAvailability(events(false, []), "2031-07-04");
+    if (none.kind === "writable") throw new Error("expected a message");
+    expect(unavailableMessage(none, "anything").next).toBe("Pick a different date.");
   });
 
   it("R5: a failed lookup (null)", () => {

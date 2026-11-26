@@ -75,7 +75,7 @@ describe("the date page's notable dates (Sprint 45)", () => {
     expect(strip).not.toContain("notable-dates-panel-heading");
   });
 
-  it("Sprint 50/52: after the body, the Another date panel, then the phone copy, then the desktop panel, last in the card", async () => {
+  it("Sprint 50/52: after the body, the picker panel, then the phone copy, then the desktop panel, last in the card", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, ...NAVIGATION_RPCS });
 
     const html = unhashClasses(await renderDatePage("2012-11-11"));

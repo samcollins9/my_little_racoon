@@ -55,7 +55,7 @@ afterEach(() => {
 });
 
 describe("the date page's order (Sprint 52)", () => {
-  it("banner, day links, date band, body, Another date, Notable dates", async () => {
+  it("banner, day links, date band, body, picker panel, Notable dates", async () => {
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: ok([{ event_date: "1912-04-15" }]) });
     const html = unhashClasses(await renderDatePage("1969-07-20"));
     expect(order(html)).toEqual([

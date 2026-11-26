@@ -62,6 +62,13 @@ describe("the picker row (R3/R6)", () => {
   const renderPicker = (randomDate: string | null) =>
     unhashClasses(renderToStaticMarkup(<DatePicker isoDate="1969-07-20" today={TODAY} randomDate={randomDate} />));
 
+  it("Sprint 54, R3: the date input's label reads 'Pick a different date'", () => {
+    expect(renderPicker(null)).toContain(
+      '<label class="pickerLabel" for="date-page-picker">Pick a different date</label>'
+    );
+    expect(renderPicker(null)).toMatch(/<input id="date-page-picker"/);
+  });
+
   it("R3: max is the given today, min the engine's first date", () => {
     const html = renderPicker(null);
     expect(html).toMatch(/<input [^>]*max="2026-11-25"/);

@@ -20,7 +20,7 @@ const dateOnly = (date: Date) => date.toISOString().slice(0, 10);
  *   offer (lookup failed, or nothing left after filtering) neither the
  *   link nor its "or" renders.
  *
- * Sprint 52: this is the date page's one "Another date" panel, rendered
+ * Sprint 52: this is the date page's one picker panel, rendered
  * once, after the body, on desktop and phones alike (it replaced the
  * picker row at the top and Sprint 47's phone-only copy of the random
  * link at the bottom). "or" and the link share one non-wrapping span, so
@@ -41,7 +41,8 @@ export function DatePicker({
   return (
     <form method="get" action="/date" className={`${styles.picker} ${styles.anotherDate}`}>
       <label className={styles.pickerLabel} htmlFor="date-page-picker">
-        Another date
+        {/* Sprint 54, R3: matches the wording of Sprint 39's message. */}
+        Pick a different date
       </label>
       <div className={styles.pickerControls}>
         <input

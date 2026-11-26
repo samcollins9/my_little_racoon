@@ -31,8 +31,10 @@ vi.mock("next/server", async (importOriginal) => ({
 
 const LEAD_UNMATCHED =
   "We have no recorded events for this exact date, so we can&#x27;t write an accurate horoscope for it.";
-const NEXT_R3 =
-  "Pick a different date, or choose one of the years listed under &quot;What happened&quot; to go to that date instead.";
+// Sprint 54, R2: the message quotes the events heading the page shows,
+// "Other years with <D> <Month> events" for the page's own date.
+const nextR3 = (dayMonth: string) =>
+  `Pick a different date, or choose one of the years listed under &quot;Other years with ${dayMonth} events&quot; to go to that date instead.`;
 const NEXT_R4 = "Pick a different date.";
 const LEAD_FAILED =
   "The events for this date couldn&#x27;t be loaded, so the horoscope can&#x27;t be written right now.";
@@ -73,8 +75,8 @@ const sectionFrom = (html: string, heading: string) => {
   const start = html.indexOf(heading);
   return html.slice(start, html.indexOf("</section>", start));
 };
-/** "What happened", its own section only. */
-const eventsColumn = (html: string) => sectionFrom(html, ">What happened<");
+/** The events section, its own section only, whatever its heading reads (Sprint 54). */
+const eventsColumn = (html: string) => sectionFrom(html, "eventsSection");
 /** "The reading", its own section only. */
 const readingSection = (html: string) => sectionFrom(html, ">The reading<");
 /** Every <form> on the page except the date picker's plain GET to /date. */
@@ -131,7 +133,7 @@ describe("the date page on an unmatched date", () => {
 
     expect(readingSection(html)).toContain(`<strong class=`);
     expect(readingSection(html)).toContain(LEAD_UNMATCHED);
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("9 May"));
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
@@ -147,7 +149,7 @@ describe("the date page on an unmatched date", () => {
 
     expect(eventsColumn(html)).not.toContain("<a ");
     expect(readingSection(html)).toContain(LEAD_UNMATCHED);
-    expect(readingSection(html)).toContain(`</strong> ${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
     expect(readingSection(html)).not.toContain("What happened");
     expectOnlyTheMessage(html);
   });
@@ -159,7 +161,7 @@ describe("the date page on an unmatched date", () => {
     const html = await renderDatePage("1931-07-11");
 
     expect(eventsColumn(html)).toContain("No recorded events for this day.");
-    expect(readingSection(html)).toContain(`</strong> ${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
     expectOnlyTheMessage(html);
   });
 
@@ -170,7 +172,7 @@ describe("the date page on an unmatched date", () => {
 
     const html = await renderDatePage("1931-08-12");
 
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("12 August"));
     expectOnlyTheMessage(html);
   });
 
@@ -180,7 +182,7 @@ describe("the date page on an unmatched date", () => {
 
     const html = await renderDatePage("1931-09-13");
 
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("13 September"));
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
@@ -200,7 +202,7 @@ describe("the date page on an unmatched date", () => {
     // As if nothing was saved: the events are the fresh lookup's, not the row's.
     expect(html).toContain("A fresh event");
     expect(html).not.toContain("The stored event");
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("14 October"));
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
   });
@@ -278,7 +280,7 @@ describe("/reading/[id] for a row without exact-year events (R10)", () => {
 
     expect(eventsColumn(html)).toMatch(/<a [^>]*href="\/date\/1933-03-04"[^>]*>1933<\/a>/);
     expect(eventsColumn(html)).not.toMatch(/<a [^>]*>1152<\/a>/);
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("4 March"));
     expectOnlyTheMessage(html);
     expectNoWriteAndNoOpenAI(fake, fetchSpy);
     expect(fetchSpy).not.toHaveBeenCalled();
@@ -291,7 +293,7 @@ describe("/reading/[id] for a row without exact-year events (R10)", () => {
 
     const html = await renderReadingPage(READING_ID);
 
-    expect(readingSection(html)).toContain(`</strong> ${NEXT_R4}</p>`);
+    expect(readingSection(html)).toContain(`</strong><br/>${NEXT_R4}</p>`);
     expectOnlyTheMessage(html);
   });
 
@@ -313,7 +315,7 @@ describe("/reading/[id] for a row without exact-year events (R10)", () => {
 
     const html = await renderReadingPage(READING_ID, { revealed: "1" });
 
-    expect(readingSection(html)).toContain(NEXT_R3);
+    expect(readingSection(html)).toContain(nextR3("7 March"));
     expectOnlyTheMessage(html);
   });
 });

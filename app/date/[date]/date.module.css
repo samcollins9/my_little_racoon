@@ -129,6 +129,16 @@
     display: contents;
   }
 
+  /* Sprint 54 (the user's choice, 26 Nov 2026): "Pick a different date" is
+     too wide to share a 390px row with the input and Go, and its two-line
+     form ("DIFFERENT DATE", 106px) still doesn't fit the 104px left beside
+     them. So on phones it wraps to three lines ("PICK A / DIFFERENT /
+     DATE"), and at 390px the three keep one row, as Sprint 52's R3
+     requires. On narrower phones (375px and below) Go still wraps. */
+  .anotherDate .pickerLabel {
+    max-width: 100px;
+  }
+
   /* Sprint 52, R3: every control in the panel clears a 44px touch target
      on phones (Sprint 20, R4). The random link wears .pickerButton too;
      as an <a> it is content-box and inline by default, so it measures and

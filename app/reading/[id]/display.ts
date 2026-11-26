@@ -3,6 +3,7 @@
 // imports, Sprint 13).
 import { hasMatchedEvents } from "../../../lib/events/matched";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
+import { formatLongDate } from "./format";
 
 /**
  * Pure display-decision helpers, kept out of page.tsx so R4/R2's null and
@@ -41,6 +42,24 @@ export type EventsPlacement = "above" | "below";
 
 export function eventsPlacement(events: WikipediaEventsPayload | null): EventsPlacement {
   return events !== null && !hasMatchedEvents(events) && events.events.length > 0 ? "below" : "above";
+}
+
+/** The events section's heading everywhere but Sprint 54's other-years case. */
+export const EVENTS_HEADING = "What happened";
+
+/**
+ * Sprint 54, R1: the events section's heading -- the one rule for it, and
+ * the heading Sprint 39's message quotes (R2). In exactly eventsPlacement's
+ * "below" case (other years' events listed, none from this exact date) it
+ * names what is listed: "Other years with 4 July events", the page's own
+ * day and month, from formatLongDate. Every other case -- this exact date,
+ * an empty list, a failed lookup -- keeps "What happened" (the user's
+ * decision, 26 Nov 2026).
+ */
+export function eventsHeading(events: WikipediaEventsPayload | null, eventDate: string): string {
+  if (eventsPlacement(events) !== "below") return EVENTS_HEADING;
+  const { day, month } = formatLongDate(eventDate);
+  return `Other years with ${day} ${month} events`;
 }
 
 /**

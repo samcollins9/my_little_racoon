@@ -7,7 +7,7 @@ import { composeChart } from "@/lib/chart/model";
 import { horoscopeAvailability } from "@/lib/date-page/accuracy";
 import { isHoroscopeEnabled } from "@/lib/llm/generate";
 import { generateReadingHoroscope } from "./actions";
-import { horoscopeParagraphs } from "./display";
+import { eventsHeading, horoscopeParagraphs } from "./display";
 import { isLandingRevealed } from "./reveal";
 import { ReadingPanel } from "./ReadingPanel";
 import { DisabledReadingSection, HoroscopeUnavailableSection, ReadingView } from "./ReadingView";
@@ -95,7 +95,10 @@ export default async function ReadingPage({
       jdNote="sealed · anyone with the link"
     >
       {availability.kind !== "writable" ? (
-        <HoroscopeUnavailableSection availability={availability} />
+        <HoroscopeUnavailableSection
+          availability={availability}
+          eventsHeading={eventsHeading(reading.events, reading.event_date)}
+        />
       ) : isHoroscopeEnabled() ? (
         <form action={generateReadingHoroscope}>
           <input type="hidden" name="readingId" value={id} />

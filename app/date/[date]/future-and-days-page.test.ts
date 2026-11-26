@@ -136,7 +136,7 @@ describe("Discover random reading on the page (R6)", () => {
     expect(html).toMatch(/<a [^>]*href="\/date\/2001-09-11"[^>]*>Discover random reading<\/a>/);
   });
 
-  it("Sprint 52, R2/R4: one copy only, inside the one Another date panel after the body", async () => {
+  it("Sprint 52, R2/R4: one copy only, inside the one picker panel after the body", async () => {
     // Sprint 47's "both copies share one href" check retired with its
     // second copy: there is now exactly one random link on the page.
     useAnon({ get_reading_by_date: EMPTY_LOOKUP, get_recent_reading_dates: RECENT });

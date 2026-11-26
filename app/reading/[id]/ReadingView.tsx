@@ -13,7 +13,7 @@ import { ELEMENTS, MODALITIES } from "@/lib/ephemeris/balance";
 import { hasMatchedEvents } from "@/lib/events/matched";
 import { stripPictureNotes } from "@/lib/events/picture-notes";
 import type { WikipediaEventsPayload } from "@/lib/events/wikipedia";
-import { eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
+import { eventsHeading, eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 import { eventsStatusLabel, formatLongDate } from "./format";
 import { AspectsPanel, PlanetsTable, SignsTable } from "./ChartKeyTables";
 import { ChartTabs } from "./ChartTabs";
@@ -110,7 +110,8 @@ export function ReadingView({
       }
     >
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>What happened</h2>
+        {/* Sprint 54, R1: "Other years with D Month events" when that's what's listed. */}
+        <h2 className={styles.sectionTitle}>{eventsHeading(events, eventDate)}</h2>
         {status ? <span className={styles.eventsStatus}>{status}</span> : null}
       </div>
       {events && events.events.length > 0 ? (
@@ -532,14 +533,27 @@ const UNAVAILABLE_STATUS: Record<UnavailableHoroscope["kind"], string> = {
  * form, a saved horoscope, the disabled panel and the saved-horoscopes
  * outage notice. No form, no reveal, and nothing here needs the database
  * or JavaScript.
+ *
+ * Sprint 54: `eventsHeading` is the events section's heading on the same
+ * page (eventsHeading(events, eventDate)), which the message quotes (R2).
+ * The next step starts on its own line after the bold lead (R4): a line
+ * break in the one paragraph, not a second paragraph.
  */
-export function HoroscopeUnavailableSection({ availability }: { availability: UnavailableHoroscope }) {
-  const message = unavailableMessage(availability);
+export function HoroscopeUnavailableSection({
+  availability,
+  eventsHeading,
+}: {
+  availability: UnavailableHoroscope;
+  eventsHeading: string;
+}) {
+  const message = unavailableMessage(availability, eventsHeading);
   return (
     <>
       <ReadingHeader status="idle" label={UNAVAILABLE_STATUS[availability.kind]} />
       <p className={styles.accuracyNote}>
-        <strong className={styles.accuracyLead}>{message.lead}</strong> {message.next}
+        <strong className={styles.accuracyLead}>{message.lead}</strong>
+        <br />
+        {message.next}
       </p>
     </>
   );

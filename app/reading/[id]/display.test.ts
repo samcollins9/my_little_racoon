@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WikipediaEventsPayload } from "../../../lib/events/wikipedia";
-import { eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
+import { EVENTS_HEADING, eventsHeading, eventsLabel, eventsPlacement, horoscopeParagraphs, isSafeExternalUrl } from "./display";
 
 function events(overrides: Partial<WikipediaEventsPayload> = {}): WikipediaEventsPayload {
   return {
@@ -51,6 +51,40 @@ describe("eventsPlacement (Sprint 48, R1)", () => {
   it("a stored row whose matchedYear isn't the boolean true counts as unmatched, as hasMatchedEvents says", () => {
     const loose = events({ matchedYear: "true" as unknown as boolean });
     expect(eventsPlacement(loose)).toBe("below");
+  });
+});
+
+describe("eventsHeading (Sprint 54, R1)", () => {
+  it("other years' events listed: 'Other years with D Month events', from the page's date", () => {
+    expect(eventsHeading(events({ matchedYear: false }), "2026-07-04")).toBe("Other years with 4 July events");
+    expect(eventsHeading(events({ matchedYear: false }), "2026-11-25")).toBe("Other years with 25 November events");
+    expect(eventsHeading(events({ matchedYear: false }), "1931-03-03")).toBe("Other years with 3 March events");
+  });
+
+  it("matched (this exact date): What happened", () => {
+    expect(eventsHeading(events({ matchedYear: true, events: [{ year: 2026, text: "x" }] }), "2026-07-04")).toBe(
+      "What happened"
+    );
+  });
+
+  it("unmatched with no events (no recorded events for this day): What happened", () => {
+    expect(eventsHeading(events({ matchedYear: false, events: [] }), "2026-07-04")).toBe("What happened");
+  });
+
+  it("null (lookup failed, or nothing looked up): What happened", () => {
+    expect(eventsHeading(null, "2026-07-04")).toBe(EVENTS_HEADING);
+    expect(EVENTS_HEADING).toBe("What happened");
+  });
+
+  it("is the other-years heading exactly when eventsPlacement says below", () => {
+    for (const payload of [
+      null,
+      events({ matchedYear: true }),
+      events({ matchedYear: false }),
+      events({ matchedYear: false, events: [] }),
+    ]) {
+      expect(eventsHeading(payload, "2026-07-04") !== EVENTS_HEADING).toBe(eventsPlacement(payload) === "below");
+    }
   });
 });
 
