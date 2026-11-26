@@ -1,5 +1,5 @@
 {
-  "next_id": 55,
+  "next_id": 56,
   "sprints": {
     "1": {
       "title": "Next.js on Vercel, deployed from main",
@@ -325,6 +325,12 @@
       "epic": "Date pages (PRD v3)",
       "status": "done",
       "file": "docs/sprints/3-done/sprint-54_other-years-heading-pick-a-different-date-label-message-line-break--done.md"
+    },
+    "55": {
+      "title": "Other-years heading reads month first; message shortened",
+      "epic": "Date pages (PRD v3)",
+      "status": "todo",
+      "file": "docs/sprints/1-todo/sprint-55_other-years-heading-reads-month-first-message-shortened.md"
     }
   }
 }

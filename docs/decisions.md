@@ -121,3 +121,7 @@ Ideas the user has deliberately parked. Nothing here gets a sprint until the use
 - When other years' events are listed (Sprint 48's "below" case), the events heading reads "Other years with D Month events", for example "Other years with 4 July events". With exact-date events, an empty list or a failed lookup, it stays "What happened".
 - The picker panel's label is "Pick a different date".
 - Sprint 39's message breaks onto a new line after its bold first sentence.
+
+## 26 Nov 2026: heading and message reworded (Sprint 55)
+
+This supersedes part of the Sprint 54 entry above. The other-years heading reads "Other years with events on <Month> <D>", for example "Other years with events on July 4". Sprint 39's unmatched message ends with just "Pick a different date.", with no pointer to the year list.
