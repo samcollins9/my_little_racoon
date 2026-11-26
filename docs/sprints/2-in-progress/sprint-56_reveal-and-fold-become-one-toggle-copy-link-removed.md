@@ -2,7 +2,7 @@
 id: 56
 title: "Reveal and fold become one toggle; Copy link removed"
 epic: "Date pages (PRD v3)"
-status: todo
+status: in_progress
 created: 2026-11-26T15:59:30+00:00
 ---
 
